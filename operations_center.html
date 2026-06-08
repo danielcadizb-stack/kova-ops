@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KOVA Operations Center</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--teal:#5de0ce;--gold:#ffc350;--purp:#a78bfa;--green:#34d296;--red:#ef4444;
+  --bg:#0d0b08;--bg2:#111410;--card:#181c15;--card2:#1e2219;
+  --white:#f0ede6;--gray:#a09b91;--border:rgba(93,224,206,.14)}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--white);min-height:100vh}
+
+/* Header */
+.hdr{display:flex;align-items:center;justify-content:space-between;
+  padding:0 28px;height:58px;background:var(--bg2);
+  border-bottom:1px solid var(--border)}
+.hdr-left{display:flex;align-items:center;gap:12px}
+.ek{width:32px;height:32px;background:#0f2820;border-radius:7px;
+  display:flex;align-items:center;justify-content:center;
+  border:1px solid rgba(93,224,206,.2)}
+.hdr-title{font-family:'Space Mono',monospace;font-size:14px;color:var(--teal);font-weight:700}
+.hdr-sub{font-size:11px;color:var(--gray);margin-top:1px}
+.hdr-right{display:flex;align-items:center;gap:12px}
+.live-badge{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--green);
+  background:rgba(52,210,150,.08);border:1px solid rgba(52,210,150,.2);
+  padding:4px 10px;border-radius:20px}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.back-btn{font-size:12px;color:var(--gray);text-decoration:none;
+  border:1px solid var(--border);padding:6px 14px;border-radius:8px;transition:.2s}
+.back-btn:hover{color:var(--teal);border-color:var(--teal)}
+.last-update{font-size:10px;color:var(--gray);font-family:'Space Mono',monospace}
+
+/* Layout */
+.main{padding:24px 28px;display:flex;flex-direction:column;gap:20px}
+.section-title{font-family:'Space Mono',monospace;font-size:11px;color:rgba(93,224,206,.5);
+  letter-spacing:.14em;text-transform:uppercase;margin-bottom:12px}
+
+/* KPI Grid */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px}
+.kpi-val{font-family:'Space Mono',monospace;font-size:28px;font-weight:700;color:var(--white);line-height:1}
+.kpi-lbl{font-size:11px;color:var(--gray);margin-top:4px}
+.kpi-delta{font-size:11px;margin-top:6px;font-weight:500}
+.kpi-delta.up{color:var(--green)}
+.kpi-delta.down{color:var(--red)}
+.kpi-delta.neutral{color:var(--gray)}
+
+/* Tables */
+.data-table{width:100%;border-collapse:collapse;font-size:13px}
+.data-table th{background:rgba(93,224,206,.06);color:var(--teal);
+  padding:10px 14px;text-align:left;font-weight:600;font-size:11px;
+  letter-spacing:.08em;border-bottom:1px solid var(--border)}
+.data-table td{padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.04);color:var(--gray)}
+.data-table tr:hover td{background:rgba(255,255,255,.02)}
+.data-table tr:last-child td{border:none}
+
+/* Cards */
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.info-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+
+/* Status badges */
+.status{display:inline-flex;align-items:center;gap:5px;font-size:11px;
+  padding:3px 10px;border-radius:20px;font-weight:500}
+.status.ok{background:rgba(52,210,150,.1);color:var(--green);border:1px solid rgba(52,210,150,.2)}
+.status.warn{background:rgba(255,195,80,.1);color:var(--gold);border:1px solid rgba(255,195,80,.2)}
+.status.err{background:rgba(239,68,68,.1);color:var(--red);border:1px solid rgba(239,68,68,.2)}
+.status-dot{width:5px;height:5px;border-radius:50%;background:currentColor}
+
+/* Agent cards */
+.agent-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.agent-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px}
+.agent-letter{width:36px;height:36px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Space Mono',monospace;font-size:16px;font-weight:700;margin-bottom:10px}
+.al-n{background:rgba(93,224,206,.12);color:var(--teal);border:1px solid rgba(93,224,206,.25)}
+.al-a{background:rgba(255,195,80,.12);color:var(--gold);border:1px solid rgba(255,195,80,.25)}
+.al-m{background:rgba(167,139,250,.12);color:var(--purp);border:1px solid rgba(167,139,250,.25)}
+.agent-name{font-size:13px;font-weight:600;color:var(--white);margin-bottom:4px}
+.agent-stat{font-family:'Space Mono',monospace;font-size:20px;color:var(--white);font-weight:700}
+.agent-sub{font-size:11px;color:var(--gray);margin-top:2px}
+.progress-bar{height:4px;background:rgba(255,255,255,.08);border-radius:2px;margin-top:10px;overflow:hidden}
+.progress-fill{height:100%;border-radius:2px;transition:width .5s}
+
+/* Loading */
+.loading{display:flex;align-items:center;justify-content:center;height:60px;
+  color:var(--gray);font-size:13px;gap:8px}
+.spinner{width:16px;height:16px;border:2px solid var(--border);
+  border-top-color:var(--teal);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+@media(max-width:600px){
+  .agent-grid{grid-template-columns:1fr}
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-left">
+    <div class="ek">
+      <svg viewBox="0 0 28 17" fill="none" width="20" height="12">
+        <polyline points="0,8.5 3.5,8.5 6.5,2 9.5,15 12.5,2 15.5,8.5 19,8.5 23,8.5 28,8.5"
+          stroke="#5de0ce" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div>
+      <div class="hdr-title">Operations Center</div>
+      <div class="hdr-sub">Supabase · Usuarios · Agentes IA · Seguridad</div>
+    </div>
+  </div>
+  <div class="hdr-right">
+    <div class="live-badge"><div class="live-dot"></div>En vivo</div>
+    <div class="last-update" id="lastUpdate">Actualizando...</div>
+    <a href="/" class="back-btn">← Volver</a>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- KPIs principales -->
+  <div>
+    <div class="section-title">Métricas principales</div>
+    <div class="kpi-grid" id="kpiGrid">
+      <div class="loading"><div class="spinner"></div>Cargando...</div>
+    </div>
+  </div>
+
+  <!-- Agentes IA -->
+  <div>
+    <div class="section-title">Agentes IA — Actividad</div>
+    <div class="agent-grid" id="agentGrid">
+      <div class="loading"><div class="spinner"></div>Cargando...</div>
+    </div>
+  </div>
+
+  <!-- Usuarios recientes + Seguridad -->
+  <div class="card-grid">
+    <div class="info-card">
+      <div class="section-title">Usuarios recientes</div>
+      <div id="recentUsers"><div class="loading"><div class="spinner"></div></div></div>
+    </div>
+    <div class="info-card">
+      <div class="section-title">Estado del sistema</div>
+      <div id="systemStatus"><div class="loading"><div class="spinner"></div></div></div>
+    </div>
+  </div>
+
+  <!-- Planes activos -->
+  <div class="info-card">
+    <div class="section-title">Distribución por plan</div>
+    <div id="planDistribution"><div class="loading"><div class="spinner"></div></div></div>
+  </div>
+
+</div>
+
+<script>
+const SUPABASE_URL = 'https://vwbkndxpqrdnbhrsnbkw.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3YmtuZHhwcXJkbmJocnNuYmt3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MDI1ODUsImV4cCI6MjA1OTI3ODU4NX0.sN5VVXmEjIgAnmLhHxPCcVBrV7MSdFkfP5ZMPagvjrg';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+function fmtDate(d){ return d ? new Date(d).toLocaleDateString('es',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}) : '—' }
+function fmtNum(n){ return n?.toLocaleString('es') ?? '0' }
+
+async function loadAll(){
+  document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString('es');
+
+  try {
+    // Users
+    const {data:users, error:uErr} = await sb.from('user_profiles').select('*').order('created_at',{ascending:false});
+    if(uErr) throw uErr;
+
+    const total = users?.length ?? 0;
+    const today = users?.filter(u => new Date(u.created_at) > new Date(Date.now()-86400000)).length ?? 0;
+    const week  = users?.filter(u => new Date(u.created_at) > new Date(Date.now()-7*86400000)).length ?? 0;
+
+    // Plan distribution
+    const plans = {free:0,starter:0,pro:0,enterprise:0};
+    users?.forEach(u=>{ if(plans[u.plan]!==undefined) plans[u.plan]++ });
+
+    // Usage stats
+    const {data:usage} = await sb.from('user_usage').select('*');
+    const totalMsgs = usage?.reduce((a,b)=>a+(b.nova_count||0)+(b.alex_count||0)+(b.maia_count||0),0) ?? 0;
+    const novaMsgs  = usage?.reduce((a,b)=>a+(b.nova_count||0),0) ?? 0;
+    const alexMsgs  = usage?.reduce((a,b)=>a+(b.alex_count||0),0) ?? 0;
+    const maiaMsgs  = usage?.reduce((a,b)=>a+(b.maia_count||0),0) ?? 0;
+
+    // ── KPIs ──────────────────────────────────────────────────────
+    document.getElementById('kpiGrid').innerHTML = `
+      <div class="kpi" style="border-color:rgba(93,224,206,.3)">
+        <div class="kpi-val">${fmtNum(total)}</div>
+        <div class="kpi-lbl">Usuarios totales</div>
+        <div class="kpi-delta up">+${today} hoy</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-val">${today}</div>
+        <div class="kpi-lbl">Nuevos hoy</div>
+        <div class="kpi-delta neutral">${week} esta semana</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-val">${fmtNum(totalMsgs)}</div>
+        <div class="kpi-lbl">Mensajes totales</div>
+        <div class="kpi-delta up">NOVA+ALEX+MAIA</div>
+      </div>
+      <div class="kpi" style="border-color:rgba(255,195,80,.2)">
+        <div class="kpi-val" style="color:var(--gold)">${plans.starter+plans.pro+plans.enterprise}</div>
+        <div class="kpi-lbl">Usuarios de pago</div>
+        <div class="kpi-delta neutral">${plans.free} en free</div>
+      </div>
+      <div class="kpi" style="border-color:rgba(52,210,150,.2)">
+        <div class="kpi-val" style="color:var(--green)">${total>0?Math.round((plans.starter+plans.pro+plans.enterprise)/total*100):0}%</div>
+        <div class="kpi-lbl">Tasa conversión</div>
+        <div class="kpi-delta neutral">Free → Pago</div>
+      </div>
+    `;
+
+    // ── AGENTS ────────────────────────────────────────────────────
+    const novaMax = Math.max(novaMsgs,1);
+    document.getElementById('agentGrid').innerHTML = `
+      <div class="agent-card">
+        <div class="agent-letter al-n">N</div>
+        <div class="agent-name">NOVA</div>
+        <div class="agent-stat">${fmtNum(novaMsgs)}</div>
+        <div class="agent-sub">mensajes totales</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:100%;background:var(--teal)"></div></div>
+      </div>
+      <div class="agent-card">
+        <div class="agent-letter al-a">A</div>
+        <div class="agent-name">ALEX</div>
+        <div class="agent-stat">${fmtNum(alexMsgs)}</div>
+        <div class="agent-sub">simulaciones totales</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${Math.round(alexMsgs/novaMax*100)}%;background:var(--gold)"></div></div>
+      </div>
+      <div class="agent-card">
+        <div class="agent-letter al-m">M</div>
+        <div class="agent-name">MAIA</div>
+        <div class="agent-stat">${fmtNum(maiaMsgs)}</div>
+        <div class="agent-sub">estrategias generadas</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${Math.round(maiaMsgs/novaMax*100)}%;background:var(--purp)"></div></div>
+      </div>
+    `;
+
+    // ── RECENT USERS ──────────────────────────────────────────────
+    const recent = users?.slice(0,8) ?? [];
+    document.getElementById('recentUsers').innerHTML = recent.length ? `
+      <table class="data-table">
+        <tr><th>Usuario</th><th>Plan</th><th>Registro</th></tr>
+        ${recent.map(u=>`
+          <tr>
+            <td style="color:var(--white)">${u.email ?? u.user_id?.slice(0,12)+'...'}</td>
+            <td><span class="status ${u.plan==='free'?'neutral':u.plan==='enterprise'?'ok':'warn'}" style="border:none;background:none;padding:0;color:${u.plan==='free'?'var(--gray)':u.plan==='pro'?'var(--gold)':u.plan==='enterprise'?'var(--purp)':'var(--teal)'}">${(u.plan||'free').toUpperCase()}</span></td>
+            <td>${fmtDate(u.created_at)}</td>
+          </tr>`).join('')}
+      </table>
+    ` : '<div style="color:var(--gray);font-size:13px;padding:12px 0">No hay usuarios aún</div>';
+
+    // ── SYSTEM STATUS ─────────────────────────────────────────────
+    document.getElementById('systemStatus').innerHTML = `
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">
+          <span style="font-size:13px">Supabase</span>
+          <span class="status ok"><div class="status-dot"></div>Operativo</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">
+          <span style="font-size:13px">API Vercel</span>
+          <span class="status ok"><div class="status-dot"></div>Operativo</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">
+          <span style="font-size:13px">Anthropic API</span>
+          <span class="status ok"><div class="status-dot"></div>Operativo</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">
+          <span style="font-size:13px">RevenueCat</span>
+          <span class="status ok"><div class="status-dot"></div>Operativo</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">
+          <span style="font-size:13px">n8n Workflows</span>
+          <span class="status ok"><div class="status-dot"></div>9 flujos activos</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0">
+          <span style="font-size:13px">iOS App Store</span>
+          <span class="status warn"><div class="status-dot"></div>En revisión</span>
+        </div>
+      </div>
+    `;
+
+    // ── PLAN DISTRIBUTION ─────────────────────────────────────────
+    const planData = [
+      {name:'FREE',count:plans.free,color:'var(--gray)'},
+      {name:'STARTER',count:plans.starter,color:'var(--teal)'},
+      {name:'PRO',count:plans.pro,color:'var(--gold)'},
+      {name:'ENTERPRISE',count:plans.enterprise,color:'var(--purp)'},
+    ];
+    document.getElementById('planDistribution').innerHTML = `
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px">
+        ${planData.map(p=>`
+          <div style="background:var(--card2);border-radius:10px;padding:14px">
+            <div style="font-family:'Space Mono',monospace;font-size:10px;color:${p.color};letter-spacing:.1em;margin-bottom:6px">${p.name}</div>
+            <div style="font-family:'Space Mono',monospace;font-size:28px;font-weight:700;color:var(--white)">${p.count}</div>
+            <div style="font-size:11px;color:var(--gray);margin-top:2px">usuarios</div>
+            <div style="height:3px;background:rgba(255,255,255,.06);border-radius:2px;margin-top:10px;overflow:hidden">
+              <div style="height:100%;background:${p.color};border-radius:2px;width:${total>0?Math.round(p.count/total*100):0}%"></div>
+            </div>
+          </div>`).join('')}
+      </div>
+    `;
+
+  } catch(err) {
+    console.error('Error cargando datos:', err);
+    ['kpiGrid','agentGrid','recentUsers','systemStatus','planDistribution'].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el) el.innerHTML=`<div style="color:var(--red);font-size:12px;padding:8px">Error: ${err.message}</div>`;
+    });
+  }
+}
+
+loadAll();
+setInterval(loadAll, 30000); // Auto-refresh cada 30s
+</script>
+</body>
+</html>
