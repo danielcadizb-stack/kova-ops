@@ -16,6 +16,7 @@ h1{font-family:'Space Mono',monospace;font-size:13px;color:rgba(93,224,206,.5);l
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
 .card{background:#181c15;border:1px solid rgba(93,224,206,.12);border-radius:12px;padding:20px;text-decoration:none;transition:.2s;display:block}
 .card:hover{border-color:rgba(93,224,206,.35);transform:translateY(-2px)}
+.card.soon{opacity:.45;cursor:not-allowed;pointer-events:none}
 .card-icon{font-size:22px;margin-bottom:10px}
 .card-title{font-size:14px;font-weight:600;color:#f0ede6;margin-bottom:4px}
 .card-sub{font-size:11px;color:rgba(160,155,145,.7);line-height:1.5}
@@ -25,6 +26,7 @@ h1{font-family:'Space Mono',monospace;font-size:13px;color:rgba(93,224,206,.5);l
 .badge.green{background:rgba(52,210,150,.1);color:#34d296;border-color:rgba(52,210,150,.2)}
 .badge.blue{background:rgba(93,163,224,.1);color:#5da3e0;border-color:rgba(93,163,224,.2)}
 .badge.red{background:rgba(239,68,68,.1);color:#ef4444;border-color:rgba(239,68,68,.2)}
+.badge.gray{background:rgba(100,100,100,.1);color:#888;border-color:rgba(100,100,100,.2)}
 .count{font-size:11px;color:rgba(93,224,206,.35);font-family:'Space Mono',monospace;margin-bottom:16px}
 footer{margin-top:48px;font-size:11px;color:rgba(93,224,206,.25);font-family:'Space Mono',monospace}
 </style>
@@ -44,16 +46,16 @@ footer{margin-top:48px;font-size:11px;color:rgba(93,224,206,.25);font-family:'Sp
 </div>
 
 <h1>Dashboards internos</h1>
-<div class="count">9 paneles activos</div>
+<div class="count">8 activos · 1 próximamente</div>
 
 <div class="grid">
 
-  <a href="ops.html" class="card">
+  <div class="card soon">
     <div class="card-icon">📊</div>
     <div class="card-title">Operations Center</div>
     <div class="card-sub">Supabase · Usuarios · Agentes IA · Seguridad</div>
-    <span class="badge">OPS</span>
-  </a>
+    <span class="badge gray">PRÓXIMAMENTE</span>
+  </div>
 
   <a href="social.html" class="card">
     <div class="card-icon">📱</div>
