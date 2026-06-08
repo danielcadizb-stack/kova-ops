@@ -18,10 +18,14 @@ h1{font-family:'Space Mono',monospace;font-size:13px;color:rgba(93,224,206,.5);l
 .card:hover{border-color:rgba(93,224,206,.35);transform:translateY(-2px)}
 .card-icon{font-size:22px;margin-bottom:10px}
 .card-title{font-size:14px;font-weight:600;color:#f0ede6;margin-bottom:4px}
-.card-sub{font-size:11px;color:rgba(160,155,145,.7)}
+.card-sub{font-size:11px;color:rgba(160,155,145,.7);line-height:1.5}
 .badge{display:inline-block;font-size:9px;padding:2px 7px;border-radius:4px;background:rgba(93,224,206,.1);color:#5de0ce;border:1px solid rgba(93,224,206,.2);margin-top:8px;font-family:'Space Mono',monospace;letter-spacing:.06em}
 .badge.gold{background:rgba(255,195,80,.1);color:#ffc350;border-color:rgba(255,195,80,.2)}
 .badge.purp{background:rgba(167,139,250,.1);color:#a78bfa;border-color:rgba(167,139,250,.2)}
+.badge.green{background:rgba(52,210,150,.1);color:#34d296;border-color:rgba(52,210,150,.2)}
+.badge.blue{background:rgba(93,163,224,.1);color:#5da3e0;border-color:rgba(93,163,224,.2)}
+.badge.red{background:rgba(239,68,68,.1);color:#ef4444;border-color:rgba(239,68,68,.2)}
+.count{font-size:11px;color:rgba(93,224,206,.35);font-family:'Space Mono',monospace;margin-bottom:16px}
 footer{margin-top:48px;font-size:11px;color:rgba(93,224,206,.25);font-family:'Space Mono',monospace}
 </style>
 </head>
@@ -35,60 +39,78 @@ footer{margin-top:48px;font-size:11px;color:rgba(93,224,206,.25);font-family:'Sp
   </div>
   <div>
     <div class="brand">KOVA OPS</div>
-    <div class="sub">Panel Interno · Alfester Technologies OÜ</div>
+    <div class="sub">Panel Interno · Alfester Technologies OÜ · Reg. 16250313527</div>
   </div>
 </div>
 
 <h1>Dashboards internos</h1>
+<div class="count">9 paneles activos</div>
+
 <div class="grid">
-  <a href="jarvis.html" class="card">
-    <div class="card-icon">🤖</div>
-    <div class="card-title">JARVIS</div>
-    <div class="card-sub">Asistente operativo con contexto Supabase en tiempo real</div>
-    <span class="badge">IA</span>
-  </a>
-  <a href="command.html" class="card">
-    <div class="card-icon">⚡</div>
-    <div class="card-title">Operations</div>
-    <div class="card-sub">Centro de comando y control operativo KOVA</div>
+
+  <a href="ops.html" class="card">
+    <div class="card-icon">📊</div>
+    <div class="card-title">Operations Center</div>
+    <div class="card-sub">Supabase · Usuarios · Agentes IA · Seguridad</div>
     <span class="badge">OPS</span>
   </a>
+
   <a href="social.html" class="card">
     <div class="card-icon">📱</div>
-    <div class="card-title">Social Intelligence</div>
-    <div class="card-sub">Centro de gestión de redes sociales con IA</div>
-    <span class="badge">SOCIAL</span>
+    <div class="card-title">Social Intelligence Center</div>
+    <div class="card-sub">KPIs · Contenido IA · CM Agent · Informes</div>
+    <span class="badge purp">NOVA-CM</span>
   </a>
-  <a href="cost.html" class="card">
-    <div class="card-icon">💰</div>
-    <div class="card-title">Cost Simulator</div>
-    <div class="card-sub">Simulador de costos de tokens y API</div>
-    <span class="badge">COSTOS</span>
-  </a>
+
   <a href="financial.html" class="card">
-    <div class="card-icon">📈</div>
-    <div class="card-title">Financial</div>
-    <div class="card-sub">Panel financiero y proyecciones de ingresos</div>
-    <span class="badge">FINANCE</span>
+    <div class="card-icon">💰</div>
+    <div class="card-title">Financial Intelligence Center</div>
+    <div class="card-sub">MRR · Costos · FELIX CFO · Alertas</div>
+    <span class="badge gold">FELIX</span>
   </a>
-  <a href="sistema.html" class="card">
-    <div class="card-icon">🔧</div>
-    <div class="card-title">Sistema</div>
-    <div class="card-sub">Estado del sistema y configuración técnica</div>
-    <span class="badge">SISTEMA</span>
+
+  <a href="command.html" class="card">
+    <div class="card-icon">⚡</div>
+    <div class="card-title">Command Center</div>
+    <div class="card-sub">BI Unificado · ATLAS · Métricas globales</div>
+    <span class="badge blue">ATLAS</span>
   </a>
+
   <a href="enterprise.html" class="card">
     <div class="card-icon">🏢</div>
-    <div class="card-title">KOVA Enterprise</div>
-    <div class="card-sub">Panel de configuración y gestión Enterprise</div>
-    <span class="badge purp">ENTERPRISE</span>
+    <div class="card-title">Enterprise Dashboard</div>
+    <div class="card-sub">Equipo · Rendimiento · KPIs · Actividad</div>
+    <span class="badge red">ENTERPRISE</span>
   </a>
+
+  <a href="sistema.html" class="card">
+    <div class="card-icon">🔧</div>
+    <div class="card-title">Panel Sistema</div>
+    <div class="card-sub">Umbrales · Alertas · Seguridad · Escalabilidad</div>
+    <span class="badge">SISTEMA</span>
+  </a>
+
+  <a href="cost.html" class="card">
+    <div class="card-icon">🧮</div>
+    <div class="card-title">Cost Intelligence Center</div>
+    <div class="card-sub">Token Simulator · Fair Use Control · Implementación</div>
+    <span class="badge green">NUEVO</span>
+  </a>
+
+  <a href="jarvis.html" class="card">
+    <div class="card-icon">🤖</div>
+    <div class="card-title">JARVIS — Engineering Intelligence</div>
+    <div class="card-sub">Debug · Arquitectura · Monitoreo · Voz IA</div>
+    <span class="badge purp">JARVIS</span>
+  </a>
+
   <a href="alfester_client_dashboard.html" class="card">
     <div class="card-icon">🎯</div>
     <div class="card-title">Alfester Client Dashboard</div>
     <div class="card-sub">Dashboard universal para clientes de la agencia</div>
     <span class="badge gold">AGENCIA</span>
   </a>
+
 </div>
 <footer>KOVA OPS · ops.kova-app.net · Alfester Technologies OÜ · Reg. 16250313527</footer>
 </body>
