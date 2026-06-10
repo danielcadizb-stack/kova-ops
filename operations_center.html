@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>KOVA Operations Center</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3/dist/umd/supabase.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--teal:#5de0ce;--gold:#ffc350;--purp:#a78bfa;--green:#34d296;--red:#ef4444;
@@ -161,7 +161,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--white);mi
 <script>
 const SUPABASE_URL = 'https://vwbkndxpqrdnbhrsnbkw.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3YmtuZHhwcXJkbmJocnNuYmt3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM3MDI1ODUsImV4cCI6MjA1OTI3ODU4NX0.sN5VVXmEjIgAnmLhHxPCcVBrV7MSdFkfP5ZMPagvjrg';
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const sb = (window.supabase||supabase).createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:false}});
 
 function fmtDate(d){ return d ? new Date(d).toLocaleDateString('es',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}) : '—' }
 function fmtNum(n){ return n?.toLocaleString('es') ?? '0' }
