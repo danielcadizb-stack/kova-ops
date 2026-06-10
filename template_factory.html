@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Alfester — Template Factory</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--teal:#5de0ce;--gold:#ffc350;--purp:#a78bfa;--green:#34d296;--red:#ef4444;--bg:#0d0b08;--bg2:#111410;--card:#181c15;--card2:#1e2219;--white:#f0ede6;--gray:#a09b91;--border:rgba(93,224,206,.14)}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--white);min-height:100vh}
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:0 28px;height:58px;background:var(--bg2);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10}
+.hdr-left{display:flex;align-items:center;gap:12px}
+.ek{width:32px;height:32px;background:#0f2820;border-radius:7px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(93,224,206,.2)}
+.hdr-title{font-family:'Space Mono',monospace;font-size:14px;color:var(--teal);font-weight:700}
+.hdr-sub{font-size:11px;color:var(--gray);margin-top:1px}
+.back-btn{font-size:12px;color:var(--gray);text-decoration:none;border:1px solid var(--border);padding:6px 14px;border-radius:8px}
+.main{padding:24px 28px;max-width:900px;margin:0 auto}
+.section-title{font-family:'Space Mono',monospace;font-size:11px;color:rgba(93,224,206,.5);letter-spacing:.14em;text-transform:uppercase;margin-bottom:16px}
+.step-indicator{display:flex;gap:0;margin-bottom:32px;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.step{flex:1;padding:12px;text-align:center;font-size:12px;color:var(--gray);cursor:pointer;transition:.2s;border-right:1px solid var(--border)}
+.step:last-child{border-right:none}
+.step.active{background:rgba(93,224,206,.08);color:var(--teal)}
+.step.done{background:rgba(52,210,150,.06);color:var(--green)}
+.step-num{font-family:'Space Mono',monospace;font-size:16px;font-weight:700;display:block;margin-bottom:2px}
+.form-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:20px}
+.form-group{margin-bottom:16px}
+.form-label{font-size:12px;color:var(--gray);margin-bottom:6px;display:block;font-weight:500}
+.form-input,.form-select,.form-textarea{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--white);font-size:13px;font-family:'DM Sans',sans-serif;transition:.2s}
+.form-input:focus,.form-select:focus,.form-textarea:focus{outline:none;border-color:var(--teal)}
+.form-select option{background:var(--bg2)}
+.form-textarea{resize:vertical;min-height:100px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.sector-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-bottom:8px}
+.sector-card{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px;cursor:pointer;transition:.2s;text-align:center}
+.sector-card:hover,.sector-card.selected{border-color:var(--teal);background:rgba(93,224,206,.06)}
+.sector-icon{font-size:28px;margin-bottom:6px}
+.sector-name{font-size:12px;font-weight:600;color:var(--white)}
+.btn-primary{background:var(--teal);color:var(--bg);font-weight:700;font-size:13px;padding:12px 24px;border-radius:8px;border:none;cursor:pointer;transition:.2s;width:100%}
+.btn-primary:hover{background:#4ecfc0}
+.btn-secondary{background:transparent;color:var(--teal);font-size:13px;padding:12px 24px;border-radius:8px;border:1px solid var(--teal);cursor:pointer;transition:.2s}
+.output-section{display:none}
+.output-tabs{display:flex;gap:0;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px}
+.otab{flex:1;padding:10px;text-align:center;font-size:12px;color:var(--gray);cursor:pointer;border-right:1px solid var(--border);transition:.2s}
+.otab:last-child{border-right:none}
+.otab.active{background:rgba(93,224,206,.08);color:var(--teal);font-weight:600}
+.output-content{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;min-height:300px;font-size:13px;line-height:1.8;color:var(--white);white-space:pre-wrap;display:none}
+.output-content.active{display:block}
+.ai-loading{display:flex;align-items:center;justify-content:center;gap:10px;padding:60px;color:var(--teal);font-size:14px}
+.spinner{width:20px;height:20px;border:2px solid rgba(93,224,206,.2);border-top-color:var(--teal);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.copy-btn{font-size:11px;padding:5px 12px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--gray);cursor:pointer;float:right;margin-bottom:8px}
+.copy-btn:hover{border-color:var(--teal);color:var(--teal)}
+.output-actions{display:flex;gap:10px;margin-top:12px}
+.hidden{display:none}
+@media(max-width:600px){.form-row{grid-template-columns:1fr}.sector-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <div class="hdr-left">
+    <div class="ek"><svg viewBox="0 0 28 17" fill="none" width="20" height="12"><polyline points="0,8.5 3.5,8.5 6.5,2 9.5,15 12.5,2 15.5,8.5 19,8.5 23,8.5 28,8.5" stroke="#5de0ce" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div><div class="hdr-title">Template Factory</div><div class="hdr-sub">Generador automático de propuestas, contratos y planes</div></div>
+  </div>
+  <a href="/" class="back-btn">Volver</a>
+</div>
+
+<div class="main">
+  <div class="step-indicator">
+    <div class="step active" id="step1"><span class="step-num">1</span>Cliente</div>
+    <div class="step" id="step2"><span class="step-num">2</span>Sector</div>
+    <div class="step" id="step3"><span class="step-num">3</span>Plan</div>
+    <div class="step" id="step4"><span class="step-num">4</span>Generar</div>
+  </div>
+
+  <!-- STEP 1: Cliente -->
+  <div id="panelStep1">
+    <div class="form-card">
+      <div class="section-title">Datos del cliente</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Nombre del negocio *</label>
+          <input class="form-input" id="cNombre" placeholder="Centro Estética Bella">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Nombre del contacto</label>
+          <input class="form-input" id="cContacto" placeholder="María García">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Ciudad / País</label>
+          <input class="form-input" id="cCiudad" placeholder="Madrid, España">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input class="form-input" id="cEmail" placeholder="contacto@empresa.com">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Situación actual (opcional)</label>
+        <textarea class="form-textarea" id="cSituacion" placeholder="Describe brevemente la situación del negocio: cuántos clientes tiene, qué problemas tiene con marketing, etc."></textarea>
+      </div>
+      <button class="btn-primary" onclick="goStep(2)">Continuar →</button>
+    </div>
+  </div>
+
+  <!-- STEP 2: Sector -->
+  <div id="panelStep2" class="hidden">
+    <div class="form-card">
+      <div class="section-title">Sector del negocio</div>
+      <div class="sector-grid">
+        <div class="sector-card" onclick="selectSector('Estética y Belleza',this)"><div class="sector-icon">💆</div><div class="sector-name">Estética y Belleza</div></div>
+        <div class="sector-card" onclick="selectSector('Clínica Médica / Dental',this)"><div class="sector-icon">🏥</div><div class="sector-name">Clínica Médica / Dental</div></div>
+        <div class="sector-card" onclick="selectSector('Academia de Idiomas',this)"><div class="sector-icon">🎓</div><div class="sector-name">Academia de Idiomas</div></div>
+        <div class="sector-card" onclick="selectSector('Inmobiliaria',this)"><div class="sector-icon">🏠</div><div class="sector-name">Inmobiliaria</div></div>
+        <div class="sector-card" onclick="selectSector('Despacho Jurídico',this)"><div class="sector-icon">⚖️</div><div class="sector-name">Despacho Jurídico</div></div>
+        <div class="sector-card" onclick="selectSector('Restaurante / Hostelería',this)"><div class="sector-icon">🍽️</div><div class="sector-name">Restaurante</div></div>
+        <div class="sector-card" onclick="selectSector('E-commerce',this)"><div class="sector-icon">🛍️</div><div class="sector-name">E-commerce</div></div>
+        <div class="sector-card" onclick="selectSector('Empresa B2B',this)"><div class="sector-icon">🏢</div><div class="sector-name">Empresa B2B</div></div>
+      </div>
+      <input class="form-input" id="cSectorCustom" placeholder="O escribe el sector manualmente...">
+      <div style="display:flex;gap:10px;margin-top:16px">
+        <button class="btn-secondary" onclick="goStep(1)">← Atrás</button>
+        <button class="btn-primary" onclick="goStep(3)">Continuar →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3: Plan -->
+  <div id="panelStep3" class="hidden">
+    <div class="form-card">
+      <div class="section-title">Plan y presupuesto</div>
+      <div class="form-group">
+        <label class="form-label">Plan a proponer</label>
+        <select class="form-select" id="cPlan">
+          <option value="Esencial (€497/mes)">Esencial — €497/mes</option>
+          <option value="Growth (€897/mes)" selected>Growth — €897/mes (recomendado)</option>
+          <option value="Full Stack + KOVA (€1.497/mes)">Full Stack + KOVA — €1.497/mes</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Presupuesto Ads sugerido</label>
+          <input class="form-input" id="cBudget" placeholder="€500/mes" value="€500/mes">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Objetivo principal</label>
+          <select class="form-select" id="cObjetivo">
+            <option>Captar más clientes</option>
+            <option>Aumentar visibilidad online</option>
+            <option>Automatizar seguimiento</option>
+            <option>Mejorar reputación online</option>
+            <option>Aumentar ventas online</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Documentos a generar</label>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px">
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer">
+            <input type="checkbox" id="genPropuesta" checked> Propuesta comercial personalizada
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer">
+            <input type="checkbox" id="genPlan" checked> Plan de acción primeros 30 días
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer">
+            <input type="checkbox" id="genEmail" checked> Email de presentación
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer">
+            <input type="checkbox" id="genWhatsapp" checked> Mensaje WhatsApp de seguimiento
+          </label>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button class="btn-secondary" onclick="goStep(2)">← Atrás</button>
+        <button class="btn-primary" onclick="generate()">🤖 Generar con IA →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4: Output -->
+  <div id="panelStep4" class="hidden output-section">
+    <div class="form-card">
+      <div class="section-title">Documentos generados</div>
+      <div class="output-tabs">
+        <div class="otab active" onclick="switchTab('propuesta',this)">📋 Propuesta</div>
+        <div class="otab" onclick="switchTab('plan',this)">📅 Plan 30 días</div>
+        <div class="otab" onclick="switchTab('email',this)">📧 Email</div>
+        <div class="otab" onclick="switchTab('whatsapp',this)">💬 WhatsApp</div>
+      </div>
+      <div id="aiLoading" class="ai-loading"><div class="spinner"></div>Generando documentos con IA...</div>
+      <button class="copy-btn hidden" id="copyBtn" onclick="copyContent()">📋 Copiar</button>
+      <div class="output-content active" id="outPropuesta"></div>
+      <div class="output-content" id="outPlan"></div>
+      <div class="output-content" id="outEmail"></div>
+      <div class="output-content" id="outWhatsapp"></div>
+      <div class="output-actions hidden" id="outputActions">
+        <button class="btn-secondary" onclick="goStep(1)" style="flex:1">Nueva generación</button>
+        <button class="btn-primary" style="flex:2" onclick="alert('En la próxima versión: envío automático por email al cliente.')">📤 Enviar al cliente</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let selectedSector = '';
+let currentTab = 'propuesta';
+const outputs = {};
+
+function goStep(n){
+  for(let i=1;i<=4;i++){
+    document.getElementById('panelStep'+i).classList.add('hidden');
+    const s=document.getElementById('step'+i);
+    s.classList.remove('active','done');
+    if(i<n) s.classList.add('done');
+  }
+  document.getElementById('panelStep'+n).classList.remove('hidden');
+  document.getElementById('step'+n).classList.add('active');
+  if(n===4) document.getElementById('panelStep4').style.display='block';
+}
+
+function selectSector(name, el){
+  selectedSector=name;
+  document.querySelectorAll('.sector-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('cSectorCustom').value='';
+}
+
+function switchTab(tab, el){
+  currentTab=tab;
+  document.querySelectorAll('.otab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.output-content').forEach(c=>c.classList.remove('active'));
+  document.getElementById('out'+tab.charAt(0).toUpperCase()+tab.slice(1)).classList.add('active');
+  document.getElementById('copyBtn').classList.remove('hidden');
+}
+
+function copyContent(){
+  const el=document.getElementById('out'+currentTab.charAt(0).toUpperCase()+currentTab.slice(1));
+  navigator.clipboard.writeText(el.textContent).then(()=>{
+    document.getElementById('copyBtn').textContent='✅ Copiado';
+    setTimeout(()=>document.getElementById('copyBtn').textContent='📋 Copiar',2000);
+  });
+}
+
+async function generate(){
+  const nombre=document.getElementById('cNombre').value||'el cliente';
+  const contacto=document.getElementById('cContacto').value||'';
+  const ciudad=document.getElementById('cCiudad').value||'España';
+  const sector=selectedSector||document.getElementById('cSectorCustom').value||'negocio local';
+  const plan=document.getElementById('cPlan').value;
+  const budget=document.getElementById('cBudget').value;
+  const objetivo=document.getElementById('cObjetivo').value;
+  const situacion=document.getElementById('cSituacion').value||'';
+
+  goStep(4);
+  document.getElementById('aiLoading').style.display='flex';
+  document.querySelectorAll('.output-content').forEach(c=>{c.classList.remove('active');c.textContent='';});
+  document.getElementById('outputActions').classList.add('hidden');
+  document.getElementById('copyBtn').classList.add('hidden');
+
+  const prompt=`Eres el director de ventas de Alfester Agency, agencia de marketing digital con IA (empresa estonia, agencia.kova-app.net, hola@kova-app.net).
+
+Genera los siguientes 4 documentos para este prospecto:
+
+CLIENTE:
+- Negocio: ${nombre}
+- Contacto: ${contacto||'el responsable'}
+- Ciudad: ${ciudad}
+- Sector: ${sector}
+- Plan a proponer: ${plan}
+- Presupuesto Ads: ${budget}
+- Objetivo: ${objetivo}
+- Situación: ${situacion||'No especificada'}
+
+Genera los 4 documentos separados por estas marcas exactas:
+===PROPUESTA===
+===PLAN===
+===EMAIL===
+===WHATSAPP===
+
+PROPUESTA COMERCIAL: Propuesta profesional de 400 palabras con introducción personalizada al sector, servicios incluidos en el plan, resultados esperados con números concretos para el sector, precio y oferta de primer mes al 50%, call to action. Tono profesional pero cercano.
+
+PLAN 30 DIAS: Plan detallado semana a semana con acciones concretas, herramientas, responsables y KPIs objetivo para el sector ${sector}. Incluye semana 1 (setup), semana 2 (lanzamiento), semanas 3-4 (optimización).
+
+EMAIL: Email de presentación listo para enviar. Asunto incluido. 200 palabras máximo. Personalizado para ${sector}. CTA claro.
+
+WHATSAPP: Mensaje de seguimiento para WhatsApp. 80 palabras máximo. Tono cercano. Menciona beneficio específico para ${sector}.`;
+
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:2500,messages:[{role:'user',content:prompt}]})
+    });
+    const data=await res.json();
+    const text=data.content?.[0]?.text||'Error';
+    const parts=text.split(/===(\w+)===/);
+    let i=0;
+    while(i<parts.length){
+      const marker=parts[i].trim();
+      const content=parts[i+1]||'';
+      if(marker==='PROPUESTA') outputs.propuesta=content.trim();
+      else if(marker==='PLAN') outputs.plan=content.trim();
+      else if(marker==='EMAIL') outputs.email=content.trim();
+      else if(marker==='WHATSAPP') outputs.whatsapp=content.trim();
+      i+=2;
+    }
+    document.getElementById('outPropuesta').textContent=outputs.propuesta||text;
+    document.getElementById('outPlan').textContent=outputs.plan||'Ver propuesta';
+    document.getElementById('outEmail').textContent=outputs.email||'Ver propuesta';
+    document.getElementById('outWhatsapp').textContent=outputs.whatsapp||'Ver propuesta';
+    document.getElementById('aiLoading').style.display='none';
+    document.getElementById('outPropuesta').classList.add('active');
+    document.getElementById('outputActions').classList.remove('hidden');
+    document.getElementById('copyBtn').classList.remove('hidden');
+  }catch(e){
+    document.getElementById('aiLoading').style.display='none';
+    document.getElementById('outPropuesta').textContent='Error: '+e.message;
+    document.getElementById('outPropuesta').classList.add('active');
+  }
+}
+</script>
+</body>
+</html>

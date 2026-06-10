@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Alfester — CRM Clientes</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--teal:#5de0ce;--gold:#ffc350;--purp:#a78bfa;--green:#34d296;--red:#ef4444;--orange:#fb923c;--bg:#0d0b08;--bg2:#111410;--card:#181c15;--card2:#1e2219;--white:#f0ede6;--gray:#a09b91;--border:rgba(93,224,206,.14)}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--white);min-height:100vh}
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:0 28px;height:58px;background:var(--bg2);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10}
+.hdr-left{display:flex;align-items:center;gap:12px}
+.ek{width:32px;height:32px;background:#0f2820;border-radius:7px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(93,224,206,.2)}
+.hdr-title{font-family:'Space Mono',monospace;font-size:14px;color:var(--teal);font-weight:700}
+.hdr-sub{font-size:11px;color:var(--gray);margin-top:1px}
+.back-btn{font-size:12px;color:var(--gray);text-decoration:none;border:1px solid var(--border);padding:6px 14px;border-radius:8px;transition:.2s}
+.back-btn:hover{color:var(--teal);border-color:var(--teal)}
+.main{padding:24px 28px;display:flex;flex-direction:column;gap:20px}
+.top-row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+.section-title{font-family:'Space Mono',monospace;font-size:11px;color:rgba(93,224,206,.5);letter-spacing:.14em;text-transform:uppercase}
+.btn-primary{background:var(--teal);color:var(--bg);font-weight:700;font-size:13px;padding:9px 18px;border-radius:8px;border:none;cursor:pointer;transition:.2s}
+.btn-primary:hover{background:#4ecfc0}
+.btn-secondary{background:transparent;color:var(--teal);font-size:13px;padding:9px 18px;border-radius:8px;border:1px solid var(--teal);cursor:pointer;transition:.2s}
+.btn-secondary:hover{background:rgba(93,224,206,.1)}
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px}
+.kpi-val{font-family:'Space Mono',monospace;font-size:26px;font-weight:700;color:var(--white)}
+.kpi-lbl{font-size:11px;color:var(--gray);margin-top:4px}
+.kpi-sub{font-size:11px;margin-top:4px}
+.filters{display:flex;gap:8px;flex-wrap:wrap}
+.filter-btn{font-size:11px;padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--gray);cursor:pointer;transition:.2s}
+.filter-btn.active,.filter-btn:hover{border-color:var(--teal);color:var(--teal);background:rgba(93,224,206,.06)}
+.clients-grid{display:flex;flex-direction:column;gap:10px}
+.client-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;cursor:pointer;transition:.2s;position:relative}
+.client-card:hover{border-color:rgba(93,224,206,.3);transform:translateY(-1px)}
+.client-card.activo{border-left:3px solid var(--green)}
+.client-card.onboarding{border-left:3px solid var(--teal)}
+.client-card.riesgo{border-left:3px solid var(--orange)}
+.client-card.pausado{border-left:3px solid var(--gray)}
+.cc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+.cc-name{font-size:16px;font-weight:600;color:var(--white)}
+.cc-sector{font-size:11px;color:var(--gray);margin-top:2px}
+.cc-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.status-badge{font-size:10px;padding:3px 10px;border-radius:20px;font-weight:600;letter-spacing:.06em}
+.sb-activo{background:rgba(52,210,150,.1);color:var(--green);border:1px solid rgba(52,210,150,.2)}
+.sb-onboarding{background:rgba(93,224,206,.1);color:var(--teal);border:1px solid rgba(93,224,206,.2)}
+.sb-riesgo{background:rgba(251,146,60,.1);color:var(--orange);border:1px solid rgba(251,146,60,.2)}
+.sb-pausado{background:rgba(160,155,145,.1);color:var(--gray);border:1px solid rgba(160,155,145,.2)}
+.plan-badge{font-size:10px;font-family:'Space Mono',monospace;color:var(--gold)}
+.cc-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+.cc-kpi{background:var(--card2);border-radius:8px;padding:8px 10px}
+.cc-kpi-val{font-family:'Space Mono',monospace;font-size:15px;font-weight:700;color:var(--white)}
+.cc-kpi-lbl{font-size:9px;color:var(--gray);margin-top:2px}
+.cc-bottom{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.cc-actions{display:flex;gap:8px}
+.btn-sm{font-size:11px;padding:5px 12px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--gray);cursor:pointer;transition:.2s}
+.btn-sm:hover{border-color:var(--teal);color:var(--teal)}
+.btn-sm.danger:hover{border-color:var(--red);color:var(--red)}
+.cc-meta{font-size:11px;color:var(--gray)}
+.next-action{font-size:11px;padding:4px 10px;border-radius:6px;background:rgba(255,195,80,.06);color:var(--gold);border:1px solid rgba(255,195,80,.15)}
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:100;display:flex;align-items:center;justify-content:center;padding:20px}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:18px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto}
+.modal-header{display:flex;justify-content:space-between;align-items:center;padding:20px 24px;border-bottom:1px solid var(--border)}
+.modal-title{font-size:16px;font-weight:600;color:var(--white)}
+.modal-close{background:none;border:none;color:var(--gray);font-size:20px;cursor:pointer;line-height:1}
+.modal-body{padding:24px}
+.form-group{margin-bottom:16px}
+.form-label{font-size:12px;color:var(--gray);margin-bottom:6px;display:block;font-weight:500}
+.form-input,.form-select,.form-textarea{width:100%;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--white);font-size:13px;font-family:'DM Sans',sans-serif;transition:.2s}
+.form-input:focus,.form-select:focus,.form-textarea:focus{outline:none;border-color:var(--teal)}
+.form-select option{background:var(--bg2)}
+.form-textarea{resize:vertical;min-height:80px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.modal-footer{padding:16px 24px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px}
+.hidden{display:none}
+.empty-state{text-align:center;padding:48px 24px;color:var(--gray)}
+.empty-state-icon{font-size:48px;margin-bottom:12px}
+.empty-state h3{font-size:16px;color:var(--white);margin-bottom:8px}
+.nota-item{background:var(--card);border-radius:8px;padding:10px 12px;margin-bottom:8px;font-size:12px;color:var(--gray);border-left:2px solid var(--teal)}
+.nota-fecha{font-size:10px;color:rgba(93,224,206,.4);margin-bottom:4px;font-family:'Space Mono',monospace}
+.ai-response{background:rgba(93,224,206,.04);border:1px solid rgba(93,224,206,.15);border-radius:10px;padding:14px;margin-top:12px;font-size:13px;color:var(--white);line-height:1.7;white-space:pre-wrap}
+.ai-loading{display:flex;align-items:center;gap:8px;color:var(--teal);font-size:12px;padding:12px 0}
+.spinner{width:16px;height:16px;border:2px solid rgba(93,224,206,.2);border-top-color:var(--teal);border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:640px){.cc-kpis{grid-template-columns:repeat(2,1fr)}.form-row{grid-template-columns:1fr}.kpi-row{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <div class="hdr-left">
+    <div class="ek"><svg viewBox="0 0 28 17" fill="none" width="20" height="12"><polyline points="0,8.5 3.5,8.5 6.5,2 9.5,15 12.5,2 15.5,8.5 19,8.5 23,8.5 28,8.5" stroke="#5de0ce" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div><div class="hdr-title">CRM — Clientes Alfester</div><div class="hdr-sub">Panel de gestión de clientes</div></div>
+  </div>
+  <div style="display:flex;gap:10px;align-items:center">
+    <button class="btn-primary" onclick="openModal()">+ Nuevo cliente</button>
+    <a href="/" class="back-btn">Volver</a>
+  </div>
+</div>
+
+<div class="main">
+  <!-- KPIs -->
+  <div class="kpi-row" id="kpiRow">
+    <div class="kpi"><div class="kpi-val" id="kTotal">0</div><div class="kpi-lbl">Clientes totales</div></div>
+    <div class="kpi" style="border-color:rgba(52,210,150,.2)"><div class="kpi-val" style="color:var(--green)" id="kActivos">0</div><div class="kpi-lbl">Activos</div></div>
+    <div class="kpi" style="border-color:rgba(255,195,80,.2)"><div class="kpi-val" style="color:var(--gold)" id="kMRR">€0</div><div class="kpi-lbl">MRR total</div></div>
+    <div class="kpi" style="border-color:rgba(167,139,250,.2)"><div class="kpi-val" style="color:var(--purp)" id="kOnboarding">0</div><div class="kpi-lbl">En onboarding</div></div>
+    <div class="kpi" style="border-color:rgba(251,146,60,.2)"><div class="kpi-val" style="color:var(--orange)" id="kRiesgo">0</div><div class="kpi-lbl">En riesgo</div></div>
+  </div>
+
+  <!-- Filters + list -->
+  <div>
+    <div class="top-row" style="margin-bottom:12px">
+      <div class="section-title">Clientes</div>
+      <div class="filters">
+        <button class="filter-btn active" onclick="filterClients('todos',this)">Todos</button>
+        <button class="filter-btn" onclick="filterClients('activo',this)">Activos</button>
+        <button class="filter-btn" onclick="filterClients('onboarding',this)">Onboarding</button>
+        <button class="filter-btn" onclick="filterClients('riesgo',this)">En riesgo</button>
+        <button class="filter-btn" onclick="filterClients('pausado',this)">Pausados</button>
+      </div>
+    </div>
+    <div class="clients-grid" id="clientsGrid">
+      <div class="empty-state">
+        <div class="empty-state-icon">🎯</div>
+        <h3>Sin clientes aún</h3>
+        <p style="font-size:13px">Añade tu primer cliente con el botón de arriba</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL NUEVO CLIENTE -->
+<div class="modal-overlay hidden" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle">Nuevo cliente</div>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="editId">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Nombre / Empresa *</label>
+          <input class="form-input" id="fNombre" placeholder="Clínica Dental López">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Sector *</label>
+          <select class="form-select" id="fSector">
+            <option value="">Seleccionar...</option>
+            <option>Estética y Belleza</option>
+            <option>Clínica Médica / Dental</option>
+            <option>Academia de Idiomas</option>
+            <option>Inmobiliaria</option>
+            <option>Despacho Jurídico</option>
+            <option>Empresa B2B</option>
+            <option>Restaurante / Hostelería</option>
+            <option>E-commerce</option>
+            <option>Otro</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Plan contratado *</label>
+          <select class="form-select" id="fPlan">
+            <option value="esencial">Esencial — €497/mes</option>
+            <option value="growth">Growth — €897/mes</option>
+            <option value="fullstack">Full Stack + KOVA — €1.497/mes</option>
+            <option value="medida">A medida</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Estado</label>
+          <select class="form-select" id="fEstado">
+            <option value="onboarding">Onboarding</option>
+            <option value="activo">Activo</option>
+            <option value="riesgo">En riesgo</option>
+            <option value="pausado">Pausado</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Email de contacto</label>
+          <input class="form-input" id="fEmail" placeholder="contacto@empresa.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Teléfono / WhatsApp</label>
+          <input class="form-input" id="fTelefono" placeholder="+34 600 000 000">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Fecha inicio</label>
+          <input class="form-input" type="date" id="fFechaInicio">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Próxima renovación</label>
+          <input class="form-input" type="date" id="fRenovacion">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Leads/mes objetivo</label>
+          <input class="form-input" type="number" id="fLeads" placeholder="50">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Presupuesto Ads (€/mes)</label>
+          <input class="form-input" type="number" id="fAds" placeholder="500">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Próxima acción</label>
+        <input class="form-input" id="fAccion" placeholder="Ej: Llamada de seguimiento el lunes">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Notas</label>
+        <textarea class="form-textarea" id="fNotas" placeholder="Observaciones sobre el cliente..."></textarea>
+      </div>
+      <!-- Generar con IA -->
+      <div style="border-top:1px solid var(--border);padding-top:16px;margin-top:4px">
+        <button class="btn-secondary" style="width:100%" onclick="generarPlanIA()">🤖 Generar plan de acción con IA</button>
+        <div id="aiOutput"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-sm" onclick="closeModal()">Cancelar</button>
+      <button class="btn-primary" onclick="saveClient()">Guardar cliente</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Storage ──────────────────────────────────────────────────
+const KEY = 'alfester_clients_v1';
+function load(){ try{ return JSON.parse(localStorage.getItem(KEY)||'[]'); }catch(e){ return []; } }
+function save(d){ localStorage.setItem(KEY, JSON.stringify(d)); }
+
+let clients = load();
+let currentFilter = 'todos';
+
+// ── Plan prices ───────────────────────────────────────────────
+const PLAN_PRICES = {esencial:497,growth:897,fullstack:1497,medida:0};
+const PLAN_LABELS = {esencial:'ESENCIAL',growth:'GROWTH',fullstack:'FULL STACK',medida:'A MEDIDA'};
+
+// ── Render ────────────────────────────────────────────────────
+function render(){
+  const filtered = currentFilter==='todos' ? clients : clients.filter(c=>c.estado===currentFilter);
+  const grid = document.getElementById('clientsGrid');
+
+  // KPIs
+  const activos = clients.filter(c=>c.estado==='activo').length;
+  const onboarding = clients.filter(c=>c.estado==='onboarding').length;
+  const riesgo = clients.filter(c=>c.estado==='riesgo').length;
+  const mrr = clients.filter(c=>c.estado==='activo'||c.estado==='onboarding')
+    .reduce((a,c)=>a+(PLAN_PRICES[c.plan]||0),0);
+  document.getElementById('kTotal').textContent = clients.length;
+  document.getElementById('kActivos').textContent = activos;
+  document.getElementById('kOnboarding').textContent = onboarding;
+  document.getElementById('kRiesgo').textContent = riesgo;
+  document.getElementById('kMRR').textContent = '€'+mrr.toLocaleString('es');
+
+  if(!filtered.length){
+    grid.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🎯</div><h3>Sin clientes</h3><p style="font-size:13px">'+
+      (currentFilter==='todos'?'Añade tu primer cliente con el botón de arriba':'No hay clientes en este estado')+'</p></div>';
+    return;
+  }
+
+  grid.innerHTML = filtered.map(c=>{
+    const planPrice = PLAN_PRICES[c.plan]||0;
+    const planLabel = PLAN_LABELS[c.plan]||c.plan.toUpperCase();
+    const stateClass = c.estado||'activo';
+    const stateBadge = {activo:'sb-activo',onboarding:'sb-onboarding',riesgo:'sb-riesgo',pausado:'sb-pausado'}[stateClass]||'sb-activo';
+    const stateLabel = {activo:'ACTIVO',onboarding:'ONBOARDING',riesgo:'EN RIESGO',pausado:'PAUSADO'}[stateClass]||stateClass.toUpperCase();
+    const dias = c.fechaInicio ? Math.floor((Date.now()-new Date(c.fechaInicio))/(1000*60*60*24)) : 0;
+    return `<div class="client-card ${stateClass}" onclick="openEdit('${c.id}')">
+      <div class="cc-top">
+        <div>
+          <div class="cc-name">${c.nombre}</div>
+          <div class="cc-sector">${c.sector||'Sin sector'} · ${c.email||'Sin email'}</div>
+        </div>
+        <div class="cc-right">
+          <span class="status-badge ${stateBadge}">${stateLabel}</span>
+          <span class="plan-badge">${planLabel} · €${planPrice}/mes</span>
+        </div>
+      </div>
+      <div class="cc-kpis">
+        <div class="cc-kpi"><div class="cc-kpi-val">${dias}d</div><div class="cc-kpi-lbl">Días activo</div></div>
+        <div class="cc-kpi"><div class="cc-kpi-val">${c.leads||0}</div><div class="cc-kpi-lbl">Leads/mes</div></div>
+        <div class="cc-kpi"><div class="cc-kpi-val">€${c.ads||0}</div><div class="cc-kpi-lbl">Budget Ads</div></div>
+        <div class="cc-kpi"><div class="cc-kpi-val">${c.renovacion||'--'}</div><div class="cc-kpi-lbl">Renovación</div></div>
+      </div>
+      <div class="cc-bottom">
+        <div class="cc-actions" onclick="event.stopPropagation()">
+          <button class="btn-sm" onclick="openEdit('${c.id}')">✏️ Editar</button>
+          <button class="btn-sm" onclick="generarInforme('${c.id}')">📊 Informe IA</button>
+          <button class="btn-sm" onclick="whatsapp('${c.id}')">💬 WhatsApp</button>
+          <button class="btn-sm danger" onclick="deleteClient('${c.id}')">🗑️</button>
+        </div>
+        ${c.proximaAccion?`<div class="next-action">⚡ ${c.proximaAccion}</div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── Filter ────────────────────────────────────────────────────
+function filterClients(f, btn){
+  currentFilter=f;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  render();
+}
+
+// ── Modal ─────────────────────────────────────────────────────
+function openModal(){
+  document.getElementById('modalTitle').textContent='Nuevo cliente';
+  document.getElementById('editId').value='';
+  ['fNombre','fEmail','fTelefono','fAccion','fNotas'].forEach(id=>document.getElementById(id).value='');
+  ['fLeads','fAds'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('fSector').value='';
+  document.getElementById('fPlan').value='esencial';
+  document.getElementById('fEstado').value='onboarding';
+  document.getElementById('fFechaInicio').value=new Date().toISOString().split('T')[0];
+  const nxt=new Date(); nxt.setMonth(nxt.getMonth()+3);
+  document.getElementById('fRenovacion').value=nxt.toISOString().split('T')[0];
+  document.getElementById('aiOutput').innerHTML='';
+  document.getElementById('modalOverlay').classList.remove('hidden');
+}
+
+function openEdit(id){
+  const c=clients.find(x=>x.id===id); if(!c) return;
+  document.getElementById('modalTitle').textContent='Editar cliente';
+  document.getElementById('editId').value=id;
+  document.getElementById('fNombre').value=c.nombre||'';
+  document.getElementById('fSector').value=c.sector||'';
+  document.getElementById('fPlan').value=c.plan||'esencial';
+  document.getElementById('fEstado').value=c.estado||'activo';
+  document.getElementById('fEmail').value=c.email||'';
+  document.getElementById('fTelefono').value=c.telefono||'';
+  document.getElementById('fFechaInicio').value=c.fechaInicio||'';
+  document.getElementById('fRenovacion').value=c.renovacion||'';
+  document.getElementById('fLeads').value=c.leads||'';
+  document.getElementById('fAds').value=c.ads||'';
+  document.getElementById('fAccion').value=c.proximaAccion||'';
+  document.getElementById('fNotas').value=c.notas||'';
+  document.getElementById('aiOutput').innerHTML='';
+  document.getElementById('modalOverlay').classList.remove('hidden');
+}
+
+function closeModal(){ document.getElementById('modalOverlay').classList.add('hidden'); }
+
+function saveClient(){
+  const nombre=document.getElementById('fNombre').value.trim();
+  if(!nombre){ alert('El nombre es obligatorio'); return; }
+  const editId=document.getElementById('editId').value;
+  const data={
+    id: editId||Date.now().toString(),
+    nombre, sector:document.getElementById('fSector').value,
+    plan:document.getElementById('fPlan').value,
+    estado:document.getElementById('fEstado').value,
+    email:document.getElementById('fEmail').value,
+    telefono:document.getElementById('fTelefono').value,
+    fechaInicio:document.getElementById('fFechaInicio').value,
+    renovacion:document.getElementById('fRenovacion').value,
+    leads:document.getElementById('fLeads').value,
+    ads:document.getElementById('fAds').value,
+    proximaAccion:document.getElementById('fAccion').value,
+    notas:document.getElementById('fNotas').value,
+    updatedAt:new Date().toISOString()
+  };
+  if(editId){ clients=clients.map(c=>c.id===editId?data:c); }
+  else { clients.push(data); }
+  save(clients); closeModal(); render();
+}
+
+function deleteClient(id){
+  if(!confirm('¿Eliminar este cliente?')) return;
+  clients=clients.filter(c=>c.id!==id); save(clients); render();
+}
+
+function whatsapp(id){
+  const c=clients.find(x=>x.id===id); if(!c||!c.telefono) return;
+  const tel=c.telefono.replace(/\D/g,'');
+  window.open('https://wa.me/'+tel+'?text=Hola%20'+encodeURIComponent(c.nombre)+', te contacto desde Alfester Agency.');
+}
+
+// ── IA: generar plan ──────────────────────────────────────────
+async function generarPlanIA(){
+  const nombre=document.getElementById('fNombre').value||'el cliente';
+  const sector=document.getElementById('fSector').value||'negocio';
+  const plan=document.getElementById('fPlan').value;
+  const out=document.getElementById('aiOutput');
+  out.innerHTML='<div class="ai-loading"><div class="spinner"></div>Generando plan con IA...</div>';
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        messages:[{role:'user',content:`Eres el COO de Alfester Agency, una agencia de marketing digital con IA. 
+Genera un plan de acción para los primeros 30 días con este cliente:
+- Nombre: ${nombre}
+- Sector: ${sector}  
+- Plan: ${plan}
+El plan debe incluir:
+1. Acciones semana 1 (setup y diagnóstico)
+2. Acciones semana 2 (primeras campañas)
+3. Acciones semana 3-4 (optimización)
+4. KPIs objetivo al mes 1
+Sé específico, conciso y orientado a resultados. Máximo 300 palabras.`}]
+      })
+    });
+    const data=await res.json();
+    const text=data.content?.[0]?.text||'Error generando plan';
+    out.innerHTML='<div class="ai-response">'+text+'</div>';
+    document.getElementById('fAccion').value='Ver plan IA generado arriba';
+  }catch(e){
+    out.innerHTML='<div style="color:var(--red);font-size:12px;padding:8px">Error: '+e.message+'</div>';
+  }
+}
+
+async function generarInforme(id){
+  const c=clients.find(x=>x.id===id); if(!c) return;
+  const dias=c.fechaInicio?Math.floor((Date.now()-new Date(c.fechaInicio))/(1000*60*60*24)):0;
+  alert('Generando informe para '+c.nombre+'...\n\nEsta función abre el generador de informes.\nEn la próxima versión enviará el informe por email automáticamente.');
+}
+
+// ── Init ──────────────────────────────────────────────────────
+render();
+</script>
+</body>
+</html>

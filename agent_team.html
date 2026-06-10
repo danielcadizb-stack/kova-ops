@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Alfester — Agent Team</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--teal:#5de0ce;--gold:#ffc350;--purp:#a78bfa;--green:#34d296;--red:#ef4444;--blue:#60a5fa;--bg:#0d0b08;--bg2:#111410;--card:#181c15;--card2:#1e2219;--white:#f0ede6;--gray:#a09b91;--border:rgba(93,224,206,.14)}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--white);min-height:100vh}
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:0 28px;height:58px;background:var(--bg2);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10}
+.hdr-left{display:flex;align-items:center;gap:12px}
+.ek{width:32px;height:32px;background:#0f2820;border-radius:7px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(93,224,206,.2)}
+.hdr-title{font-family:'Space Mono',monospace;font-size:14px;color:var(--teal);font-weight:700}
+.hdr-sub{font-size:11px;color:var(--gray);margin-top:1px}
+.back-btn{font-size:12px;color:var(--gray);text-decoration:none;border:1px solid var(--border);padding:6px 14px;border-radius:8px}
+.main{padding:24px 28px;max-width:1100px;margin:0 auto}
+.team-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-bottom:24px}
+.agent-panel{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
+.agent-panel.jarvis{border-color:rgba(93,224,206,.3)}
+.agent-panel.aria{border-color:rgba(255,195,80,.3)}
+.agent-panel.felix{border-color:rgba(52,210,150,.3)}
+.agent-panel.ops{border-color:rgba(167,139,250,.3)}
+.agent-header{padding:16px 18px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border)}
+.agent-letter{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:20px;font-weight:700;flex-shrink:0}
+.al-j{background:rgba(93,224,206,.12);color:var(--teal);border:1px solid rgba(93,224,206,.25)}
+.al-a{background:rgba(255,195,80,.12);color:var(--gold);border:1px solid rgba(255,195,80,.25)}
+.al-f{background:rgba(52,210,150,.12);color:var(--green);border:1px solid rgba(52,210,150,.25)}
+.al-o{background:rgba(167,139,250,.12);color:var(--purp);border:1px solid rgba(167,139,250,.25)}
+.agent-info{flex:1}
+.agent-name{font-size:15px;font-weight:700;color:var(--white)}
+.agent-role{font-size:11px;color:var(--gray);margin-top:1px}
+.agent-status{font-size:10px;padding:2px 8px;border-radius:10px;background:rgba(52,210,150,.1);color:var(--green);border:1px solid rgba(52,210,150,.2)}
+.agent-body{padding:16px 18px;flex:1;display:flex;flex-direction:column;gap:10px}
+.task-buttons{display:flex;flex-direction:column;gap:6px}
+.task-btn{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--gray);font-size:12px;cursor:pointer;text-align:left;transition:.2s;display:flex;align-items:center;gap:8px}
+.task-btn:hover{border-color:var(--teal);color:var(--white)}
+.task-btn span{font-size:14px}
+.chat-area{display:flex;flex-direction:column;gap:6px;max-height:200px;overflow-y:auto;padding:2px}
+.msg{padding:8px 12px;border-radius:10px;font-size:12px;line-height:1.6;max-width:95%}
+.msg.user{background:rgba(93,224,206,.1);color:var(--teal);border:1px solid rgba(93,224,206,.15);align-self:flex-end}
+.msg.agent{background:var(--card2);color:var(--white);border:1px solid var(--border);align-self:flex-start}
+.msg.loading{color:var(--gray);font-style:italic}
+.chat-input-row{display:flex;gap:6px;margin-top:6px}
+.chat-input{flex:1;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:8px 12px;color:var(--white);font-size:12px;font-family:'DM Sans',sans-serif}
+.chat-input:focus{outline:none;border-color:var(--teal)}
+.send-btn{background:var(--teal);color:var(--bg);border:none;border-radius:8px;padding:8px 12px;cursor:pointer;font-size:14px;font-weight:700;flex-shrink:0}
+.send-btn:hover{background:#4ecfc0}
+/* Orchestrator */
+.orchestrator{background:var(--card);border:1px solid rgba(93,224,206,.2);border-radius:16px;padding:20px;margin-bottom:24px}
+.orch-title{font-family:'Space Mono',monospace;font-size:11px;color:rgba(93,224,206,.5);letter-spacing:.14em;text-transform:uppercase;margin-bottom:14px}
+.orch-task-input{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:12px 16px;color:var(--white);font-size:13px;font-family:'DM Sans',sans-serif;margin-bottom:10px}
+.orch-task-input:focus{outline:none;border-color:var(--teal)}
+.orch-btn{background:var(--teal);color:var(--bg);font-weight:700;font-size:13px;padding:11px 24px;border-radius:8px;border:none;cursor:pointer;width:100%}
+.orch-output{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:16px;margin-top:12px;font-size:13px;line-height:1.8;color:var(--white);white-space:pre-wrap;display:none}
+.spinner{width:14px;height:14px;border:2px solid rgba(93,224,206,.2);border-top-color:var(--teal);border-radius:50%;animation:spin .8s linear infinite;display:inline-block;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.section-title{font-family:'Space Mono',monospace;font-size:11px;color:rgba(93,224,206,.5);letter-spacing:.14em;text-transform:uppercase;margin-bottom:14px}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <div class="hdr-left">
+    <div class="ek"><svg viewBox="0 0 28 17" fill="none" width="20" height="12"><polyline points="0,8.5 3.5,8.5 6.5,2 9.5,15 12.5,2 15.5,8.5 19,8.5 23,8.5 28,8.5" stroke="#5de0ce" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div><div class="hdr-title">Agent Team — Alfester</div><div class="hdr-sub">JARVIS · ARIA · FELIX · OPS — Equipo de agentes IA</div></div>
+  </div>
+  <a href="/" class="back-btn">Volver</a>
+</div>
+
+<div class="main">
+  <!-- Orchestrator -->
+  <div class="orchestrator">
+    <div class="orch-title">⚡ JARVIS — Orquestador · Delega tareas al equipo completo</div>
+    <input class="orch-task-input" id="orchInput" placeholder="Ej: Genera una propuesta completa para una clínica dental en Madrid que quiere 50 pacientes nuevos al mes...">
+    <button class="orch-btn" onclick="orchestrate()">🤖 Ejecutar con el equipo completo →</button>
+    <div class="orch-output" id="orchOutput"></div>
+  </div>
+
+  <!-- Agent Team -->
+  <div class="section-title">Agentes especializados — Habla directamente con cada uno</div>
+  <div class="team-grid">
+
+    <!-- ARIA CMO -->
+    <div class="agent-panel aria">
+      <div class="agent-header">
+        <div class="agent-letter al-a">A</div>
+        <div class="agent-info">
+          <div class="agent-name">ARIA</div>
+          <div class="agent-role">CMO — Estrategia de Marketing & Contenido</div>
+        </div>
+        <div class="agent-status">ACTIVO</div>
+      </div>
+      <div class="agent-body">
+        <div class="task-buttons">
+          <button class="task-btn" onclick="quickTask('aria','Crea un calendario de contenido para Instagram para una estética para el próximo mes. 8 posts variados con copy listo.')"><span>📅</span>Calendario de contenido</button>
+          <button class="task-btn" onclick="quickTask('aria','Crea 3 copies de anuncio para Meta Ads para captar clientes para un centro de estética. Incluye headline, texto y CTA.')"><span>📱</span>Copies para Meta Ads</button>
+          <button class="task-btn" onclick="quickTask('aria','Diseña una estrategia de marketing digital para los próximos 3 meses para una academia de idiomas. Incluye canales, presupuesto y KPIs.')"><span>🎯</span>Estrategia 3 meses</button>
+        </div>
+        <div class="chat-area" id="chat-aria"></div>
+        <div class="chat-input-row">
+          <input class="chat-input" id="input-aria" placeholder="Pregunta a ARIA..." onkeydown="if(event.key==='Enter')sendMsg('aria')">
+          <button class="send-btn" onclick="sendMsg('aria')">→</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- FELIX CFO -->
+    <div class="agent-panel felix">
+      <div class="agent-header">
+        <div class="agent-letter al-f">F</div>
+        <div class="agent-info">
+          <div class="agent-name">FELIX</div>
+          <div class="agent-role">CFO — Finanzas, Reportes & ROI</div>
+        </div>
+        <div class="agent-status">ACTIVO</div>
+      </div>
+      <div class="agent-body">
+        <div class="task-buttons">
+          <button class="task-btn" onclick="quickTask('felix','Genera un informe de rentabilidad mensual para Alfester Agency. Supón: 3 clientes Growth (€897), 1 Esencial (€497), 1 Full Stack (€1497). Costos estimados y margen neto.')"><span>📊</span>Informe financiero mensual</button>
+          <button class="task-btn" onclick="quickTask('felix','Calcula el ROI esperado para un cliente clínica dental con plan Growth (€897/mes) con presupuesto Meta Ads €600/mes. Incluye proyección a 3 y 6 meses.')"><span>💰</span>Calcular ROI cliente</button>
+          <button class="task-btn" onclick="quickTask('felix','¿Cuándo llegamos al break-even con Alfester Agency? Considera: costos fijos herramientas €200/mes, tiempo dedicado 60h/mes valorado a €50/h, overhead 20%.')"><span>📈</span>Break-even analysis</button>
+        </div>
+        <div class="chat-area" id="chat-felix"></div>
+        <div class="chat-input-row">
+          <input class="chat-input" id="input-felix" placeholder="Pregunta a FELIX..." onkeydown="if(event.key==='Enter')sendMsg('felix')">
+          <button class="send-btn" onclick="sendMsg('felix')">→</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- OPS COO -->
+    <div class="agent-panel ops">
+      <div class="agent-header">
+        <div class="agent-letter al-o">O</div>
+        <div class="agent-info">
+          <div class="agent-name">OPS</div>
+          <div class="agent-role">COO — Operaciones, Onboarding & Clientes</div>
+        </div>
+        <div class="agent-status">ACTIVO</div>
+      </div>
+      <div class="agent-body">
+        <div class="task-buttons">
+          <button class="task-btn" onclick="quickTask('ops','Crea un checklist completo de onboarding para un nuevo cliente de estética en plan Growth. Incluye todas las tareas, responsables y plazos para los primeros 7 días.')"><span>✅</span>Checklist onboarding</button>
+          <button class="task-btn" onclick="quickTask('ops','Redacta un email de informe mensual de resultados para un cliente de clínica dental. Supón buenos resultados: +35 pacientes nuevos, 4.2x ROAS, +22 reseñas Google.')"><span>📧</span>Informe mensual cliente</button>
+          <button class="task-btn" onclick="quickTask('ops','Un cliente del plan Esencial lleva 2 meses y no ha tenido los resultados esperados. Diseña un plan de retención y mejora para evitar el churn.')"><span>🔄</span>Plan anti-churn</button>
+        </div>
+        <div class="chat-area" id="chat-ops"></div>
+        <div class="chat-input-row">
+          <input class="chat-input" id="input-ops" placeholder="Pregunta a OPS..." onkeydown="if(event.key==='Enter')sendMsg('ops')">
+          <button class="send-btn" onclick="sendMsg('ops')">→</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const AGENTS = {
+  aria: { name:'ARIA', role:'CMO de Alfester Agency, experta en marketing digital, contenido y campañas de publicidad para pymes hispanohablantes. Especializada en Meta Ads, Google Ads, TikTok, SEO local y estrategia de contenido. Siempre das respuestas concretas y listas para usar.' },
+  felix: { name:'FELIX', role:'CFO de Alfester Agency, experto en finanzas, análisis de rentabilidad, ROI de marketing digital y proyecciones financieras para agencias digitales. Siempre incluyes números concretos, tablas cuando es útil y conclusiones accionables.' },
+  ops: { name:'OPS', role:'COO de Alfester Agency, experto en operaciones de agencia, onboarding de clientes, gestión de proyectos de marketing digital, retención de clientes y procesos internos de agencia. Siempre das respuestas en forma de listas, checklists y pasos concretos.' }
+};
+
+const histories = { aria:[], felix:[], ops:[] };
+
+function addMsg(agent, role, text){
+  const chat = document.getElementById('chat-'+agent);
+  const div = document.createElement('div');
+  div.className = 'msg '+role;
+  div.textContent = text;
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+  return div;
+}
+
+async function sendMsg(agent){
+  const input = document.getElementById('input-'+agent);
+  const text = input.value.trim();
+  if(!text) return;
+  input.value = '';
+  addMsg(agent, 'user', text);
+  histories[agent].push({role:'user', content:text});
+  const loadDiv = addMsg(agent, 'agent loading', '...');
+  try{
+    const res = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-20250514', max_tokens:800,
+        system: 'Eres '+AGENTS[agent].name+', '+AGENTS[agent].role+'\n\nContexto: Alfester Technologies OÜ (Estonia, Reg. 16250313527). Agencia de marketing digital con IA. Web: agencia.kova-app.net. Producto estrella: KOVA (app de IA para ventas). Planes: Esencial €497, Growth €897, Full Stack €1497.',
+        messages: histories[agent]
+      })
+    });
+    const data = await res.json();
+    const reply = data.content?.[0]?.text || 'Error';
+    loadDiv.textContent = reply;
+    loadDiv.classList.remove('loading');
+    histories[agent].push({role:'assistant', content:reply});
+  }catch(e){
+    loadDiv.textContent = 'Error: '+e.message;
+    loadDiv.classList.remove('loading');
+  }
+}
+
+function quickTask(agent, task){
+  document.getElementById('input-'+agent).value = task;
+  sendMsg(agent);
+}
+
+async function orchestrate(){
+  const task = document.getElementById('orchInput').value.trim();
+  if(!task){ alert('Escribe una tarea para el equipo'); return; }
+  const out = document.getElementById('orchOutput');
+  out.style.display='block';
+  out.innerHTML='<span class="spinner"></span>JARVIS orquestando al equipo completo...';
+  try{
+    const res = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-20250514', max_tokens:2000,
+        system:`Eres JARVIS, CEO de Alfester Technologies OÜ, coordinando un equipo de agentes IA:
+- ARIA (CMO): marketing, contenido, campañas
+- FELIX (CFO): finanzas, ROI, reportes
+- OPS (COO): operaciones, onboarding, clientes
+
+Cuando recibes una tarea, la delegas al agente apropiado o a varios si es necesario, y produces una respuesta integrada con las contribuciones de cada agente relevante. Siempre indica qué agente aportó qué parte.
+
+Contexto empresa: Alfester Agency (agencia.kova-app.net) + KOVA app IA ventas (kova-app.net). Estonia OÜ Reg. 16250313527. Planes: Esencial €497, Growth €897, Full Stack €1497.`,
+        messages:[{role:'user', content:task}]
+      })
+    });
+    const data = await res.json();
+    out.textContent = data.content?.[0]?.text || 'Error';
+  }catch(e){
+    out.textContent = 'Error: '+e.message;
+  }
+}
+</script>
+</body>
+</html>
