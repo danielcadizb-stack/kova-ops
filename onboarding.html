@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Onboarding Cliente — Alfester Agency</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--teal:#5de0ce;--gold:#ffc350;--purp:#a78bfa;--green:#34d296;--red:#ef4444;--orange:#fb923c;--bg:#0d0b08;--card:#181c15;--border:rgba(93,224,206,.12);--gray:rgba(160,155,145,.6);--white:#f0ede6}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--white);min-height:100vh;padding:0}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 32px;border-bottom:1px solid var(--border);background:#111410}
+.logo{display:flex;align-items:center;gap:10px}
+.ek{width:32px;height:32px;background:#0f2820;border-radius:7px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(93,224,206,.25)}
+.brand{font-family:'Space Mono',monospace;font-size:14px;color:var(--teal);font-weight:700}
+.sub{font-size:10px;color:rgba(93,224,206,.4);letter-spacing:.1em;text-transform:uppercase}
+.back{font-size:12px;color:var(--gray);text-decoration:none;border:1px solid var(--border);padding:6px 14px;border-radius:6px;font-family:'Space Mono',monospace}
+.back:hover{border-color:var(--teal);color:var(--teal)}
+.content{padding:32px;max-width:960px;margin:0 auto}
+
+/* Progress bar */
+.progress-wrap{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:28px}
+.progress-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.progress-title{font-family:'Space Mono',monospace;font-size:12px;color:var(--teal);letter-spacing:.1em;text-transform:uppercase}
+.progress-pct{font-family:'Space Mono',monospace;font-size:20px;font-weight:700;color:var(--teal)}
+.progress-bar{height:8px;background:rgba(93,224,206,.1);border-radius:4px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--teal),#34d296);border-radius:4px;transition:.4s}
+.progress-stats{display:flex;gap:24px;margin-top:12px}
+.pstat{font-size:12px;color:var(--gray)}
+.pstat span{color:var(--white);font-weight:600}
+
+/* Client selector */
+.client-bar{display:flex;align-items:center;gap:12px;margin-bottom:24px}
+.client-bar label{font-size:13px;color:var(--gray);white-space:nowrap}
+.client-bar input,.client-bar select{background:#111410;border:1px solid var(--border);border-radius:8px;padding:8px 14px;color:var(--white);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;flex:1}
+.client-bar input:focus,.client-bar select:focus{border-color:var(--teal)}
+.btn-sm{padding:8px 16px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;white-space:nowrap}
+.btn-teal{background:var(--teal);color:#0d0b08}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--gray)}
+.btn-outline:hover{border-color:var(--teal);color:var(--teal)}
+.btn-red{background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);color:var(--red)}
+
+/* Day cards */
+.day-card{background:var(--card);border:1px solid var(--border);border-radius:14px;margin-bottom:16px;overflow:hidden;transition:.2s}
+.day-card.done{border-color:rgba(52,210,150,.25)}
+.day-header{display:flex;align-items:center;gap:14px;padding:16px 20px;cursor:pointer;user-select:none}
+.day-header:hover{background:rgba(93,224,206,.03)}
+.day-num{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:13px;font-weight:700;flex-shrink:0}
+.day-num.pending{background:rgba(93,224,206,.1);color:var(--teal);border:1px solid rgba(93,224,206,.2)}
+.day-num.active{background:rgba(255,195,80,.15);color:var(--gold);border:1px solid rgba(255,195,80,.3)}
+.day-num.done{background:rgba(52,210,150,.15);color:var(--green);border:1px solid rgba(52,210,150,.3)}
+.day-info{flex:1}
+.day-title{font-size:15px;font-weight:600;color:var(--white)}
+.day-sub{font-size:12px;color:var(--gray);margin-top:2px}
+.day-badge{font-size:10px;padding:3px 10px;border-radius:20px;font-family:'Space Mono',monospace;font-weight:700}
+.day-badge.pending{background:rgba(93,224,206,.08);color:rgba(93,224,206,.6);border:1px solid rgba(93,224,206,.15)}
+.day-badge.active{background:rgba(255,195,80,.12);color:var(--gold);border:1px solid rgba(255,195,80,.25)}
+.day-badge.done{background:rgba(52,210,150,.12);color:var(--green);border:1px solid rgba(52,210,150,.25)}
+.day-chevron{font-size:12px;color:var(--gray);transition:.3s}
+.day-card.open .day-chevron{transform:rotate(180deg)}
+.day-mini-prog{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--gray);font-family:'Space Mono',monospace}
+.mini-bar{width:60px;height:4px;background:rgba(93,224,206,.1);border-radius:2px;overflow:hidden}
+.mini-fill{height:100%;background:var(--teal);border-radius:2px;transition:.3s}
+
+/* Tasks */
+.day-tasks{display:none;padding:0 20px 16px;border-top:1px solid var(--border)}
+.day-card.open .day-tasks{display:block}
+.task-section{margin-top:14px}
+.task-section-label{font-size:10px;color:rgba(93,224,206,.4);font-family:'Space Mono',monospace;letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px}
+.task{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid rgba(93,224,206,.06);cursor:pointer;transition:.15s}
+.task:last-child{border-bottom:none}
+.task:hover{background:rgba(93,224,206,.03);margin:0 -20px;padding:10px 20px}
+.task-check{width:20px;height:20px;border-radius:5px;border:1.5px solid rgba(93,224,206,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;transition:.2s}
+.task-check.checked{background:var(--green);border-color:var(--green)}
+.task-check.checked::after{content:'✓';font-size:12px;color:#0d0b08;font-weight:700}
+.task-body{flex:1}
+.task-title{font-size:13px;color:var(--white);line-height:1.4}
+.task-title.done-text{color:var(--gray);text-decoration:line-through}
+.task-note{font-size:11px;color:var(--gray);margin-top:3px;line-height:1.5}
+.task-tag{display:inline-block;font-size:9px;padding:1px 6px;border-radius:3px;font-family:'Space Mono',monospace;font-weight:700;margin-left:6px;vertical-align:middle}
+.tag-critical{background:rgba(239,68,68,.15);color:var(--red);border:1px solid rgba(239,68,68,.25)}
+.tag-tool{background:rgba(93,163,224,.12);color:#5da3e0;border:1px solid rgba(93,163,224,.25)}
+.tag-call{background:rgba(255,195,80,.12);color:var(--gold);border:1px solid rgba(255,195,80,.25)}
+.tag-content{background:rgba(167,139,250,.12);color:var(--purp);border:1px solid rgba(167,139,250,.25)}
+
+/* Note box */
+.note-box{background:#0f1a14;border:1px solid var(--border);border-radius:8px;padding:12px;margin-top:16px}
+.note-box label{font-size:11px;color:rgba(93,224,206,.4);font-family:'Space Mono',monospace;display:block;margin-bottom:6px}
+.note-box textarea{width:100%;background:transparent;border:none;color:var(--white);font-family:'DM Sans',sans-serif;font-size:12px;outline:none;resize:none;min-height:60px}
+
+/* Summary */
+.summary-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-bottom:24px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px}
+.stat-num{font-family:'Space Mono',monospace;font-size:28px;font-weight:700;color:var(--teal)}
+.stat-label{font-size:12px;color:var(--gray);margin-top:4px}
+
+/* Actions bar */
+.actions-bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">
+    <div class="ek">
+      <svg viewBox="0 0 28 17" fill="none" width="20" height="12">
+        <polyline points="0,8.5 3.5,8.5 6.5,2 9.5,15 12.5,2 15.5,8.5 19,8.5 23,8.5 28,8.5" stroke="#5de0ce" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div>
+      <div class="brand">ONBOARDING CLIENTE</div>
+      <div class="sub">Checklist operativo 7 días · Alfester Agency</div>
+    </div>
+  </div>
+  <a href="index.html" class="back">← OPS</a>
+</div>
+
+<div class="content">
+
+  <!-- Client selector -->
+  <div class="client-bar">
+    <label>Cliente activo:</label>
+    <input type="text" id="clientName" placeholder="Nombre del cliente / empresa" oninput="saveClient()">
+    <input type="date" id="startDate" oninput="updateDates()">
+    <button class="btn-sm btn-teal" onclick="resetProgress()">Nuevo cliente</button>
+    <button class="btn-sm btn-outline" onclick="exportReport()">📄 Exportar</button>
+  </div>
+
+  <!-- Progress -->
+  <div class="progress-wrap">
+    <div class="progress-header">
+      <div class="progress-title">Progreso del onboarding</div>
+      <div class="progress-pct" id="pctDisplay">0%</div>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    <div class="progress-stats">
+      <div class="pstat">Completadas: <span id="statDone">0</span></div>
+      <div class="pstat">Pendientes: <span id="statPending">0</span></div>
+      <div class="pstat">Total: <span id="statTotal">0</span></div>
+      <div class="pstat">Día activo: <span id="statDay">—</span></div>
+    </div>
+  </div>
+
+  <!-- Summary stats -->
+  <div class="summary-grid" id="summaryGrid" style="display:none"></div>
+
+  <!-- Day cards -->
+  <div id="daysContainer"></div>
+
+</div>
+
+<script>
+const DAYS = [
+  {
+    day: 1,
+    icon: '📞',
+    title: 'Reunión de inicio y diagnóstico',
+    sub: 'Kick-off call · Accesos · Brief completo',
+    sections: [
+      {
+        label: 'Antes de la reunión',
+        tasks: [
+          { id:'d1_1', title:'Enviar email de bienvenida con agenda y fecha de call', note:'Usar template de email de bienvenida del Template Factory', tags:['call'] },
+          { id:'d1_2', title:'Preparar Brief de Diagnóstico (10 preguntas clave del negocio)', note:'Sector, competencia, ticket medio, canales actuales, objetivos 90 días', tags:['content'] },
+          { id:'d1_3', title:'Crear carpeta del cliente en Google Drive / gestión interna', note:'Nombre: "ALF — [Nombre Cliente] — [Fecha inicio]"', tags:['tool'] },
+        ]
+      },
+      {
+        label: 'Durante la reunión (60 min)',
+        tasks: [
+          { id:'d1_4', title:'Completar Brief con el cliente — 10 preguntas de diagnóstico', note:'Negocio, audiencia, competidores, canales, presupuesto, objetivos', tags:['call','critical'] },
+          { id:'d1_5', title:'Revisar materiales existentes (logo, colores, fotos, videos)', note:'Pedir acceso a Dropbox/Drive si tienen activos ya creados', tags:['call'] },
+          { id:'d1_6', title:'Definir KPIs del mes 1 con el cliente (leads, alcance, conversiones)', note:'Importante: acordar métricas ANTES de empezar para la garantía de resultados', tags:['call','critical'] },
+          { id:'d1_7', title:'Solicitar accesos: redes sociales, Google Business, Meta Ads, WhatsApp', note:'Ideal: darles acceso como colaborador, no compartir contraseñas', tags:['call','tool'] },
+        ]
+      },
+      {
+        label: 'Después de la reunión',
+        tasks: [
+          { id:'d1_8', title:'Enviar resumen de la reunión con acuerdos y próximos pasos', note:'Responder dentro de las 2 horas siguientes al cierre de la call', tags:[] },
+          { id:'d1_9', title:'Agregar cliente al CRM (clientes.html) con todos sus datos', note:'Estado: "Onboarding activo" — Plan seleccionado — Fecha inicio', tags:['tool'] },
+        ]
+      }
+    ]
+  },
+  {
+    day: 2,
+    icon: '🔍',
+    title: 'Auditoría y configuración técnica',
+    sub: 'Análisis · Setup Meta Business · Pixel',
+    sections: [
+      {
+        label: 'Auditoría digital (2-3 horas)',
+        tasks: [
+          { id:'d2_1', title:'Auditar presencia actual en redes (seguidores, engagement, últimas publicaciones)', note:'Anotar: frecuencia publicación, formato más exitoso, tono de comunicación', tags:[] },
+          { id:'d2_2', title:'Analizar competidores principales (3-5)', note:'Qué publican, qué funciona, qué hace diferente al cliente', tags:['critical'] },
+          { id:'d2_3', title:'Revisar Google Business Profile y reseñas', note:'Completar info faltante, responder reseñas sin respuesta si hay', tags:['tool'] },
+          { id:'d2_4', title:'Revisar sitio web (velocidad, SEO básico, formularios, CTA)', note:'Usar PageSpeed Insights — objetivo >70 mobile', tags:['tool'] },
+        ]
+      },
+      {
+        label: 'Configuración técnica Meta',
+        tasks: [
+          { id:'d2_5', title:'Configurar/revisar Meta Business Manager del cliente', note:'Verificar que el pixel está instalado. Si no: instalarlo con Google Tag Manager', tags:['tool','critical'] },
+          { id:'d2_6', title:'Crear/revisar catálogo de servicios en Meta si aplica', note:'Clínicas y estéticas: muy relevante para retargeting', tags:['tool'] },
+          { id:'d2_7', title:'Configurar Meta Pixel y eventos personalizados clave', note:'ViewContent, Lead, Contact — los más importantes para campañas', tags:['tool','critical'] },
+        ]
+      }
+    ]
+  },
+  {
+    day: 3,
+    icon: '🎨',
+    title: 'Creación de activos visuales',
+    sub: 'CM Agent Studio · Posts · Stories · Ads',
+    sections: [
+      {
+        label: 'Identidad visual y activos',
+        tasks: [
+          { id:'d3_1', title:'Crear paleta de colores y guía de estilo rápida para el cliente', note:'Colores primarios, fuente, tono. Usar CM Agent Studio para generar primeros diseños', tags:['content'] },
+          { id:'d3_2', title:'Generar 8 posts para el primer mes (CM Agent — Templates)', note:'Mix: 2 promos, 2 educativos, 2 testimonios/resultados, 2 branding', tags:['content'] },
+          { id:'d3_3', title:'Crear 4 stories de lanzamiento del nuevo perfil/imagen', note:'Anunciar el "nuevo look" si hay cambio de identidad. Engagement desde el día 1', tags:['content'] },
+          { id:'d3_4', title:'Diseñar 2 creatividades para Meta Ads (imagen + copy)', note:'Formato: 1080×1080 para feed + 1080×1920 para story/reels ads', tags:['content','critical'] },
+        ]
+      },
+      {
+        label: 'Copy y mensajes clave',
+        tasks: [
+          { id:'d3_5', title:'Redactar bio definitiva para redes (Instagram, Facebook, TikTok)', note:'Usar Template Factory — sección copy para redes', tags:['content'] },
+          { id:'d3_6', title:'Crear banco de hashtags por categoría (30 hashtags)', note:'10 nicho alto, 10 nicho medio, 10 locales/branded', tags:['content'] },
+          { id:'d3_7', title:'Preparar copies de los 8 posts del mes 1', note:'Cada post: caption completo + CTA + hashtags', tags:['content'] },
+        ]
+      }
+    ]
+  },
+  {
+    day: 4,
+    icon: '🤖',
+    title: 'Automatización WhatsApp + CRM',
+    sub: 'n8n · Bot · Flujos de captación',
+    sections: [
+      {
+        label: 'Configuración WhatsApp Business',
+        tasks: [
+          { id:'d4_1', title:'Configurar WhatsApp Business API o cuenta Business del cliente', note:'Si usan la app normal: migrar a WhatsApp Business. Si escalan: n8n + WA API', tags:['tool','critical'] },
+          { id:'d4_2', title:'Programar mensaje de bienvenida automático (respuesta 24h)', note:'Mensaje: "Hola! Gracias por contactarnos. [Nombre negocio] te responderá en breve..."', tags:['tool'] },
+          { id:'d4_3', title:'Crear flujo básico de respuesta a leads en n8n', note:'Lead de ad → WA mensaje automático → Notificación al cliente → CRM entry', tags:['tool','critical'] },
+          { id:'d4_4', title:'Probar flujo completo: ad → landing → formulario → WA → notificación', note:'Hacer 1 lead de prueba y verificar cada paso funciona', tags:['tool'] },
+        ]
+      },
+      {
+        label: 'CRM básico',
+        tasks: [
+          { id:'d4_5', title:'Configurar hoja de seguimiento de leads (Notion/Sheets si no tienen CRM)', note:'Columnas: Nombre, Canal, Fecha, Estado, Notas, Próximo paso', tags:['tool'] },
+          { id:'d4_6', title:'Capacitar al cliente en el proceso de seguimiento de leads', note:'15 min de call o video Loom explicando el flujo', tags:['call'] },
+        ]
+      }
+    ]
+  },
+  {
+    day: 5,
+    icon: '📣',
+    title: 'Lanzamiento de primera campaña Meta Ads',
+    sub: 'Campaña · Audiencias · Presupuesto · Go live',
+    sections: [
+      {
+        label: 'Configuración de campaña',
+        tasks: [
+          { id:'d5_1', title:'Definir audiencia principal (intereses + lookalike si hay datos)', note:'Para audiencias frías: intereses amplios del sector. Empezar con €5-10/día', tags:['tool','critical'] },
+          { id:'d5_2', title:'Crear audiencia de retargeting (visitantes web últimos 30 días)', note:'Requiere Pixel con datos — si no hay datos aún, configurar para usarlo en semana 2', tags:['tool'] },
+          { id:'d5_3', title:'Subir creatividades y copies a Meta Ads Manager', note:'Crear campaña de conversión (lead o mensaje WA según objetivo)', tags:['tool','critical'] },
+          { id:'d5_4', title:'Configurar presupuesto diario y duración de la campaña', note:'Recomendado: €10-15/día mínimo para que el algoritmo aprenda en 7 días', tags:['call','critical'] },
+          { id:'d5_5', title:'Revisar y aprobar con el cliente antes de publicar', note:'Enviar preview al cliente — confirmación por escrito (WhatsApp válido)', tags:['call'] },
+        ]
+      },
+      {
+        label: 'Go live',
+        tasks: [
+          { id:'d5_6', title:'Publicar campaña y primeros posts del mes', note:'Publicar 2 posts orgánicos el mismo día del lanzamiento para dar fuerza', tags:['content'] },
+          { id:'d5_7', title:'Notificar al cliente que la campaña está activa', note:'WhatsApp/email con captura del anuncio activo + enlace al Ad Manager', tags:['call'] },
+        ]
+      }
+    ]
+  },
+  {
+    day: 6,
+    icon: '📊',
+    title: 'Primeros resultados y optimización',
+    sub: 'Métricas 24-48h · Ajustes · Primer informe',
+    sections: [
+      {
+        label: 'Análisis inicial',
+        tasks: [
+          { id:'d6_1', title:'Revisar métricas de la campaña (CPM, CTR, CPC, leads obtenidos)', note:'Si CTR < 1%: revisar creatividad. Si CPC muy alto: revisar audiencia', tags:['critical'] },
+          { id:'d6_2', title:'Verificar que el flujo WA está recibiendo y respondiendo leads', note:'Revisar n8n: todos los pasos deben mostrar ejecuciones exitosas', tags:['tool'] },
+          { id:'d6_3', title:'Revisar engagement orgánico de los primeros posts', note:'Qué formato tuvo más alcance — ajustar para los próximos posts', tags:[] },
+        ]
+      },
+      {
+        label: 'Primera revisión con el cliente',
+        tasks: [
+          { id:'d6_4', title:'Call de 30 min con el cliente para revisar primeros resultados', note:'Mostrar: leads captados, alcance, impresiones, estados del CRM', tags:['call'] },
+          { id:'d6_5', title:'Ajustar campaña según datos (audiencia, creatividad, presupuesto)', note:'Si hay leads: aumentar presupuesto 20%. Si no hay: cambiar creatividad', tags:['critical'] },
+          { id:'d6_6', title:'Programar los 4 posts siguientes del mes', note:'Usar Buffer/Meta Business Suite para programar con antelación', tags:['content'] },
+        ]
+      }
+    ]
+  },
+  {
+    day: 7,
+    icon: '🎯',
+    title: 'Cierre de onboarding — Operativo',
+    sub: 'Informe semana 1 · Hoja de ruta mes 1 · Acuerdos',
+    sections: [
+      {
+        label: 'Entregables de cierre',
+        tasks: [
+          { id:'d7_1', title:'Preparar informe de semana 1 (métricas, acciones realizadas, próximos pasos)', note:'Usar template de informe mensual — versión semanal resumida', tags:['content','critical'] },
+          { id:'d7_2', title:'Enviar informe al cliente con comentarios y análisis', note:'Email profesional con el PDF adjunto. CC al contacto principal del cliente', tags:['call'] },
+          { id:'d7_3', title:'Crear hoja de ruta del mes 1 con objetivos semanales', note:'Semana 1: Lanzamiento. Semana 2-3: Optimización. Semana 4: Escalar lo que funciona', tags:['content'] },
+        ]
+      },
+      {
+        label: 'Configuración operativa permanente',
+        tasks: [
+          { id:'d7_4', title:'Configurar recordatorio de reunión quincenal/mensual con el cliente', note:'Google Calendar — invitación recurrente con agenda predefinida', tags:['tool'] },
+          { id:'d7_5', title:'Actualizar CRM: estado "Activo" con fecha próxima reunión', note:'clientes.html — cambiar estado de Onboarding a Activo', tags:['tool'] },
+          { id:'d7_6', title:'Entregar acceso al Client Dashboard al cliente', note:'URL del dashboard público + contraseña si aplica. Explicar qué puede ver', tags:['tool','critical'] },
+          { id:'d7_7', title:'Solicitar NPS/feedback del onboarding (1-10)', note:'WhatsApp: "Del 1 al 10, ¿cómo valoras nuestra primera semana juntos?"', tags:['call'] },
+        ]
+      },
+      {
+        label: 'Documentación interna',
+        tasks: [
+          { id:'d7_8', title:'Documentar contraseñas y accesos en gestión interna segura', note:'Bitwarden o similar — NUNCA en texto plano o WhatsApp', tags:['tool'] },
+          { id:'d7_9', title:'Archivar Brief, contrato y primer informe en carpeta del cliente', note:'Google Drive: Brief firmado + Contrato firmado + Informe semana 1', tags:['tool'] },
+        ]
+      }
+    ]
+  }
+];
+
+// State
+let state = JSON.parse(localStorage.getItem('onboarding_state') || '{}');
+let openDays = new Set();
+
+function init() {
+  document.getElementById('clientName').value = state.clientName || '';
+  document.getElementById('startDate').value = state.startDate || '';
+  renderDays();
+  updateProgress();
+}
+
+function saveClient() {
+  state.clientName = document.getElementById('clientName').value;
+  save();
+}
+
+function updateDates() {
+  state.startDate = document.getElementById('startDate').value;
+  save();
+  renderDays();
+}
+
+function getDayDate(dayNum) {
+  if (!state.startDate) return '';
+  const d = new Date(state.startDate);
+  d.setDate(d.getDate() + dayNum - 1);
+  return d.toLocaleDateString('es-ES', {weekday:'short', day:'numeric', month:'short'});
+}
+
+function renderDays() {
+  const container = document.getElementById('daysContainer');
+  container.innerHTML = '';
+  DAYS.forEach(day => {
+    const allTasks = day.sections.flatMap(s => s.tasks);
+    const doneTasks = allTasks.filter(t => state[t.id]);
+    const pct = allTasks.length ? Math.round(doneTasks.length/allTasks.length*100) : 0;
+    const isDone = pct === 100;
+    const isOpen = openDays.has(day.day);
+    const dateStr = getDayDate(day.day);
+
+    const card = document.createElement('div');
+    card.className = `day-card${isDone?' done':''}${isOpen?' open':''}`;
+    card.innerHTML = `
+      <div class="day-header" onclick="toggleDay(${day.day})">
+        <div class="day-num ${isDone?'done':pct>0?'active':'pending'}">D${day.day}</div>
+        <div class="day-info">
+          <div class="day-title">${day.icon} ${day.title}</div>
+          <div class="day-sub">${day.sub}${dateStr?' · <span style="color:rgba(93,224,206,.5)">' + dateStr + '</span>':''}</div>
+        </div>
+        <div class="day-mini-prog">
+          <div class="mini-bar"><div class="mini-fill" style="width:${pct}%"></div></div>
+          <span>${doneTasks.length}/${allTasks.length}</span>
+        </div>
+        <div class="day-badge ${isDone?'done':pct>0?'active':'pending'}">${isDone?'✓ LISTO':pct>0?'EN CURSO':'PENDIENTE'}</div>
+        <div class="day-chevron">▼</div>
+      </div>
+      <div class="day-tasks">
+        ${day.sections.map(sec => `
+          <div class="task-section">
+            <div class="task-section-label">${sec.label}</div>
+            ${sec.tasks.map(task => `
+              <div class="task" onclick="toggleTask('${task.id}')">
+                <div class="task-check${state[task.id]?' checked':''}"></div>
+                <div class="task-body">
+                  <div class="task-title${state[task.id]?' done-text':''}">
+                    ${task.title}
+                    ${task.tags.map(tag => `<span class="task-tag tag-${tag==='critical'?'critical':tag==='tool'?'tool':tag==='call'?'call':'content'}">${tag==='critical'?'CRÍTICO':tag==='tool'?'TOOL':tag==='call'?'CALL':'CONTENT'}</span>`).join('')}
+                  </div>
+                  ${task.note?`<div class="task-note">${task.note}</div>`:''}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        `).join('')}
+        <div class="note-box">
+          <label>Notas del día ${day.day}</label>
+          <textarea placeholder="Observaciones, incidencias, próximos pasos..." onchange="saveNote(${day.day},this.value)">${state['note_'+day.day]||''}</textarea>
+        </div>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+  updateProgress();
+}
+
+function toggleDay(dayNum) {
+  if (openDays.has(dayNum)) openDays.delete(dayNum);
+  else openDays.add(dayNum);
+  renderDays();
+}
+
+function toggleTask(id) {
+  state[id] = !state[id];
+  save();
+  renderDays();
+}
+
+function saveNote(day, val) {
+  state['note_'+day] = val;
+  save();
+}
+
+function save() {
+  localStorage.setItem('onboarding_state', JSON.stringify(state));
+}
+
+function updateProgress() {
+  const allTasks = DAYS.flatMap(d => d.sections.flatMap(s => s.tasks));
+  const done = allTasks.filter(t => state[t.id]).length;
+  const total = allTasks.length;
+  const pct = total ? Math.round(done/total*100) : 0;
+
+  document.getElementById('pctDisplay').textContent = pct+'%';
+  document.getElementById('progressFill').style.width = pct+'%';
+  document.getElementById('statDone').textContent = done;
+  document.getElementById('statPending').textContent = total-done;
+  document.getElementById('statTotal').textContent = total;
+
+  // Current day
+  let activeDay = '—';
+  for (const day of DAYS) {
+    const tasks = day.sections.flatMap(s => s.tasks);
+    const dayDone = tasks.filter(t => state[t.id]).length;
+    if (dayDone < tasks.length) { activeDay = 'Día '+day.day; break; }
+  }
+  if (done === total) activeDay = '¡Completado!';
+  document.getElementById('statDay').textContent = activeDay;
+}
+
+function resetProgress() {
+  if (!confirm('¿Iniciar nuevo cliente? Se limpiará el progreso actual.')) return;
+  const keys = Object.keys(state).filter(k => k !== 'clientName' && k !== 'startDate');
+  keys.forEach(k => delete state[k]);
+  state.clientName = '';
+  state.startDate = '';
+  document.getElementById('clientName').value = '';
+  document.getElementById('startDate').value = '';
+  save();
+  openDays.clear();
+  renderDays();
+}
+
+function exportReport() {
+  const client = state.clientName || 'Cliente';
+  const start = state.startDate || 'N/A';
+  const allTasks = DAYS.flatMap(d => d.sections.flatMap(s => s.tasks));
+  const done = allTasks.filter(t => state[t.id]).length;
+  const total = allTasks.length;
+  const pct = Math.round(done/total*100);
+
+  let report = `INFORME DE ONBOARDING — ALFESTER AGENCY\n`;
+  report += `${'='.repeat(50)}\n`;
+  report += `Cliente: ${client}\n`;
+  report += `Fecha inicio: ${start}\n`;
+  report += `Progreso: ${pct}% (${done}/${total} tareas)\n`;
+  report += `Generado: ${new Date().toLocaleDateString('es-ES')}\n\n`;
+
+  DAYS.forEach(day => {
+    const tasks = day.sections.flatMap(s => s.tasks);
+    const dayDone = tasks.filter(t => state[t.id]).length;
+    report += `DÍA ${day.day}: ${day.title} (${dayDone}/${tasks.length})\n`;
+    tasks.forEach(t => {
+      report += `  ${state[t.id]?'[✓]':'[ ]'} ${t.title}\n`;
+    });
+    if (state['note_'+day.day]) report += `  Notas: ${state['note_'+day.day]}\n`;
+    report += '\n';
+  });
+
+  const blob = new Blob([report], {type:'text/plain'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `onboarding_${client.replace(/\s/g,'_')}.txt`;
+  a.click();
+}
+
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Informe Mensual — Alfester Agency</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--teal:#5de0ce;--gold:#ffc350;--green:#34d296;--red:#ef4444;--bg:#0d0b08;--card:#181c15;--border:rgba(93,224,206,.12);--gray:rgba(160,155,145,.6);--white:#f0ede6}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--white);min-height:100vh}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 32px;border-bottom:1px solid var(--border);background:#111410}
+.logo{display:flex;align-items:center;gap:10px}
+.ek{width:32px;height:32px;background:#0f2820;border-radius:7px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(93,224,206,.25)}
+.brand{font-family:'Space Mono',monospace;font-size:14px;color:var(--teal);font-weight:700}
+.sub{font-size:10px;color:rgba(93,224,206,.4);letter-spacing:.1em;text-transform:uppercase}
+.back{font-size:12px;color:var(--gray);text-decoration:none;border:1px solid var(--border);padding:6px 14px;border-radius:6px;font-family:'Space Mono',monospace}
+.content{padding:32px;max-width:900px;margin:0 auto}
+.form-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:20px}
+.section-title{font-family:'Space Mono',monospace;font-size:11px;color:rgba(93,224,206,.5);letter-spacing:.14em;text-transform:uppercase;margin-bottom:16px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-row{margin-bottom:14px}
+label{display:block;font-size:12px;color:var(--gray);margin-bottom:5px}
+input,select,textarea{width:100%;background:#0d1510;border:1px solid var(--border);border-radius:7px;padding:9px 13px;color:var(--white);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:.2s}
+input:focus,select:focus,textarea:focus{border-color:var(--teal)}
+textarea{resize:vertical;min-height:70px}
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.kpi-item{background:#0f1a14;border:1px solid var(--border);border-radius:8px;padding:12px}
+.kpi-item label{font-size:11px;color:rgba(93,224,206,.45);margin-bottom:4px}
+.kpi-item input{background:transparent;border:none;border-bottom:1px solid var(--border);border-radius:0;padding:4px 0;font-size:18px;font-weight:700;color:var(--teal);font-family:'Space Mono',monospace}
+.kpi-item input:focus{border-bottom-color:var(--teal)}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.btn-primary{background:var(--teal);color:#0d0b08;border:none;border-radius:8px;padding:12px 24px;font-weight:700;font-size:13px;cursor:pointer}
+.btn-secondary{background:transparent;border:1px solid var(--teal);color:var(--teal);border-radius:8px;padding:11px 20px;font-size:13px;cursor:pointer}
+.btn-gold{background:var(--gold);color:#0d0b08;border:none;border-radius:8px;padding:12px 24px;font-weight:700;font-size:13px;cursor:pointer}
+/* Preview */
+.preview-section{display:none}
+.preview-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:28px;margin-bottom:16px}
+.preview-header{text-align:center;padding-bottom:20px;border-bottom:2px solid var(--teal);margin-bottom:20px}
+.preview-logo{font-family:'Space Mono',monospace;font-size:22px;font-weight:700;color:var(--teal);margin-bottom:4px}
+.preview-subtitle{font-size:13px;color:var(--gray)}
+.preview-title{font-size:24px;font-weight:700;color:var(--white);margin-top:12px}
+.preview-meta{font-size:12px;color:var(--gray);margin-top:4px}
+.preview-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:20px 0}
+.pkpi{background:#0f1a14;border-radius:8px;padding:14px;text-align:center}
+.pkpi-val{font-family:'Space Mono',monospace;font-size:26px;font-weight:700;color:var(--teal)}
+.pkpi-label{font-size:11px;color:var(--gray);margin-top:4px}
+.pkpi-delta{font-size:11px;margin-top:2px}
+.pkpi-delta.up{color:var(--green)}
+.pkpi-delta.down{color:var(--red)}
+.preview-section-h{font-family:'Space Mono',monospace;font-size:11px;color:rgba(93,224,206,.5);letter-spacing:.12em;text-transform:uppercase;margin:20px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.preview-text{font-size:13px;line-height:1.8;color:rgba(240,237,230,.8);white-space:pre-wrap}
+.preview-actions{font-size:13px;color:var(--white)}
+.action-item{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid rgba(93,224,206,.06)}
+.action-num{font-family:'Space Mono',monospace;font-size:11px;color:var(--teal);font-weight:700;width:20px;flex-shrink:0;margin-top:1px}
+.ai-badge{display:inline-block;font-size:9px;padding:2px 7px;border-radius:4px;background:rgba(93,224,206,.1);color:var(--teal);border:1px solid rgba(93,224,206,.2);font-family:'Space Mono',monospace;vertical-align:middle;margin-left:6px}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="logo">
+    <div class="ek"><svg viewBox="0 0 28 17" fill="none" width="20" height="12"><polyline points="0,8.5 3.5,8.5 6.5,2 9.5,15 12.5,2 15.5,8.5 19,8.5 23,8.5 28,8.5" stroke="#5de0ce" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div><div class="brand">INFORME MENSUAL</div><div class="sub">Generador IA · Alfester Agency</div></div>
+  </div>
+  <a href="index.html" class="back">← OPS</a>
+</div>
+
+<div class="content">
+
+  <div id="formSection">
+    <div class="form-card">
+      <div class="section-title">Datos del cliente y período</div>
+      <div class="form-grid">
+        <div class="form-row"><label>Nombre del cliente / empresa</label><input type="text" id="iClientName" placeholder="Ej: Clínica Estética Valeria"></div>
+        <div class="form-row"><label>Sector</label>
+          <select id="iSector">
+            <option>Estética & Belleza</option><option>Clínica / Médico</option>
+            <option>Academia / Idiomas</option><option>Restaurante / Food</option>
+            <option>Inmobiliaria</option><option>Otro</option>
+          </select>
+        </div>
+        <div class="form-row"><label>Mes del informe</label><input type="month" id="iMonth"></div>
+        <div class="form-row"><label>Plan contratado</label>
+          <select id="iPlan">
+            <option>Plan Esencial — €497/mes</option>
+            <option>Plan Growth — €897/mes</option>
+            <option>Plan Full Stack + KOVA — €1.497/mes</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <div class="section-title">KPIs del mes</div>
+      <div class="kpi-grid">
+        <div class="kpi-item"><label>Leads captados</label><input type="text" id="kLeads" placeholder="0"></div>
+        <div class="kpi-item"><label>Alcance total</label><input type="text" id="kAlcance" placeholder="0"></div>
+        <div class="kpi-item"><label>Impresiones</label><input type="text" id="kImpresiones" placeholder="0"></div>
+        <div class="kpi-item"><label>Inversión en Ads (€)</label><input type="text" id="kInversion" placeholder="0"></div>
+        <div class="kpi-item"><label>Coste por Lead (€)</label><input type="text" id="kCpl" placeholder="0.00"></div>
+        <div class="kpi-item"><label>Seguidores ganados</label><input type="text" id="kSeguidores" placeholder="0"></div>
+        <div class="kpi-item"><label>Posts publicados</label><input type="text" id="kPosts" placeholder="0"></div>
+        <div class="kpi-item"><label>Engagement rate (%)</label><input type="text" id="kEngagement" placeholder="0.0"></div>
+        <div class="kpi-item"><label>Conversiones (ventas/citas)</label><input type="text" id="kConversiones" placeholder="0"></div>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <div class="section-title">Acciones realizadas y logros</div>
+      <div class="form-row"><label>Principales acciones del mes (una por línea)</label>
+        <textarea id="iAcciones" rows="5" placeholder="Lanzamiento campaña Meta Ads captación leads&#10;Automatización WhatsApp Business configurada&#10;8 posts publicados en Instagram y Facebook&#10;Informe quincenal enviado el día 15"></textarea>
+      </div>
+      <div class="form-row"><label>Logro destacado del mes</label>
+        <input type="text" id="iLogro" placeholder="Ej: 47 leads captados con CPL de €3,20 — mejor resultado desde el inicio">
+      </div>
+    </div>
+
+    <div class="form-card">
+      <div class="section-title">Próximo mes</div>
+      <div class="form-row"><label>Objetivos para el mes siguiente (uno por línea)</label>
+        <textarea id="iObjetivos" rows="4" placeholder="Escalar presupuesto de ads a €20/día&#10;Lanzar campaña de retargeting&#10;Crear contenido para TikTok (3 videos)&#10;Optimizar landing page de captación"></textarea>
+      </div>
+      <div class="form-row"><label>Notas adicionales o contexto</label>
+        <textarea id="iNotas" rows="3" placeholder="Ej: El cliente aprobó aumentar presupuesto. Se retrasó la entrega de fotos del local."></textarea>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-primary" onclick="generateReport()">✨ Generar informe con IA</button>
+      <button class="btn-secondary" onclick="generateBasic()">📄 Generar sin IA</button>
+    </div>
+  </div>
+
+  <div class="preview-section" id="previewSection">
+    <div class="preview-card" id="reportPreview"></div>
+    <div class="btn-row">
+      <button class="btn-gold" onclick="downloadPDF()">⬇️ Descargar PDF</button>
+      <button class="btn-secondary" onclick="document.getElementById('formSection').style.display='block';document.getElementById('previewSection').style.display='none'">← Editar datos</button>
+      <button class="btn-secondary" onclick="window.print()">🖨️ Imprimir</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+async function generateReport() {
+  const data = gatherData();
+  document.getElementById('formSection').style.display = 'none';
+  document.getElementById('previewSection').style.display = 'block';
+  document.getElementById('reportPreview').innerHTML = '<div style="text-align:center;padding:40px;color:rgba(93,224,206,.5)"><div style="font-size:32px;margin-bottom:12px">✨</div>Generando informe con IA...</div>';
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        messages:[{role:'user',content:`Eres el CM de Alfester Agency. Genera el texto del informe mensual para:
+Cliente: ${data.client} | Sector: ${data.sector} | Mes: ${data.month} | Plan: ${data.plan}
+KPIs: ${data.kLeads} leads | ${data.kAlcance} alcance | ${data.kImpresiones} impresiones | CPL: €${data.kCpl} | ${data.kEngagement}% engagement
+Acciones: ${data.acciones}
+Logro destacado: ${data.logro}
+Objetivos próximo mes: ${data.objetivos}
+${data.notas?'Notas: '+data.notas:''}
+
+Genera:
+1. ANÁLISIS DEL MES (2 párrafos: resultados y contexto, tono profesional y positivo)
+2. PUNTOS CLAVE (3 logros concretos del mes en frases cortas)
+3. RECOMENDACIÓN PRINCIPAL (1 acción específica para el mes siguiente)
+
+Responde en español, sin markdown, tono ejecutivo y orientado a resultados.`}]
+      })
+    });
+    const d = await res.json();
+    const aiText = d.content?.[0]?.text || '';
+    renderPreview(data, aiText);
+  } catch(e) {
+    renderPreview(data, '');
+  }
+}
+
+function generateBasic() {
+  const data = gatherData();
+  document.getElementById('formSection').style.display = 'none';
+  document.getElementById('previewSection').style.display = 'block';
+  renderPreview(data, '');
+}
+
+function gatherData() {
+  const monthVal = document.getElementById('iMonth').value;
+  const [y,m] = monthVal ? monthVal.split('-') : ['2026','06'];
+  const months = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  return {
+    client: document.getElementById('iClientName').value || 'Cliente',
+    sector: document.getElementById('iSector').value,
+    month: months[parseInt(m)-1]+' '+y,
+    plan: document.getElementById('iPlan').value,
+    kLeads: document.getElementById('kLeads').value || '0',
+    kAlcance: document.getElementById('kAlcance').value || '0',
+    kImpresiones: document.getElementById('kImpresiones').value || '0',
+    kInversion: document.getElementById('kInversion').value || '0',
+    kCpl: document.getElementById('kCpl').value || '0',
+    kSeguidores: document.getElementById('kSeguidores').value || '0',
+    kPosts: document.getElementById('kPosts').value || '0',
+    kEngagement: document.getElementById('kEngagement').value || '0',
+    kConversiones: document.getElementById('kConversiones').value || '0',
+    acciones: document.getElementById('iAcciones').value,
+    logro: document.getElementById('iLogro').value,
+    objetivos: document.getElementById('iObjetivos').value,
+    notas: document.getElementById('iNotas').value,
+  };
+}
+
+function renderPreview(data, aiText) {
+  const accionesList = data.acciones.split('\n').filter(Boolean);
+  const objetivosList = data.objetivos.split('\n').filter(Boolean);
+
+  document.getElementById('reportPreview').innerHTML = `
+    <div class="preview-header">
+      <div class="preview-logo">ALFESTER AGENCY</div>
+      <div class="preview-subtitle">Reg. 16250313527 · Estonia, EU · agencia.kova-app.net</div>
+      <div class="preview-title">Informe Mensual — ${data.month}</div>
+      <div class="preview-meta">${data.client} · ${data.sector} · ${data.plan}</div>
+    </div>
+
+    <div class="preview-kpis">
+      <div class="pkpi"><div class="pkpi-val">${data.kLeads}</div><div class="pkpi-label">Leads captados</div></div>
+      <div class="pkpi"><div class="pkpi-val">${Number(data.kAlcance).toLocaleString('es-ES')}</div><div class="pkpi-label">Alcance total</div></div>
+      <div class="pkpi"><div class="pkpi-val">€${data.kCpl}</div><div class="pkpi-label">Coste por Lead</div></div>
+      <div class="pkpi"><div class="pkpi-val">${data.kPosts}</div><div class="pkpi-label">Posts publicados</div></div>
+      <div class="pkpi"><div class="pkpi-val">${data.kEngagement}%</div><div class="pkpi-label">Engagement rate</div></div>
+      <div class="pkpi"><div class="pkpi-val">${data.kConversiones}</div><div class="pkpi-label">Conversiones</div></div>
+    </div>
+
+    ${aiText ? `
+      <div class="preview-section-h">Análisis del mes <span class="ai-badge">IA</span></div>
+      <div class="preview-text">${aiText}</div>
+    ` : ''}
+
+    <div class="preview-section-h">Acciones realizadas</div>
+    <div class="preview-actions">
+      ${accionesList.map((a,i)=>`<div class="action-item"><div class="action-num">${i+1}</div><div>${a}</div></div>`).join('')}
+    </div>
+
+    ${data.logro ? `
+      <div class="preview-section-h">Logro destacado del mes</div>
+      <div style="background:rgba(93,224,206,.06);border:1px solid rgba(93,224,206,.2);border-radius:8px;padding:14px;font-size:13px;color:var(--teal);font-weight:600">⭐ ${data.logro}</div>
+    ` : ''}
+
+    <div class="preview-section-h">Objetivos próximo mes</div>
+    <div class="preview-actions">
+      ${objetivosList.map((o,i)=>`<div class="action-item"><div class="action-num" style="color:var(--gold)">→</div><div>${o}</div></div>`).join('')}
+    </div>
+
+    <div style="margin-top:28px;padding-top:16px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:11px;color:var(--gray)">
+      <span>© 2026 Alfester Technologies OÜ · hola@kova-app.net</span>
+      <span>Informe generado: ${new Date().toLocaleDateString('es-ES')}</span>
+    </div>
+  `;
+}
+
+function downloadPDF() {
+  const { jsPDF } = window.jspdf;
+  if (!jsPDF) { alert('jsPDF no disponible'); return; }
+  const data = gatherData();
+  const doc = new jsPDF({orientation:'p',unit:'mm',format:'a4'});
+  const W=210, m=18, pw=W-m*2;
+  let y=m;
+
+  // Dark bg
+  doc.setFillColor(13,11,8); doc.rect(0,0,W,297,'F');
+  // Teal header
+  doc.setFillColor(93,224,206); doc.rect(0,0,W,12,'F');
+  doc.setTextColor(13,11,8); doc.setFont('helvetica','bold'); doc.setFontSize(8);
+  doc.text('ALFESTER TECHNOLOGIES OÜ  |  Reg. 16250313527  |  agencia.kova-app.net',m,8);
+
+  y=24;
+  doc.setTextColor(93,224,206); doc.setFontSize(22); doc.setFont('helvetica','bold');
+  doc.text('INFORME MENSUAL',m,y); y+=8;
+  doc.setFontSize(13); doc.setTextColor(240,237,230);
+  doc.text(`${data.client}  ·  ${data.month}`,m,y); y+=6;
+  doc.setFontSize(10); doc.setTextColor(160,155,145);
+  doc.text(data.plan,m,y); y+=6;
+  doc.setFillColor(93,224,206); doc.rect(m,y,pw,0.5,'F'); y+=8;
+
+  // KPIs
+  const kpis = [
+    ['Leads captados',data.kLeads],['Alcance',data.kAlcance],['CPL','€'+data.kCpl],
+    ['Posts',data.kPosts],['Engagement',data.kEngagement+'%'],['Conversiones',data.kConversiones]
+  ];
+  const kw=pw/3, kh=18;
+  kpis.forEach(([label,val],i)=>{
+    const kx=m+(i%3)*kw, ky=y+Math.floor(i/3)*kh;
+    doc.setFillColor(15,26,20); doc.roundedRect(kx,ky,kw-3,kh-2,2,2,'F');
+    doc.setTextColor(93,224,206); doc.setFont('helvetica','bold'); doc.setFontSize(14);
+    doc.text(String(val),kx+kw/2-1.5,ky+10,{align:'center'});
+    doc.setTextColor(160,155,145); doc.setFont('helvetica','normal'); doc.setFontSize(8);
+    doc.text(label,kx+kw/2-1.5,ky+15,{align:'center'});
+  });
+  y+=40;
+
+  // Sections
+  const section=(title)=>{
+    doc.setFillColor(93,224,206); doc.rect(m,y,pw,0.4,'F'); y+=6;
+    doc.setTextColor(93,224,206); doc.setFont('helvetica','bold'); doc.setFontSize(9);
+    doc.text(title.toUpperCase(),m,y); y+=6;
+  };
+
+  const body=(text)=>{
+    doc.setTextColor(200,197,190); doc.setFont('helvetica','normal'); doc.setFontSize(10);
+    const lines=doc.splitTextToSize(text,pw);
+    lines.forEach(l=>{
+      if(y>270){doc.addPage();doc.setFillColor(13,11,8);doc.rect(0,0,W,297,'F');y=m;}
+      doc.text(l,m,y); y+=5;
+    });
+    y+=3;
+  };
+
+  section('Acciones realizadas');
+  data.acciones.split('\n').filter(Boolean).forEach((a,i)=>{body(`${i+1}. ${a}`);});
+
+  if(data.logro){ section('Logro destacado'); body('★ '+data.logro); }
+
+  section('Objetivos próximo mes');
+  data.objetivos.split('\n').filter(Boolean).forEach((o)=>{body('→ '+o);});
+
+  // Footer
+  doc.setFillColor(93,224,206); doc.rect(0,285,W,0.5,'F');
+  doc.setTextColor(93,224,206); doc.setFontSize(8);
+  doc.text('© 2026 Alfester Technologies OÜ  |  hola@kova-app.net',m,292);
+  doc.text(new Date().toLocaleDateString('es-ES'),W-m,292,{align:'right'});
+
+  doc.save(`informe_${data.client.replace(/\s/g,'_')}_${data.month.replace(/\s/g,'_')}.pdf`);
+}
+</script>
+</body>
+</html>
