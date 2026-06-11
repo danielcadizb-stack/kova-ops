@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CM Agent Studio — Alfester</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--teal:#5de0ce;--gold:#ffc350;--purp:#a78bfa;--orange:#fb923c;--green:#34d296;--red:#ef4444;--bg:#0d0b08;--bg2:#111410;--card:#181c15;--border:rgba(93,224,206,.12);--gray:rgba(160,155,145,.6);--white:#f0ede6}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--white);min-height:100vh;padding:0}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 32px;border-bottom:1px solid var(--border);background:var(--bg2)}
+.logo{display:flex;align-items:center;gap:10px}
+.ek{width:32px;height:32px;background:#0f2820;border-radius:7px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(93,224,206,.25)}
+.brand{font-family:'Space Mono',monospace;font-size:14px;color:var(--teal);font-weight:700}
+.sub{font-size:10px;color:rgba(93,224,206,.4);letter-spacing:.1em;text-transform:uppercase}
+.back{font-size:12px;color:var(--gray);text-decoration:none;border:1px solid var(--border);padding:6px 14px;border-radius:6px;font-family:'Space Mono',monospace}
+.back:hover{border-color:var(--teal);color:var(--teal)}
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--border);background:var(--bg2);padding:0 32px}
+.tab{padding:14px 20px;font-size:13px;font-weight:600;color:var(--gray);cursor:pointer;border-bottom:2px solid transparent;transition:.2s}
+.tab.active{color:var(--teal);border-bottom-color:var(--teal)}
+.tab:hover{color:var(--white)}
+.content{padding:32px;max-width:1100px}
+.panel{display:none}.panel.active{display:block}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px}
+.form-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px}
+.section-title{font-family:'Space Mono',monospace;font-size:11px;color:rgba(93,224,206,.5);letter-spacing:.14em;text-transform:uppercase;margin-bottom:16px}
+label{display:block;font-size:12px;color:var(--gray);margin-bottom:6px;letter-spacing:.04em}
+select,input,textarea{width:100%;background:#0d1510;border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--white);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:.2s}
+select:focus,input:focus,textarea:focus{border-color:var(--teal)}
+textarea{resize:vertical;min-height:80px}
+.form-row{margin-bottom:16px}
+.btn-primary{background:var(--teal);color:#0d0b08;border:none;border-radius:8px;padding:12px 24px;font-weight:700;font-size:13px;cursor:pointer;transition:.2s;font-family:'DM Sans',sans-serif}
+.btn-primary:hover{background:#4bc9b8;transform:translateY(-1px)}
+.btn-secondary{background:transparent;color:var(--teal);border:1px solid var(--teal);border-radius:8px;padding:10px 20px;font-size:13px;cursor:pointer;transition:.2s;font-family:'DM Sans',sans-serif}
+.btn-secondary:hover{background:rgba(93,224,206,.08)}
+.btn-orange{background:var(--orange);color:#0d0b08;border:none;border-radius:8px;padding:12px 24px;font-weight:700;font-size:13px;cursor:pointer;transition:.2s}
+.btn-orange:hover{background:#f97316}
+.btn-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px}
+/* Design grid */
+.design-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-top:16px}
+.design-card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:.2s}
+.design-card:hover{border-color:rgba(93,224,206,.3);transform:translateY(-2px)}
+.design-preview{width:100%;aspect-ratio:1;display:flex;align-items:center;justify-content:center;background:#0f1a14;font-size:40px;position:relative;overflow:hidden}
+.design-canvas{width:100%;height:100%;position:relative}
+.design-meta{padding:14px}
+.design-name{font-size:13px;font-weight:600;color:var(--white);margin-bottom:4px}
+.design-dim{font-size:11px;color:var(--gray);font-family:'Space Mono',monospace}
+.design-actions{display:flex;gap:8px;margin-top:12px}
+.design-btn{flex:1;padding:7px;font-size:11px;border-radius:6px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;border:none;transition:.2s}
+.design-btn.dl{background:var(--teal);color:#0d0b08}
+.design-btn.edit{background:rgba(167,139,250,.15);color:var(--purp);border:1px solid rgba(167,139,250,.3)}
+/* Canvas editor */
+.canvas-wrap{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px;margin-top:20px}
+.canvas-container{display:flex;gap:24px;flex-wrap:wrap}
+.canvas-left{flex:1;min-width:300px}
+.canvas-right{width:260px}
+canvas{border:1px solid var(--border);border-radius:8px;max-width:100%}
+.layer-list{background:#0f1a14;border-radius:8px;padding:12px;margin-top:12px;max-height:200px;overflow-y:auto}
+.layer-item{display:flex;align-items:center;gap:8px;padding:8px;border-radius:6px;font-size:12px;cursor:pointer;transition:.2s;border:1px solid transparent}
+.layer-item:hover{background:rgba(93,224,206,.05);border-color:var(--border)}
+.layer-item.selected{background:rgba(93,224,206,.08);border-color:rgba(93,224,206,.2)}
+.layer-icon{font-size:14px}
+/* Spinner */
+.spinner{width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--teal);border-radius:50%;animation:spin .8s linear infinite;display:inline-block;vertical-align:middle;margin-right:8px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ai-loading{color:var(--gray);font-size:13px;padding:20px;text-align:center}
+/* Formats strip */
+.format-strip{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.format-pill{padding:6px 14px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--border);color:var(--gray);transition:.2s;font-family:'Space Mono',monospace}
+.format-pill.active{background:rgba(93,224,206,.1);color:var(--teal);border-color:rgba(93,224,206,.3)}
+.format-pill:hover{border-color:var(--teal);color:var(--teal)}
+/* History */
+.hist-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-top:16px}
+.hist-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px;cursor:pointer;transition:.2s}
+.hist-card:hover{border-color:rgba(93,224,206,.3)}
+.hist-preview{width:100%;aspect-ratio:1;background:#0f1a14;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:8px}
+.hist-name{font-size:12px;color:var(--white);font-weight:600}
+.hist-date{font-size:10px;color:var(--gray);font-family:'Space Mono',monospace;margin-top:2px}
+.empty-state{text-align:center;padding:48px;color:var(--gray);font-size:13px}
+.tag{display:inline-block;font-size:9px;padding:2px 7px;border-radius:4px;border:1px solid;margin-top:6px;font-family:'Space Mono',monospace}
+.tag.ig{background:rgba(251,146,60,.1);color:#fb923c;border-color:rgba(251,146,60,.3)}
+.tag.fb{background:rgba(93,163,224,.1);color:#5da3e0;border-color:rgba(93,163,224,.3)}
+.tag.li{background:rgba(93,163,224,.15);color:#5da3e0;border-color:rgba(93,163,224,.35)}
+.tag.tt{background:rgba(239,68,68,.1);color:#ef4444;border-color:rgba(239,68,68,.3)}
+.tag.wa{background:rgba(52,210,150,.1);color:#34d296;border-color:rgba(52,210,150,.3)}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">
+    <div class="ek">
+      <svg viewBox="0 0 28 17" fill="none" width="20" height="12">
+        <polyline points="0,8.5 3.5,8.5 6.5,2 9.5,15 12.5,2 15.5,8.5 19,8.5 23,8.5 28,8.5" stroke="#5de0ce" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div>
+      <div class="brand">CM AGENT — STUDIO</div>
+      <div class="sub">Diseños · Campañas · Assets Visuales</div>
+    </div>
+  </div>
+  <a href="index.html" class="back">← OPS</a>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('studio',this)">🎨 Studio</div>
+  <div class="tab" onclick="switchTab('templates',this)">📐 Templates</div>
+  <div class="tab" onclick="switchTab('campaigns',this)">📣 Campañas</div>
+  <div class="tab" onclick="switchTab('history',this)">🗂️ Historial</div>
+</div>
+
+<div class="content">
+
+<!-- STUDIO TAB -->
+<div id="panel-studio" class="panel active">
+  <div class="form-grid">
+    <div class="form-card">
+      <div class="section-title">Configurar diseño</div>
+      <div class="form-row">
+        <label>Red social / formato</label>
+        <div class="format-strip" id="formatStrip">
+          <div class="format-pill active" onclick="setFormat('ig_square',this)" data-w="1080" data-h="1080">IG Post<br><span style="font-size:9px;opacity:.6">1080×1080</span></div>
+          <div class="format-pill" onclick="setFormat('ig_story',this)" data-w="1080" data-h="1920">IG Story<br><span style="font-size:9px;opacity:.6">1080×1920</span></div>
+          <div class="format-pill" onclick="setFormat('ig_carousel',this)" data-w="1080" data-h="1080">Carrusel<br><span style="font-size:9px;opacity:.6">1080×1080</span></div>
+          <div class="format-pill" onclick="setFormat('fb_post',this)" data-w="1200" data-h="630">FB Post<br><span style="font-size:9px;opacity:.6">1200×630</span></div>
+          <div class="format-pill" onclick="setFormat('linkedin',this)" data-w="1200" data-h="628">LinkedIn<br><span style="font-size:9px;opacity:.6">1200×628</span></div>
+          <div class="format-pill" onclick="setFormat('tiktok',this)" data-w="1080" data-h="1920">TikTok<br><span style="font-size:9px;opacity:.6">1080×1920</span></div>
+          <div class="format-pill" onclick="setFormat('whatsapp',this)" data-w="800" data-h="800">WhatsApp<br><span style="font-size:9px;opacity:.6">800×800</span></div>
+        </div>
+      </div>
+      <div class="form-row">
+        <label>Sector / cliente</label>
+        <select id="studioSector">
+          <option value="estetica">Estética & Belleza</option>
+          <option value="clinica">Clínica / Médico</option>
+          <option value="academia">Academia / Idiomas</option>
+          <option value="restaurante">Restaurante / Food</option>
+          <option value="inmobiliaria">Inmobiliaria</option>
+          <option value="kova">KOVA (producto propio)</option>
+          <option value="alfester">Alfester Agency</option>
+          <option value="custom">Otro / Custom</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label>Tipo de contenido</label>
+        <select id="studioType">
+          <option value="promo">Promoción / Oferta</option>
+          <option value="educativo">Post educativo / Tip</option>
+          <option value="testimonio">Testimonio / Caso de éxito</option>
+          <option value="lanzamiento">Lanzamiento / Novedad</option>
+          <option value="evento">Evento / Cita</option>
+          <option value="branding">Branding / Identidad</option>
+          <option value="resultado">Resultado / Estadística</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label>Texto principal (headline)</label>
+        <textarea id="studioHeadline" placeholder="Ej: ¡50% en tu primera sesión este mes!" rows="2"></textarea>
+      </div>
+      <div class="form-row">
+        <label>Subtexto / CTA</label>
+        <input type="text" id="studioCta" placeholder="Ej: Reserva ahora · WhatsApp 600 000 000">
+      </div>
+      <div class="form-row">
+        <label>Paleta de colores</label>
+        <select id="studioPalette">
+          <option value="dark_teal">Dark Teal (KOVA / Alfester)</option>
+          <option value="rose_gold">Rose Gold (Estética / Belleza)</option>
+          <option value="clinical_blue">Clinical Blue (Médico)</option>
+          <option value="warm_orange">Warm Orange (Food / Hostelería)</option>
+          <option value="luxury_black">Luxury Black (Premium)</option>
+          <option value="fresh_green">Fresh Green (Bienestar)</option>
+        </select>
+      </div>
+      <div class="btn-row">
+        <button class="btn-primary" onclick="generateDesign()">🎨 Generar diseño</button>
+        <button class="btn-secondary" onclick="generateWithAI()">✨ Sugerir con IA</button>
+      </div>
+    </div>
+
+    <div class="form-card">
+      <div class="section-title">Vista previa</div>
+      <div id="previewArea" style="display:flex;align-items:center;justify-content:center;min-height:320px;background:#0f1a14;border-radius:8px;border:1px dashed rgba(93,224,206,.2)">
+        <div style="text-align:center;color:rgba(93,224,206,.3)">
+          <div style="font-size:40px;margin-bottom:12px">🎨</div>
+          <div style="font-family:'Space Mono',monospace;font-size:11px">Configura y genera tu diseño</div>
+        </div>
+      </div>
+      <div id="previewActions" style="display:none;margin-top:16px">
+        <div class="btn-row">
+          <button class="btn-primary" onclick="downloadDesign()" style="flex:1">⬇️ Descargar PNG</button>
+          <button class="btn-secondary" onclick="saveToHistory()" style="flex:1">💾 Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="aiSuggestions" style="display:none" class="form-card">
+    <div class="section-title">Sugerencias IA — Ideas de contenido</div>
+    <div id="aiSugContent" class="ai-loading"><div class="spinner"></div>Generando ideas...</div>
+  </div>
+</div>
+
+<!-- TEMPLATES TAB -->
+<div id="panel-templates" class="panel">
+  <div class="form-card" style="margin-bottom:20px">
+    <div class="section-title">Templates predefinidos por sector</div>
+    <p style="font-size:13px;color:var(--gray);margin-bottom:16px">Selecciona un template base y personalízalo en el Studio.</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <select id="templateSectorFilter" onchange="filterTemplates()" style="width:auto;min-width:180px">
+        <option value="">Todos los sectores</option>
+        <option value="estetica">Estética & Belleza</option>
+        <option value="clinica">Clínica / Médico</option>
+        <option value="academia">Academia / Idiomas</option>
+        <option value="kova">KOVA</option>
+        <option value="alfester">Alfester Agency</option>
+      </select>
+      <select id="templateTypeFilter" onchange="filterTemplates()" style="width:auto;min-width:160px">
+        <option value="">Todos los tipos</option>
+        <option value="promo">Promoción</option>
+        <option value="educativo">Educativo</option>
+        <option value="branding">Branding</option>
+        <option value="resultado">Resultado</option>
+      </select>
+    </div>
+  </div>
+  <div class="design-grid" id="templatesGrid"></div>
+</div>
+
+<!-- CAMPAIGNS TAB -->
+<div id="panel-campaigns" class="panel">
+  <div class="form-card" style="margin-bottom:20px">
+    <div class="section-title">Generador de campaña completa</div>
+    <p style="font-size:13px;color:var(--gray);margin-bottom:20px">Genera todos los formatos de una campaña de una sola vez.</p>
+    <div class="form-row">
+      <label>Nombre de la campaña</label>
+      <input type="text" id="campName" placeholder="Ej: Campaña Verano 2026 — Clínica Estética Madrid">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div class="form-row">
+        <label>Sector</label>
+        <select id="campSector">
+          <option value="estetica">Estética & Belleza</option>
+          <option value="clinica">Clínica / Médico</option>
+          <option value="academia">Academia / Idiomas</option>
+          <option value="kova">KOVA</option>
+          <option value="alfester">Alfester Agency</option>
+          <option value="custom">Otro</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label>Objetivo</label>
+        <select id="campObjective">
+          <option value="captacion">Captación de leads</option>
+          <option value="ventas">Ventas directas</option>
+          <option value="awareness">Awareness / Marca</option>
+          <option value="retencion">Retención de clientes</option>
+          <option value="evento">Promoción de evento</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <label>Oferta / propuesta de valor</label>
+      <textarea id="campOffer" placeholder="Ej: 30% de descuento en tratamientos faciales durante julio. Primera cita gratis con diagnóstico incluido." rows="3"></textarea>
+    </div>
+    <div class="form-row">
+      <label>Redes a incluir</label>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px" id="campNetworks">
+        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" value="instagram" checked> Instagram</label>
+        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer"><input type="checkbox" value="facebook" checked> Facebook</label>
+        <label style="display:flex;align-items:center;gap=6px;font-size:13px;cursor:pointer"><input type="checkbox" value="tiktok"> TikTok</label>
+        <label style="display:flex;align-items:center;gap=6px;font-size:13px;cursor:pointer"><input type="checkbox" value="whatsapp" checked> WhatsApp</label>
+        <label style="display:flex;align-items:center;gap=6px;font-size:13px;cursor:pointer"><input type="checkbox" value="linkedin"> LinkedIn</label>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-primary" onclick="generateCampaign()">🚀 Generar campaña completa con IA</button>
+    </div>
+  </div>
+
+  <div id="campaignOutput" style="display:none">
+    <div class="form-card">
+      <div class="section-title">Assets de la campaña</div>
+      <div class="design-grid" id="campaignGrid"></div>
+    </div>
+    <div class="form-card" style="margin-top:20px">
+      <div class="section-title">Copy e ideas por red social</div>
+      <div id="campaignCopy" style="font-size:13px;line-height:1.8;white-space:pre-wrap;color:var(--white)"></div>
+    </div>
+  </div>
+</div>
+
+<!-- HISTORY TAB -->
+<div id="panel-history" class="panel">
+  <div class="form-card" style="margin-bottom:20px;display:flex;align-items:center;justify-content:space-between">
+    <div>
+      <div class="section-title">Diseños guardados</div>
+      <p style="font-size:13px;color:var(--gray)">Historial de diseños generados y guardados.</p>
+    </div>
+    <button class="btn-secondary" onclick="clearHistory()" style="font-size:12px">🗑️ Limpiar</button>
+  </div>
+  <div class="hist-grid" id="histGrid">
+    <div class="empty-state" style="grid-column:1/-1">No hay diseños guardados aún.<br>Genera y guarda desde el Studio.</div>
+  </div>
+</div>
+
+</div><!-- /content -->
+
+<script>
+// State
+let currentFormat = {id:'ig_square', w:1080, h:1080};
+let currentCanvas = null;
+let designHistory = JSON.parse(localStorage.getItem('cm_history') || '[]');
+
+// Palettes
+const PALETTES = {
+  dark_teal: { bg:'#0d0b08', accent:'#5de0ce', text:'#f0ede6', sub:'rgba(93,224,206,.5)' },
+  rose_gold: { bg:'#1a0a0f', accent:'#f4a5b0', text:'#fff0f2', sub:'rgba(244,165,176,.5)' },
+  clinical_blue: { bg:'#060d1a', accent:'#5da3e0', text:'#e8f0ff', sub:'rgba(93,163,224,.5)' },
+  warm_orange: { bg:'#1a0d00', accent:'#fb923c', text:'#fff7f0', sub:'rgba(251,146,60,.5)' },
+  luxury_black: { bg:'#000000', accent:'#d4af37', text:'#ffffff', sub:'rgba(212,175,55,.5)' },
+  fresh_green: { bg:'#061208', accent:'#34d296', text:'#f0fff4', sub:'rgba(52,210,150,.5)' },
+};
+
+// Sector icons
+const SECTOR_ICONS = {
+  estetica:'💅', clinica:'🏥', academia:'📚', restaurante:'🍽️',
+  inmobiliaria:'🏠', kova:'🤖', alfester:'⚡', custom:'🎯'
+};
+
+function setFormat(id, el) {
+  document.querySelectorAll('.format-pill').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  currentFormat = { id, w: parseInt(el.dataset.w), h: parseInt(el.dataset.h) };
+}
+
+function switchTab(tab, el) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('panel-'+tab).classList.add('active');
+  if (tab === 'templates') renderTemplates();
+  if (tab === 'history') renderHistory();
+}
+
+function generateDesign() {
+  const headline = document.getElementById('studioHeadline').value || 'Tu mensaje aquí';
+  const cta = document.getElementById('studioCta').value || '';
+  const palette = document.getElementById('studioPalette').value;
+  const sector = document.getElementById('studioSector').value;
+  const p = PALETTES[palette] || PALETTES.dark_teal;
+  const icon = SECTOR_ICONS[sector] || '🎯';
+
+  // Render on canvas
+  const wrap = document.getElementById('previewArea');
+  const displaySize = 320;
+  const ratio = currentFormat.h / currentFormat.w;
+  const dispH = Math.min(displaySize * ratio, 400);
+
+  wrap.innerHTML = `<canvas id="designCanvas" width="${currentFormat.w}" height="${currentFormat.h}" style="max-width:${displaySize}px;max-height:${dispH}px;border-radius:8px"></canvas>`;
+  
+  const canvas = document.getElementById('designCanvas');
+  const ctx = canvas.getContext('2d');
+  currentCanvas = canvas;
+  const W = currentFormat.w, H = currentFormat.h;
+
+  // Background
+  ctx.fillStyle = p.bg;
+  ctx.fillRect(0,0,W,H);
+
+  // Accent bar top
+  ctx.fillStyle = p.accent;
+  ctx.fillRect(0, 0, W, H*0.012);
+
+  // Corner decoration
+  ctx.globalAlpha = 0.08;
+  ctx.fillStyle = p.accent;
+  ctx.beginPath();
+  ctx.arc(W*0.85, H*0.15, W*0.35, 0, Math.PI*2);
+  ctx.fill();
+  ctx.globalAlpha = 1;
+
+  // Icon
+  ctx.font = `${W*0.12}px sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.fillText(icon, W*0.5, H*0.28);
+
+  // Headline
+  ctx.fillStyle = p.text;
+  ctx.font = `bold ${W*0.065}px DM Sans, Arial`;
+  ctx.textAlign = 'center';
+  const words = headline.split(' ');
+  let lines = [], current = '';
+  words.forEach(word => {
+    const test = current ? current+' '+word : word;
+    if (ctx.measureText(test).width > W*0.8) { lines.push(current); current = word; }
+    else current = test;
+  });
+  if (current) lines.push(current);
+  const lineH = W*0.08;
+  const startY = H*0.45 - (lines.length-1)*lineH/2;
+  lines.forEach((line,i) => ctx.fillText(line, W*0.5, startY + i*lineH));
+
+  // Divider
+  ctx.strokeStyle = p.accent;
+  ctx.globalAlpha = 0.4;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(W*0.3, H*0.65);
+  ctx.lineTo(W*0.7, H*0.65);
+  ctx.stroke();
+  ctx.globalAlpha = 1;
+
+  // CTA
+  if (cta) {
+    ctx.fillStyle = p.sub;
+    ctx.font = `${W*0.038}px DM Sans, Arial`;
+    ctx.fillText(cta, W*0.5, H*0.73);
+  }
+
+  // Bottom brand
+  ctx.fillStyle = p.accent;
+  ctx.font = `bold ${W*0.032}px Space Mono, monospace`;
+  ctx.fillText('ALFESTER AGENCY', W*0.5, H*0.88);
+  ctx.fillStyle = p.sub;
+  ctx.font = `${W*0.024}px DM Sans, Arial`;
+  ctx.fillText('agencia.kova-app.net', W*0.5, H*0.93);
+
+  // Bottom accent bar
+  ctx.fillStyle = p.accent;
+  ctx.fillRect(0, H*0.988, W, H*0.012);
+
+  document.getElementById('previewActions').style.display = 'block';
+}
+
+async function generateWithAI() {
+  const sector = document.getElementById('studioSector').value;
+  const type = document.getElementById('studioType').value;
+  document.getElementById('aiSuggestions').style.display = 'block';
+  document.getElementById('aiSugContent').innerHTML = '<div class="spinner"></div> Generando ideas con IA...';
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 600,
+        messages: [{
+          role: 'user',
+          content: `Eres CM Agent de Alfester Agency. Genera 5 ideas de contenido visual para un post de ${type} para el sector ${sector} en redes sociales.
+Para cada idea da:
+1. Headline (máx 8 palabras, impactante)
+2. Subtexto/CTA (1 línea)
+3. Elemento visual sugerido
+
+Responde en español, formato limpio sin markdown.`
+        }]
+      })
+    });
+    const data = await res.json();
+    const text = data.content?.[0]?.text || 'Error generando ideas';
+    document.getElementById('aiSugContent').innerHTML = `<pre style="white-space:pre-wrap;font-size:13px;color:var(--white);line-height:1.7">${text}</pre>`;
+  } catch(e) {
+    document.getElementById('aiSugContent').innerHTML = '<span style="color:var(--red)">Error conectando con IA. Verifica el proxy.</span>';
+  }
+}
+
+function downloadDesign() {
+  if (!currentCanvas) { alert('Genera un diseño primero'); return; }
+  const link = document.createElement('a');
+  link.download = `alfester_${currentFormat.id}_${Date.now()}.png`;
+  link.href = currentCanvas.toDataURL('image/png');
+  link.click();
+}
+
+function saveToHistory() {
+  if (!currentCanvas) { alert('Genera un diseño primero'); return; }
+  const entry = {
+    id: Date.now(),
+    name: document.getElementById('studioHeadline').value || 'Sin título',
+    format: currentFormat.id,
+    sector: document.getElementById('studioSector').value,
+    dataURL: currentCanvas.toDataURL('image/png', 0.6),
+    date: new Date().toLocaleDateString('es-ES')
+  };
+  designHistory.unshift(entry);
+  if (designHistory.length > 50) designHistory.pop();
+  localStorage.setItem('cm_history', JSON.stringify(designHistory));
+  alert('✅ Diseño guardado en historial');
+}
+
+// Templates data
+const TEMPLATES = [
+  { id:'t1', name:'Oferta Flash Estética', sector:'estetica', type:'promo', icon:'💅', palette:'rose_gold', headline:'¡50% DESCUENTO HOY!', cta:'Solo hoy · Reserva YA' },
+  { id:'t2', name:'Resultado Real', sector:'clinica', type:'resultado', icon:'🏥', palette:'clinical_blue', headline:'+127 LEADS EN 30 DÍAS', cta:'Caso de éxito Alfester' },
+  { id:'t3', name:'KOVA Demo', sector:'kova', type:'lanzamiento', icon:'🤖', palette:'dark_teal', headline:'IA QUE VENDE POR TI', cta:'Prueba KOVA gratis · kova-app.net' },
+  { id:'t4', name:'Academia Promo', sector:'academia', type:'promo', icon:'📚', palette:'fresh_green', headline:'INGLÉS EN 3 MESES', cta:'Primera clase gratis · Inscríbete hoy' },
+  { id:'t5', name:'Alfester Branding', sector:'alfester', type:'branding', icon:'⚡', palette:'dark_teal', headline:'MARKETING + IA = RESULTADOS', cta:'agencia.kova-app.net' },
+  { id:'t6', name:'Testimonio Cliente', sector:'estetica', type:'testimonio', icon:'⭐', palette:'rose_gold', headline:'"EL MEJOR RESULTADO"', cta:'Reserva tu cita hoy' },
+  { id:'t7', name:'Tip Educativo KOVA', sector:'kova', type:'educativo', icon:'💡', palette:'dark_teal', headline:'MANEJA OBJECIONES CON IA', cta:'NOVA · Respuestas al instante' },
+  { id:'t8', name:'Clínica Captación', sector:'clinica', type:'captacion', icon:'🩺', palette:'clinical_blue', headline:'CONSULTA GRATIS HOY', cta:'Llama ahora · Sin compromiso' },
+];
+
+function renderTemplates(filter = {}) {
+  const grid = document.getElementById('templatesGrid');
+  let items = TEMPLATES;
+  const sf = document.getElementById('templateSectorFilter')?.value;
+  const tf = document.getElementById('templateTypeFilter')?.value;
+  if (sf) items = items.filter(t => t.sector === sf);
+  if (tf) items = items.filter(t => t.type === tf);
+
+  grid.innerHTML = items.map(t => {
+    const p = PALETTES[t.palette] || PALETTES.dark_teal;
+    return `<div class="design-card">
+      <div class="design-preview" style="background:${p.bg}">
+        <div style="text-align:center">
+          <div style="font-size:32px;margin-bottom:8px">${t.icon}</div>
+          <div style="color:${p.accent};font-size:11px;font-weight:700;font-family:'Space Mono',monospace;padding:0 16px">${t.headline}</div>
+        </div>
+      </div>
+      <div class="design-meta">
+        <div class="design-name">${t.name}</div>
+        <div class="design-dim">${t.sector} · ${t.type}</div>
+        <div class="design-actions">
+          <button class="design-btn edit" onclick='loadTemplate(${JSON.stringify(t)})'>Usar template</button>
+          <button class="design-btn dl" onclick='quickGenTemplate(${JSON.stringify(t)})'>Generar</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filterTemplates() { renderTemplates(); }
+
+function loadTemplate(t) {
+  document.getElementById('studioHeadline').value = t.headline;
+  document.getElementById('studioCta').value = t.cta;
+  document.getElementById('studioSector').value = t.sector;
+  document.getElementById('studioPalette').value = t.palette;
+  // Switch to studio tab
+  document.querySelectorAll('.tab').forEach((el,i) => { if(i===0) el.classList.add('active'); else el.classList.remove('active'); });
+  document.querySelectorAll('.panel').forEach((el,i) => { if(i===0) el.classList.add('active'); else el.classList.remove('active'); });
+}
+
+function quickGenTemplate(t) {
+  loadTemplate(t);
+  setTimeout(() => generateDesign(), 100);
+}
+
+async function generateCampaign() {
+  const name = document.getElementById('campName').value || 'Campaña';
+  const sector = document.getElementById('campSector').value;
+  const objective = document.getElementById('campObjective').value;
+  const offer = document.getElementById('campOffer').value || 'Oferta especial';
+  
+  document.getElementById('campaignOutput').style.display = 'block';
+  document.getElementById('campaignCopy').textContent = '⏳ Generando estrategia de campaña con IA...';
+  document.getElementById('campaignGrid').innerHTML = '';
+
+  // Generate canvas previews for each format
+  const formats = [
+    {id:'ig_square', w:1080, h:1080, label:'IG Post', tag:'ig'},
+    {id:'ig_story', w:1080, h:1920, label:'IG Story', tag:'ig'},
+    {id:'fb_post', w:1200, h:630, label:'FB Post', tag:'fb'},
+    {id:'whatsapp', w:800, h:800, label:'WhatsApp', tag:'wa'},
+  ];
+
+  const icon = SECTOR_ICONS[sector] || '🎯';
+  const palette = sector === 'kova' || sector === 'alfester' ? 'dark_teal' : 
+                  sector === 'estetica' ? 'rose_gold' :
+                  sector === 'clinica' ? 'clinical_blue' : 'warm_orange';
+  const p = PALETTES[palette];
+
+  const grid = document.getElementById('campaignGrid');
+  formats.forEach(fmt => {
+    const id = 'camp_canvas_'+fmt.id;
+    const dispW = 200;
+    const dispH = Math.min(dispW * (fmt.h/fmt.w), 280);
+    grid.innerHTML += `<div class="design-card">
+      <div class="design-preview" style="background:${p.bg};height:${dispH}px">
+        <canvas id="${id}" width="${fmt.w}" height="${fmt.h}" style="max-width:100%;max-height:100%;border-radius:4px"></canvas>
+      </div>
+      <div class="design-meta">
+        <div class="design-name">${fmt.label}</div>
+        <div class="design-dim">${fmt.w}×${fmt.h}</div>
+        <div class="design-actions">
+          <button class="design-btn dl" onclick="downloadCampCanvas('${id}','${fmt.label}')">⬇️ PNG</button>
+        </div>
+      </div>
+    </div>`;
+  });
+
+  // Draw on each canvas
+  setTimeout(() => {
+    formats.forEach(fmt => {
+      const canvas = document.getElementById('camp_canvas_'+fmt.id);
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const W = fmt.w, H = fmt.h;
+      ctx.fillStyle = p.bg; ctx.fillRect(0,0,W,H);
+      ctx.fillStyle = p.accent; ctx.fillRect(0,0,W,H*0.012);
+      ctx.globalAlpha=0.07; ctx.fillStyle=p.accent;
+      ctx.beginPath(); ctx.arc(W*.85,H*.2,W*.35,0,Math.PI*2); ctx.fill();
+      ctx.globalAlpha=1;
+      ctx.font=`${W*.1}px sans-serif`; ctx.textAlign='center';
+      ctx.fillText(icon, W*.5, H*.28);
+      ctx.fillStyle=p.text; ctx.font=`bold ${W*.06}px Arial`;
+      ctx.fillText(name.substring(0,20), W*.5, H*.45);
+      ctx.fillStyle=p.sub; ctx.font=`${W*.035}px Arial`;
+      ctx.fillText(offer.substring(0,30), W*.5, H*.55);
+      ctx.fillStyle=p.accent; ctx.font=`bold ${W*.028}px monospace`;
+      ctx.fillText('ALFESTER AGENCY', W*.5, H*.88);
+      ctx.fillStyle=p.accent; ctx.fillRect(0,H*.988,W,H*.012);
+    });
+  }, 200);
+
+  // AI copy generation
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 800,
+        messages: [{
+          role: 'user',
+          content: `Eres CM Agent de Alfester Agency. Genera el copy completo para la campaña: "${name}"
+Sector: ${sector} | Objetivo: ${objective} | Oferta: ${offer}
+
+Genera:
+1. INSTAGRAM (post + 5 hashtags)
+2. FACEBOOK (descripción completa)
+3. WHATSAPP (mensaje corto y directo)
+4. IDEAS DE STORY (3 slides)
+
+Responde en español, tono profesional pero cercano, sin markdown.`
+        }]
+      })
+    });
+    const data = await res.json();
+    document.getElementById('campaignCopy').textContent = data.content?.[0]?.text || 'Error';
+  } catch(e) {
+    document.getElementById('campaignCopy').textContent = 'Error conectando con IA.';
+  }
+}
+
+function downloadCampCanvas(id, label) {
+  const canvas = document.getElementById(id);
+  if (!canvas) return;
+  const link = document.createElement('a');
+  link.download = `alfester_campaign_${label.replace(/\s/g,'_')}.png`;
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+
+function renderHistory() {
+  const grid = document.getElementById('histGrid');
+  if (!designHistory.length) {
+    grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1">No hay diseños guardados aún.<br>Genera y guarda desde el Studio.</div>';
+    return;
+  }
+  grid.innerHTML = designHistory.map(e => `
+    <div class="hist-card">
+      <div class="hist-preview"><img src="${e.dataURL}" style="width:100%;height:100%;object-fit:cover;border-radius:6px" alt=""></div>
+      <div class="hist-name">${e.name.substring(0,24)}</div>
+      <div class="hist-date">${e.date} · ${e.format}</div>
+      <div style="display:flex;gap:6px;margin-top:8px">
+        <button onclick="downloadHist('${e.id}')" style="flex:1;padding:5px;font-size:11px;background:var(--teal);color:#0d0b08;border:none;border-radius:5px;cursor:pointer">⬇️</button>
+        <button onclick="deleteHist(${e.id})" style="flex:1;padding:5px;font-size:11px;background:rgba(239,68,68,.15);color:var(--red);border:1px solid rgba(239,68,68,.3);border-radius:5px;cursor:pointer">🗑️</button>
+      </div>
+    </div>`).join('');
+}
+
+function downloadHist(id) {
+  const e = designHistory.find(h => h.id == id);
+  if (!e) return;
+  const link = document.createElement('a');
+  link.download = `alfester_${e.format}_${e.id}.png`;
+  link.href = e.dataURL;
+  link.click();
+}
+
+function deleteHist(id) {
+  designHistory = designHistory.filter(h => h.id != id);
+  localStorage.setItem('cm_history', JSON.stringify(designHistory));
+  renderHistory();
+}
+
+function clearHistory() {
+  if (!confirm('¿Eliminar todo el historial?')) return;
+  designHistory = [];
+  localStorage.setItem('cm_history', '[]');
+  renderHistory();
+}
+
+// Init
+renderHistory();
+</script>
+</body>
+</html>
