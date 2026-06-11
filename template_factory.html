@@ -289,9 +289,9 @@ EMAIL: Email de presentación listo para enviar. Asunto incluido. 200 palabras m
 WHATSAPP: Mensaje de seguimiento para WhatsApp. 80 palabras máximo. Tono cercano. Menciona beneficio específico para ${sector}.`;
 
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
+    const res=await fetch('https://api.kova-app.net/api/proxy',{
       method:'POST',
-      headers:{'Content-Type':'application/json'},
+      headers:{'Content-Type':'application/json','x-api-key':'alfester-ops-2026'},
       body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:2500,messages:[{role:'user',content:prompt}]})
     });
     const data=await res.json();

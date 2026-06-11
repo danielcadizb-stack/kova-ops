@@ -394,9 +394,9 @@ async function generarPlanIA(){
   const out=document.getElementById('aiOutput');
   out.innerHTML='<div class="ai-loading"><div class="spinner"></div>Generando plan con IA...</div>';
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
+    const res=await fetch('https://api.kova-app.net/api/proxy',{
       method:'POST',
-      headers:{'Content-Type':'application/json'},
+      headers:{'Content-Type':'application/json','x-api-key':'alfester-ops-2026'},
       body:JSON.stringify({
         model:'claude-sonnet-4-20250514',
         max_tokens:1000,

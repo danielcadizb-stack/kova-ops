@@ -184,9 +184,9 @@ async function sendMsg(agent){
   histories[agent].push({role:'user', content:text});
   const loadDiv = addMsg(agent, 'agent loading', '...');
   try{
-    const res = await fetch('https://api.anthropic.com/v1/messages',{
+    const res = await fetch('https://api.kova-app.net/api/proxy',{
       method:'POST',
-      headers:{'Content-Type':'application/json'},
+      headers:{'Content-Type':'application/json','x-api-key':'alfester-ops-2026'},
       body: JSON.stringify({
         model:'claude-sonnet-4-20250514', max_tokens:800,
         system: 'Eres '+AGENTS[agent].name+', '+AGENTS[agent].role+'\n\nContexto: Alfester Technologies OÜ (Estonia, Reg. 16250313527). Agencia de marketing digital con IA. Web: agencia.kova-app.net. Producto estrella: KOVA (app de IA para ventas). Planes: Esencial €497, Growth €897, Full Stack €1497.',
@@ -216,9 +216,9 @@ async function orchestrate(){
   out.style.display='block';
   out.innerHTML='<span class="spinner"></span>JARVIS orquestando al equipo completo...';
   try{
-    const res = await fetch('https://api.anthropic.com/v1/messages',{
+    const res = await fetch('https://api.kova-app.net/api/proxy',{
       method:'POST',
-      headers:{'Content-Type':'application/json'},
+      headers:{'Content-Type':'application/json','x-api-key':'alfester-ops-2026'},
       body: JSON.stringify({
         model:'claude-sonnet-4-20250514', max_tokens:2000,
         system:`Eres JARVIS, CEO de Alfester Technologies OÜ, coordinando un equipo de agentes IA:
