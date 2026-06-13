@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Diseñador Experto IA — Alfester + KOVA</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0d0b08;--bg2:#111410;--bg3:#181c15;--card:#141812;
+  --teal:#5de0ce;--gold:#ffc350;--purp:#a78bfa;--green:#34d296;
+  --red:#ef4444;--white:#f0ede6;--gray:#a09b91;--dim:rgba(240,237,230,.5);
+  --border:rgba(93,224,206,.12);--border2:rgba(255,255,255,.07);
+  --ig:#E1306C;--li:#0A66C2;--tk:#ffffff;--fb:#1877F2;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--white);padding:24px;max-width:1200px;margin:0 auto}
+h1{font-family:'Space Mono',monospace;color:var(--teal);font-size:18px;margin-bottom:4px}
+.subtitle{color:var(--gray);font-size:12px;margin-bottom:28px}
+.layout{display:grid;grid-template-columns:340px 1fr;gap:20px}
+/* ── PANEL IZQUIERDO ── */
+.panel{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.section-label{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:.16em;color:rgba(93,224,206,.5);text-transform:uppercase;margin-bottom:8px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-size:11px;color:var(--gray);font-weight:500}
+select,input,textarea{background:var(--bg3);border:1px solid var(--border2);border-radius:8px;color:var(--white);padding:9px 12px;font-size:12px;font-family:'DM Sans',sans-serif;width:100%;outline:none;transition:.15s}
+select:focus,input:focus,textarea:focus{border-color:var(--teal)}
+textarea{resize:vertical;min-height:70px;line-height:1.5}
+.color-row{display:flex;gap:6px;flex-wrap:wrap}
+.color-swatch{width:28px;height:28px;border-radius:6px;cursor:pointer;border:2px solid transparent;transition:.15s;position:relative}
+.color-swatch.selected{border-color:var(--white);transform:scale(1.15)}
+.color-swatch:hover{transform:scale(1.1)}
+.btn-generate{display:flex;align-items:center;justify-content:center;gap:8px;background:var(--teal);color:var(--bg);font-weight:700;font-size:13px;padding:12px;border-radius:10px;border:none;cursor:pointer;transition:.2s;width:100%}
+.btn-generate:hover{background:#4ecfc0;transform:translateY(-1px)}
+.btn-generate:disabled{background:rgba(93,224,206,.3);cursor:not-allowed;transform:none}
+.btn-secondary{display:flex;align-items:center;justify-content:center;gap:6px;background:transparent;color:var(--teal);font-weight:600;font-size:12px;padding:9px;border-radius:8px;border:1px solid var(--teal);cursor:pointer;transition:.15s;width:100%}
+.btn-secondary:hover{background:rgba(93,224,206,.08)}
+.divider{height:1px;background:var(--border2)}
+/* ── PANEL DERECHO ── */
+.right-panel{display:flex;flex-direction:column;gap:16px}
+/* Canvas area */
+.canvas-wrap{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+.canvas-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.canvas-title{font-size:13px;font-weight:600;color:var(--white)}
+.canvas-actions{display:flex;gap:8px}
+.btn-sm{font-size:11px;padding:6px 12px;border-radius:6px;border:1px solid var(--border2);background:var(--bg3);color:var(--gray);cursor:pointer;transition:.15s}
+.btn-sm:hover{border-color:var(--teal);color:var(--teal)}
+.btn-sm.primary{background:var(--teal);color:var(--bg);border-color:var(--teal);font-weight:700}
+.canvas-area{display:flex;justify-content:center;align-items:center;min-height:400px;background:var(--bg2);border-radius:10px;border:1px solid var(--border2);padding:20px;position:relative}
+.canvas-placeholder{text-align:center;color:var(--gray);font-size:13px}
+.canvas-placeholder .icon{font-size:40px;margin-bottom:10px}
+#design-canvas{max-width:100%;max-height:600px;border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+/* Format buttons */
+.format-tabs{display:flex;gap:6px;flex-wrap:wrap}
+.fmt-tab{font-size:11px;padding:5px 12px;border-radius:6px;border:1px solid var(--border2);background:transparent;color:var(--gray);cursor:pointer;transition:.15s}
+.fmt-tab.active{background:rgba(93,224,206,.1);border-color:var(--teal);color:var(--teal)}
+/* Variants */
+.variants-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.variant-card{background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:12px;cursor:pointer;transition:.15s;text-align:center}
+.variant-card:hover{border-color:var(--teal)}
+.variant-canvas{width:100%;aspect-ratio:1;border-radius:6px;margin-bottom:8px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.variant-label{font-size:10px;color:var(--gray);font-family:'Space Mono',monospace}
+/* Copy section */
+.copy-section{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+.copy-tabs{display:flex;gap:6px;margin-bottom:14px}
+.copy-tab{font-size:11px;padding:5px 12px;border-radius:6px;border:1px solid var(--border2);background:transparent;color:var(--gray);cursor:pointer;transition:.15s}
+.copy-tab.active{background:rgba(255,195,80,.1);border-color:var(--gold);color:var(--gold)}
+.copy-output{background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:14px;font-size:12px;color:var(--dim);line-height:1.8;min-height:140px;white-space:pre-wrap;position:relative}
+.copy-actions{display:flex;gap:8px;margin-top:10px}
+/* Loading */
+.loading-overlay{display:none;position:absolute;inset:0;background:rgba(13,11,8,.85);border-radius:10px;align-items:center;justify-content:center;flex-direction:column;gap:12px;z-index:10}
+.loading-overlay.active{display:flex}
+.spinner{width:36px;height:36px;border:3px solid rgba(93,224,206,.2);border-top-color:var(--teal);border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-family:'Space Mono',monospace;font-size:11px;color:var(--teal)}
+@media(max-width:900px){.layout{grid-template-columns:1fr}.variants-grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<h1>✦ Diseñador Experto IA</h1>
+<div class="subtitle">Genera gráficas profesionales para redes sociales · Alfester Agency + KOVA · Descarga en PNG</div>
+
+<div class="layout">
+
+<!-- ══ PANEL IZQUIERDO: CONFIGURACIÓN ══ -->
+<div class="panel">
+  <div>
+    <div class="section-label">1. Plataforma y formato</div>
+    <div class="field">
+      <label>Red social</label>
+      <select id="d-network" onchange="updateFormat()">
+        <option value="instagram_feed">Instagram (feed 1:1)</option>
+        <option value="instagram_story">Instagram Story (9:16)</option>
+        <option value="instagram_reel">Instagram Reel cover</option>
+        <option value="linkedin">LinkedIn (1.91:1)</option>
+        <option value="tiktok">TikTok cover (9:16)</option>
+        <option value="facebook">Facebook (1.91:1)</option>
+        <option value="whatsapp">WhatsApp / carrusel</option>
+      </select>
+    </div>
+    <div class="field" style="margin-top:10px">
+      <label>Tipo de post</label>
+      <select id="d-type">
+        <option value="lanzamiento">🚀 Lanzamiento / Novedad</option>
+        <option value="educativo">📚 Educativo — Enseñanza de valor</option>
+        <option value="caso_exito">⭐ Caso de éxito / Testimonio</option>
+        <option value="oferta">💰 Oferta / Promoción</option>
+        <option value="detras_camaras">🎬 Detrás de cámaras</option>
+        <option value="interaccion">💬 Pregunta / Interacción</option>
+        <option value="comparativa">📊 Comparativa / Datos</option>
+        <option value="motivacional">💡 Inspiracional / Motivacional</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div>
+    <div class="section-label">2. Contenido y marca</div>
+    <div class="field">
+      <label>Marca principal</label>
+      <select id="d-brand">
+        <option value="alfester">Alfester Agency</option>
+        <option value="kova">KOVA App</option>
+        <option value="ambas">Alfester + KOVA</option>
+      </select>
+    </div>
+    <div class="field" style="margin-top:10px">
+      <label>Headline principal (texto del diseño)</label>
+      <input type="text" id="d-headline" placeholder="Ej: Tu negocio en piloto automático 🤖" maxlength="60">
+    </div>
+    <div class="field" style="margin-top:10px">
+      <label>Subtexto / CTA</label>
+      <input type="text" id="d-subtext" placeholder="Ej: Primera consulta gratis · agencia.kova-app.net" maxlength="80">
+    </div>
+    <div class="field" style="margin-top:10px">
+      <label>Contexto para la IA (describe el diseño que quieres)</label>
+      <textarea id="d-context" placeholder="Ej: diseño oscuro con fondo de partículas, el logo de KOVA centrado, headline grande en blanco con palabra clave en teal, ícono de robot en esquina..."></textarea>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div>
+    <div class="section-label">3. Estilo visual</div>
+    <div class="field">
+      <label>Paleta de colores</label>
+      <select id="d-palette" onchange="updateSwatches()">
+        <option value="dark_teal">Dark Teal (KOVA / Alfester)</option>
+        <option value="dark_gold">Dark Gold (Alfester premium)</option>
+        <option value="dark_purp">Dark Purple (MAIA / Pro)</option>
+        <option value="white_teal">Blanco + Teal (limpio)</option>
+        <option value="gradient_dark">Gradiente oscuro</option>
+      </select>
+    </div>
+    <div class="field" style="margin-top:8px">
+      <label>Colores activos</label>
+      <div class="color-row" id="color-swatches"></div>
+    </div>
+    <div class="field" style="margin-top:10px">
+      <label>Estilo de diseño</label>
+      <select id="d-style">
+        <option value="minimalista">Minimalista — clean, mucho espacio</option>
+        <option value="bold">Bold — texto grande, impactante</option>
+        <option value="tech">Tech / IA — grid, partículas, datos</option>
+        <option value="editorial">Editorial — tipografía como protagonista</option>
+        <option value="gradient">Gradient — fondos dinámicos</option>
+      </select>
+    </div>
+    <div class="field" style="margin-top:10px">
+      <label>Elemento visual principal</label>
+      <select id="d-element">
+        <option value="logo_ekg">Logo EKG KOVA centrado</option>
+        <option value="datos_mockup">Mockup con datos / métricas</option>
+        <option value="chat_bubble">Burbuja de chat / conversación</option>
+        <option value="comparativa">Tabla comparativa antes/después</option>
+        <option value="icono_grande">Ícono grande + frase</option>
+        <option value="patron_grid">Patrón geométrico / grid</option>
+        <option value="persona">Ilustración persona + device</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <button class="btn-generate" id="gen-btn" onclick="generateDesign()">
+    <span>✨</span> Generar diseño con IA
+  </button>
+  <button class="btn-secondary" onclick="generateVariants()">
+    <span>🔄</span> Generar 3 variantes
+  </button>
+</div>
+
+<!-- ══ PANEL DERECHO: CANVAS + COPY ══ -->
+<div class="right-panel">
+
+  <!-- Canvas -->
+  <div class="canvas-wrap">
+    <div class="canvas-header">
+      <div>
+        <div class="canvas-title">Vista previa del diseño</div>
+        <div style="font-size:10px;color:var(--gray);margin-top:2px" id="canvas-size-label">—</div>
+      </div>
+      <div class="canvas-actions">
+        <button class="btn-sm" onclick="regenerate()">↺ Regenerar</button>
+        <button class="btn-sm" onclick="downloadSVG()">⬇ SVG</button>
+        <button class="btn-sm primary" onclick="downloadPNG()">⬇ PNG</button>
+      </div>
+    </div>
+    <div class="canvas-area" id="canvas-area">
+      <div class="loading-overlay" id="loading-overlay">
+        <div class="spinner"></div>
+        <div class="loading-text" id="loading-text">Diseñando con IA...</div>
+      </div>
+      <div class="canvas-placeholder" id="canvas-placeholder">
+        <div class="icon">🎨</div>
+        <div>Configura el diseño y pulsa "Generar"</div>
+        <div style="font-size:11px;margin-top:6px;color:rgba(160,155,145,.5)">El diseño aparecerá aquí listo para descargar</div>
+      </div>
+      <svg id="design-canvas" style="display:none"></svg>
+    </div>
+  </div>
+
+  <!-- Variantes -->
+  <div class="canvas-wrap" id="variants-section" style="display:none">
+    <div class="canvas-header">
+      <div class="canvas-title">3 Variantes generadas</div>
+      <div style="font-size:10px;color:var(--gray)">Haz clic en una para cargarla en el canvas principal</div>
+    </div>
+    <div class="variants-grid" id="variants-grid"></div>
+  </div>
+
+  <!-- Copy IA -->
+  <div class="copy-section">
+    <div class="canvas-title" style="margin-bottom:4px">Copy del post — Generado con IA</div>
+    <div style="font-size:10px;color:var(--gray);margin-bottom:12px">Texto listo para publicar junto con el diseño</div>
+    <div class="copy-tabs">
+      <button class="copy-tab active" onclick="setCopyTab('post',this)">Post completo</button>
+      <button class="copy-tab" onclick="setCopyTab('short',this)">Versión corta</button>
+      <button class="copy-tab" onclick="setCopyTab('hashtags',this)">Hashtags</button>
+      <button class="copy-tab" onclick="setCopyTab('story',this)">Story slides</button>
+    </div>
+    <div class="copy-output" id="copy-output">El copy se generará automáticamente al crear el diseño...</div>
+    <div class="copy-actions">
+      <button class="btn-sm primary" onclick="copyCopy()">📋 Copiar texto</button>
+      <button class="btn-sm" onclick="regenerateCopy()">↺ Regenerar copy</button>
+      <button class="btn-sm" onclick="translateCopy()">🇬🇧 Traducir EN</button>
+    </div>
+  </div>
+
+</div><!-- end right panel -->
+</div><!-- end layout -->
+
+<script>
+const PROXY = 'https://api.kova-app.net/api/proxy';
+const KEY = 'alfester-jarvis-2026-kova';
+
+// ── PALETTES ──────────────────────────────────────────────
+const PALETTES = {
+  dark_teal:   { bg:'#0d0b08', bg2:'#111410', accent:'#5de0ce', accent2:'#34d296', text:'#f0ede6', dim:'#a09b91' },
+  dark_gold:   { bg:'#0d0b08', bg2:'#161210', accent:'#ffc350', accent2:'#f59e0b', text:'#f0ede6', dim:'#a09b91' },
+  dark_purp:   { bg:'#0d0b0f', bg2:'#12101a', accent:'#a78bfa', accent2:'#7c3aed', text:'#f0ede6', dim:'#a09b91' },
+  white_teal:  { bg:'#ffffff', bg2:'#f5f5f5', accent:'#00a896', accent2:'#5de0ce', text:'#0d0b08', dim:'#555' },
+  gradient_dark:{ bg:'#0d0b08', bg2:'#1a0f2e', accent:'#5de0ce', accent2:'#a78bfa', text:'#f0ede6', dim:'#a09b91' },
+};
+
+const SIZES = {
+  instagram_feed:  { w:1080, h:1080, label:'1080×1080px — Instagram Feed' },
+  instagram_story: { w:1080, h:1920, label:'1080×1920px — Instagram Story' },
+  instagram_reel:  { w:1080, h:1920, label:'1080×1920px — Reel Cover' },
+  linkedin:        { w:1200, h:628,  label:'1200×628px — LinkedIn' },
+  tiktok:          { w:1080, h:1920, label:'1080×1920px — TikTok' },
+  facebook:        { w:1200, h:628,  label:'1200×628px — Facebook' },
+  whatsapp:        { w:1080, h:1080, label:'1080×1080px — WhatsApp' },
+};
+
+let currentSVG = '';
+let copyData = { post:'', short:'', hashtags:'', story:'' };
+
+function updateSwatches(){
+  const pal = PALETTES[document.getElementById('d-palette').value];
+  const c = document.getElementById('color-swatches');
+  c.innerHTML = Object.entries(pal).map(([k,v]) =>
+    `<div class="color-swatch" style="background:${v}" title="${k}: ${v}" onclick="this.classList.toggle('selected')"></div>`
+  ).join('');
+}
+
+function updateFormat(){
+  const net = document.getElementById('d-network').value;
+  const size = SIZES[net];
+  document.getElementById('canvas-size-label').textContent = size ? size.label : '';
+}
+
+updateSwatches();
+updateFormat();
+
+// ── GENERATE DESIGN ───────────────────────────────────────
+async function generateDesign(){
+  const network = document.getElementById('d-network').value;
+  const type = document.getElementById('d-type').value;
+  const brand = document.getElementById('d-brand').value;
+  const headline = document.getElementById('d-headline').value || 'Tu negocio en piloto automático';
+  const subtext = document.getElementById('d-subtext').value || 'agencia.kova-app.net';
+  const context = document.getElementById('d-context').value;
+  const palette = document.getElementById('d-palette').value;
+  const style = document.getElementById('d-style').value;
+  const element = document.getElementById('d-element').value;
+  const pal = PALETTES[palette];
+  const size = SIZES[network];
+
+  showLoading('Diseñando con IA...');
+  document.getElementById('gen-btn').disabled = true;
+
+  // Build the expert designer prompt
+  const designPrompt = `Actúa como un diseñador gráfico experto en redes sociales con 10 años de experiencia creando contenido viral para marcas de tecnología e IA.
+
+BRIEF DEL DISEÑO:
+- Marca: ${brand === 'alfester' ? 'Alfester Agency (agencia marketing digital + automatización IA)' : brand === 'kova' ? 'KOVA App (app de ventas con IA en español, 3 agentes: NOVA, ALEX, MAIA)' : 'Alfester Agency + KOVA App (producto estrella)'}
+- Plataforma: ${network.replace('_',' ')} — tamaño ${size.w}×${size.h}px
+- Tipo de contenido: ${type.replace('_',' ')}
+- Headline principal: "${headline}"
+- Subtexto/CTA: "${subtext}"
+- Estilo visual: ${style}
+- Elemento principal: ${element.replace('_',' ')}
+- Contexto adicional: ${context || 'ninguno'}
+
+PALETA DE MARCA:
+- Fondo: ${pal.bg}
+- Fondo secundario: ${pal.bg2}
+- Color de acento principal: ${pal.accent}
+- Color de acento secundario: ${pal.accent2}
+- Texto: ${pal.text}
+- Texto secundario: ${pal.dim}
+
+REGLAS DE DISEÑO EXPERTO:
+1. Usa la regla de los tercios — el elemento principal en el tercio superior o central
+2. Tipografía: Space Mono para headlines de marca, DM Sans para textos secundarios
+3. El headline debe ser la pieza más grande y dominante
+4. Incluye el logo EKG de KOVA (línea EKG sobre fondo redondeado en verde oscuro)
+5. Deja espacio de respiración — no más del 60% del canvas con elementos
+6. Crea jerarquía visual clara: headline > subtexto > CTA > logo
+7. El diseño debe destacar en pantalla de móvil — elementos grandes y legibles
+8. Usa efectos sutiles: gradiente de fondo, puntos de grid, líneas decorativas
+
+Genera el código SVG completo del diseño. El SVG debe:
+- Tener viewBox="0 0 ${size.w} ${size.h}"
+- Usar los colores exactos de la paleta
+- Incluir el texto del headline con font-family="Space Mono, monospace" en tamaño grande
+- Incluir el subtexto en font-family="DM Sans, sans-serif"
+- Incluir el logo EKG (polyline sobre rect redondeado)
+- Ser completamente funcional y descargable
+- Incluir elementos decorativos acordes al estilo ${style}
+
+Responde SOLO con el código SVG, empezando con <svg y terminando con </svg>. Sin explicaciones, sin markdown.`;
+
+  try {
+    const res = await fetch(PROXY, {
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':KEY},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-6',
+        max_tokens:3000,
+        messages:[{role:'user',content:designPrompt}]
+      })
+    });
+    const data = await res.json();
+    if(!res.ok) throw new Error(data.error||'Error proxy');
+    let svgText = data.content?.[0]?.text || '';
+
+    // Extract SVG
+    const svgMatch = svgText.match(/<svg[\s\S]*<\/svg>/i);
+    if(svgMatch) svgText = svgMatch[0];
+
+    // Inject Google Fonts
+    if(!svgText.includes('defs')) {
+      svgText = svgText.replace('<svg', '<svg');
+    }
+
+    displaySVG(svgText, size);
+    currentSVG = svgText;
+
+    // Generate copy in parallel
+    generateCopyAI(network, type, brand, headline, subtext, context);
+
+  } catch(e){
+    hideLoading();
+    showFallbackDesign(headline, subtext, pal, size, style);
+    generateCopyAI(network, type, brand, headline, subtext, context);
+  } finally {
+    document.getElementById('gen-btn').disabled = false;
+  }
+}
+
+function showFallbackDesign(headline, subtext, pal, size, style){
+  // High-quality SVG fallback when AI can't generate
+  const W = size.w, H = size.h;
+  const isSquare = W === H;
+  const isVertical = H > W;
+  const headSize = isVertical ? Math.round(W*0.09) : Math.round(H*0.12);
+  const subSize = isVertical ? Math.round(W*0.04) : Math.round(H*0.055);
+
+  // Grid dots
+  let dots = '';
+  for(let x=0;x<W;x+=W/14){
+    for(let y=0;y<H;y+=H/14){
+      dots += `<circle cx="${x}" cy="${y}" r="${W*0.003}" fill="${pal.accent}" opacity="0.06"/>`;
+    }
+  }
+
+  // EKG points scaled to SVG
+  const ekgW = W*0.35, ekgH = H*0.05;
+  const ekgX = (W-ekgW)/2, ekgY = isVertical ? H*0.52 : H*0.55;
+  const pts = [0,0.12,0.24,0.36,0.48,0.60,0.80,1.0];
+  const ys = [0,0,-0.7,0.7,-0.7,0,0,0];
+  const ekgPoints = pts.map((r,i) => `${ekgX+r*ekgW},${ekgY+ys[i]*ekgH}`).join(' ');
+
+  // EKG logo box
+  const boxS = W*0.09;
+  const boxX = W/2 - boxS/2;
+  const boxY = isVertical ? H*0.12 : H*0.1;
+  const miniEkgW = boxS*0.75;
+  const miniEkgX = boxX+(boxS-miniEkgW)/2;
+  const miniEkgY = boxY+boxS/2;
+  const miniPts = pts.map((r,i) => `${miniEkgX+r*miniEkgW},${miniEkgY+ys[i]*(boxS*0.2)}`).join(' ');
+
+  // Headline lines
+  const maxChars = isVertical ? 18 : 28;
+  const words = headline.split(' ');
+  let lines = [], cur = '';
+  words.forEach(w => {
+    if((cur+' '+w).trim().length > maxChars && cur) { lines.push(cur.trim()); cur = w; }
+    else cur = (cur+' '+w).trim();
+  });
+  if(cur) lines.push(cur);
+
+  const headY = isVertical ? H*0.38 : H*0.35;
+  const lineH = headSize * 1.25;
+  const headLines = lines.map((l,i) => {
+    const isLast = i === lines.length-1;
+    return `<text x="${W/2}" y="${headY + i*lineH}" text-anchor="middle" font-family="Space Mono, monospace" font-size="${headSize}" font-weight="700" fill="${isLast ? pal.accent : pal.text}">${escSVG(l)}</text>`;
+  }).join('');
+
+  // Decorative line
+  const lineY = headY + lines.length*lineH + H*0.02;
+
+  // Style-specific background element
+  let bgExtra = '';
+  if(style === 'gradient' || style === 'tech'){
+    bgExtra = `
+      <radialGradient id="bg-glow" cx="50%" cy="30%" r="60%">
+        <stop offset="0%" stop-color="${pal.accent}" stop-opacity="0.08"/>
+        <stop offset="100%" stop-color="${pal.bg}" stop-opacity="0"/>
+      </radialGradient>
+      <rect width="${W}" height="${H}" fill="url(#bg-glow)"/>`;
+  }
+
+  // Brand name
+  const brandName = document.getElementById('d-brand').value === 'kova' ? 'KOVA' : 'ALFESTER';
+
+  const svg = `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg" style="font-family:DM Sans,sans-serif">
+  <defs>
+    <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="${pal.bg}"/>
+      <stop offset="100%" stop-color="${pal.bg2}"/>
+    </linearGradient>
+    ${bgExtra}
+  </defs>
+  <rect width="${W}" height="${H}" fill="url(#grad1)"/>
+  ${dots}
+  <!-- Top accent line -->
+  <rect x="0" y="0" width="${W}" height="${H*0.004}" fill="${pal.accent}"/>
+  <!-- EKG Logo box -->
+  <rect x="${boxX}" y="${boxY}" width="${boxS}" height="${boxS}" rx="${boxS*0.2}" fill="${pal.bg2}" stroke="${pal.accent}" stroke-width="${W*0.003}" opacity="0.9"/>
+  <polyline points="${miniPts}" fill="none" stroke="${pal.accent}" stroke-width="${W*0.005}" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Brand name -->
+  <text x="${W/2}" y="${boxY+boxS+H*0.04}" text-anchor="middle" font-family="Space Mono, monospace" font-size="${subSize*0.9}" font-weight="700" fill="${pal.accent}" letter-spacing="4">${brandName}</text>
+  <!-- Headline -->
+  ${headLines}
+  <!-- Divider -->
+  <line x1="${W*0.35}" y1="${lineY}" x2="${W*0.65}" y2="${lineY}" stroke="${pal.accent}" stroke-width="${H*0.002}" opacity="0.4"/>
+  <!-- EKG decorative line -->
+  <polyline points="${ekgPoints}" fill="none" stroke="${pal.accent}" stroke-width="${W*0.004}" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+  <!-- Subtext -->
+  <text x="${W/2}" y="${lineY+H*0.04}" text-anchor="middle" font-family="DM Sans, sans-serif" font-size="${subSize}" fill="${pal.dim}">${escSVG(subtext)}</text>
+  <!-- Bottom bar -->
+  <rect x="0" y="${H-H*0.06}" width="${W}" height="${H*0.06}" fill="${pal.bg2}" opacity="0.8"/>
+  <text x="${W/2}" y="${H-H*0.02}" text-anchor="middle" font-family="Space Mono, monospace" font-size="${subSize*0.7}" fill="${pal.accent}" letter-spacing="2" opacity="0.6">ALFESTER TECHNOLOGIES OÜ · agencia.kova-app.net</text>
+</svg>`;
+
+  displaySVG(svg, size);
+  currentSVG = svg;
+}
+
+function escSVG(t){ return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function displaySVG(svgText, size){
+  hideLoading();
+  const canvas = document.getElementById('design-canvas');
+  const placeholder = document.getElementById('canvas-placeholder');
+  canvas.style.display = 'block';
+  placeholder.style.display = 'none';
+
+  // Scale for display
+  const maxW = document.getElementById('canvas-area').clientWidth - 40;
+  const scale = Math.min(maxW / size.w, 600 / size.h);
+  const dispW = Math.round(size.w * scale);
+  const dispH = Math.round(size.h * scale);
+
+  canvas.outerHTML; // force reflow
+  const area = document.getElementById('canvas-area');
+  area.innerHTML = `<div id="loading-overlay" class="loading-overlay"></div>
+    <div id="canvas-placeholder" class="canvas-placeholder" style="display:none"></div>
+    ${svgText.replace('<svg', `<svg id="design-canvas" style="width:${dispW}px;height:${dispH}px;max-width:100%;border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,.5)"`)}`;
+
+  document.getElementById('canvas-size-label').textContent = `${size.w}×${size.h}px — ${size.label.split('—')[1]?.trim()||''}`;
+}
+
+function showLoading(msg){
+  const ov = document.getElementById('loading-overlay');
+  if(!ov) return;
+  ov.classList.add('active');
+  const lt = document.getElementById('loading-text');
+  if(lt) lt.textContent = msg;
+}
+function hideLoading(){
+  const ov = document.getElementById('loading-overlay');
+  if(ov) ov.classList.remove('active');
+}
+
+// ── GENERATE COPY ─────────────────────────────────────────
+async function generateCopyAI(network, type, brand, headline, subtext, context){
+  const brandDesc = brand === 'alfester' ?
+    'Alfester Agency — agencia de marketing digital y automatización con IA para pymes hispanohablantes. Garantía 30 días.' :
+    brand === 'kova' ?
+    'KOVA — app de ventas con IA en español. 3 agentes: NOVA (objeciones), ALEX (simula prospectos), MAIA (estrategia semanal). App Store y Google Play. Gratis para empezar.' :
+    'Alfester Agency (agencia) + KOVA (su app de ventas con IA, producto estrella disponible en App Store y Google Play)';
+
+  const copyPrompt = `Actúa como un copywriter experto en redes sociales con especialización en marcas de tecnología e IA para el mercado hispanohablante.
+
+BRIEF:
+- Marca: ${brandDesc}
+- Plataforma: ${network.replace('_',' ')}
+- Tipo: ${type.replace('_',' ')}
+- Headline del diseño: "${headline}"
+- CTA: "${subtext}"
+- Contexto: ${context || 'lanzamiento y captación de clientes'}
+
+TONO DE MARCA ALFESTER/KOVA:
+- Directo, sin relleno, orientado a resultados
+- Empático con el dolor del vendedor o dueño de negocio
+- Usa datos concretos cuando sea posible
+- Emojis con moderación (máx 3-4 por post)
+- Apertura con hook potente (pregunta, estadística o statement audaz)
+- CTA claro y con urgencia moderada
+
+Genera en formato estructurado:
+
+POST_COMPLETO:
+[post completo con emojis, saltos de línea, CTA y mención de link]
+
+VERSION_CORTA:
+[máx 3 líneas para story o tweet]
+
+HASHTAGS:
+[20 hashtags optimizados para alcance orgánico en español]
+
+STORY_SLIDES:
+[3 slides: Slide 1 (hook), Slide 2 (desarrollo), Slide 3 (CTA)]`;
+
+  try {
+    const res = await fetch(PROXY, {
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':KEY},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-6', max_tokens:1500,
+        messages:[{role:'user',content:copyPrompt}]
+      })
+    });
+    const data = await res.json();
+    const text = data.content?.[0]?.text || '';
+    parseCopyOutput(text);
+  } catch(e){
+    document.getElementById('copy-output').textContent = 'Error al generar copy: '+e.message;
+  }
+}
+
+function parseCopyOutput(text){
+  const sections = {
+    post: text.match(/POST_COMPLETO:\n([\s\S]*?)(?=\nVERSION_CORTA:|$)/)?.[1]?.trim() || text,
+    short: text.match(/VERSION_CORTA:\n([\s\S]*?)(?=\nHASHTAGS:|$)/)?.[1]?.trim() || '',
+    hashtags: text.match(/HASHTAGS:\n([\s\S]*?)(?=\nSTORY_SLIDES:|$)/)?.[1]?.trim() || '',
+    story: text.match(/STORY_SLIDES:\n([\s\S]*?)$/)?.[1]?.trim() || '',
+  };
+  copyData = sections;
+  document.getElementById('copy-output').textContent = sections.post || text;
+}
+
+function setCopyTab(tab, btn){
+  document.querySelectorAll('.copy-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('copy-output').textContent = copyData[tab] || 'Genera el diseño primero para ver este contenido.';
+}
+
+async function regenerateCopy(){
+  const network = document.getElementById('d-network').value;
+  const type = document.getElementById('d-type').value;
+  const brand = document.getElementById('d-brand').value;
+  const headline = document.getElementById('d-headline').value;
+  const subtext = document.getElementById('d-subtext').value;
+  const context = document.getElementById('d-context').value;
+  document.getElementById('copy-output').textContent = '⟳ Regenerando copy...';
+  await generateCopyAI(network, type, brand, headline, subtext, context);
+}
+
+async function translateCopy(){
+  const current = copyData.post;
+  if(!current){ return; }
+  document.getElementById('copy-output').textContent = '⟳ Traduciendo al inglés...';
+  try {
+    const res = await fetch(PROXY, {
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':KEY},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-6', max_tokens:800,
+        messages:[{role:'user',content:`Translate this social media post to English, adapting it naturally for English-speaking audiences. Keep the same structure, emojis and energy:\n\n${current}`}]
+      })
+    });
+    const data = await res.json();
+    document.getElementById('copy-output').textContent = data.content?.[0]?.text || 'Error';
+  } catch(e){ document.getElementById('copy-output').textContent = 'Error: '+e.message; }
+}
+
+// ── VARIANTS ─────────────────────────────────────────────
+async function generateVariants(){
+  document.getElementById('variants-section').style.display = 'block';
+  const grid = document.getElementById('variants-grid');
+  grid.innerHTML = '<div style="color:var(--gray);font-size:12px;grid-column:1/-1;text-align:center;padding:20px">⟳ Generando 3 variantes...</div>';
+
+  const palettes = ['dark_teal','dark_gold','dark_purp'];
+  const styles = ['minimalista','bold','tech'];
+  const variants = [];
+
+  for(let i=0;i<3;i++){
+    const pal = PALETTES[palettes[i]];
+    const size = SIZES[document.getElementById('d-network').value];
+    const headline = document.getElementById('d-headline').value || 'Tu negocio en piloto automático';
+    const subtext = document.getElementById('d-subtext').value || 'agencia.kova-app.net';
+
+    // Generate quick SVG variant
+    const W = 400, H = document.getElementById('d-network').value.includes('story') ? 711 : 400;
+    const headSize = Math.round(W*0.07);
+    const subSize = Math.round(W*0.035);
+
+    const words = headline.split(' ');
+    let lines = [], cur = '';
+    words.forEach(w => {
+      if((cur+' '+w).trim().length > 16 && cur){ lines.push(cur.trim()); cur = w; }
+      else cur = (cur+' '+w).trim();
+    });
+    if(cur) lines.push(cur);
+    const headY = H*0.45;
+    const headLines = lines.map((l,i) =>
+      `<text x="${W/2}" y="${headY+i*headSize*1.3}" text-anchor="middle" font-family="Space Mono,monospace" font-size="${headSize}" font-weight="700" fill="${i===lines.length-1?pal.accent:pal.text}">${escSVG(l)}</text>`
+    ).join('');
+
+    const boxS = W*0.12, boxX = W/2-boxS/2, boxY = H*0.15;
+    const mW = boxS*0.75, mX = boxX+(boxS-mW)/2, mY = boxY+boxS/2;
+    const pts=[0,.12,.24,.36,.48,.60,.80,1.0], ys=[0,0,-.7,.7,-.7,0,0,0];
+    const mPts = pts.map((r,i)=>`${mX+r*mW},${mY+ys[i]*(boxS*0.2)}`).join(' ');
+
+    const svg = `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
+      <rect width="${W}" height="${H}" fill="${pal.bg}"/>
+      <rect width="${W}" height="${H*0.003}" fill="${pal.accent}"/>
+      <rect x="${boxX}" y="${boxY}" width="${boxS}" height="${boxS}" rx="${boxS*0.2}" fill="${pal.bg2}" stroke="${pal.accent}" stroke-width="2"/>
+      <polyline points="${mPts}" fill="none" stroke="${pal.accent}" stroke-width="2.5" stroke-linecap="round"/>
+      ${headLines}
+      <text x="${W/2}" y="${headY+lines.length*headSize*1.3+headSize*0.6}" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="${subSize}" fill="${pal.dim}">${escSVG(subtext.slice(0,40))}</text>
+    </svg>`;
+
+    variants.push({svg, palName: ['Teal','Gold','Purp'][i], style: styles[i], pal: palettes[i]});
+  }
+
+  grid.innerHTML = variants.map((v,i) => `
+    <div class="variant-card" onclick="loadVariant(${i})">
+      <div class="variant-canvas">${v.svg}</div>
+      <div class="variant-label">${v.palName} · ${v.style}</div>
+    </div>
+  `).join('');
+
+  window._variants = variants;
+}
+
+function loadVariant(i){
+  const v = window._variants?.[i];
+  if(!v) return;
+  document.getElementById('d-palette').value = v.pal;
+  document.getElementById('d-style').value = v.style;
+  updateSwatches();
+  generateDesign();
+}
+
+function regenerate(){ generateDesign(); }
+
+// ── DOWNLOAD ─────────────────────────────────────────────
+function downloadSVG(){
+  if(!currentSVG){ alert('Genera un diseño primero'); return; }
+  const blob = new Blob([currentSVG],{type:'image/svg+xml'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `alfester_${document.getElementById('d-network').value}_${Date.now()}.svg`;
+  a.click();
+}
+
+function downloadPNG(){
+  if(!currentSVG){ alert('Genera un diseño primero'); return; }
+  const size = SIZES[document.getElementById('d-network').value];
+  const canvas = document.createElement('canvas');
+  canvas.width = size.w; canvas.height = size.h;
+  const ctx = canvas.getContext('2d');
+  const img = new Image();
+  const svgBlob = new Blob([currentSVG],{type:'image/svg+xml;charset=utf-8'});
+  const url = URL.createObjectURL(svgBlob);
+  img.onload = () => {
+    ctx.drawImage(img, 0, 0, size.w, size.h);
+    URL.revokeObjectURL(url);
+    const a = document.createElement('a');
+    a.href = canvas.toDataURL('image/png');
+    a.download = `alfester_${document.getElementById('d-network').value}_${Date.now()}.png`;
+    a.click();
+  };
+  img.src = url;
+}
+
+function copyCopy(){
+  const text = document.getElementById('copy-output').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = event.target;
+    const orig = btn.textContent;
+    btn.textContent = '✓ Copiado';
+    setTimeout(()=>btn.textContent=orig,2000);
+  });
+}
+</script>
+</body>
+</html>
