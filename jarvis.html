@@ -196,7 +196,7 @@ body::after{content:'';position:fixed;inset:0;background-image:linear-gradient(r
   <div class="panel-header">// SYSTEM HEALTH</div>
   <div class="sys-grid">
     <div class="sys-item">
-      <div class="sys-label"><span>ANTHROPIC SPEND</span><span style="color:var(--gold)" id="bar-spend-lbl">$0/$50</span></div>
+      <div class="sys-label"><span>ANTHROPIC SPEND</span><span style="color:var(--gold)" id="bar-spend-lbl">$0/$100</span></div>
       <div class="sys-bar"><div class="sys-fill gold" id="bar-spend" style="width:0%"></div></div>
     </div>
     <div class="sys-item">
@@ -365,7 +365,7 @@ STACK TÉCNICO COMPLETO DE KOVA:
 - App: React Native + Expo SDK 53, TypeScript, Node 20.19.4
 - Backend Vercel (api.kova-app.net): api/nova.js, api/alex.js, api/maia.js, api/proxy.js, api/referral.js, api/send-push.js, api/revenuecat-webhook.js
 - Database Supabase Pro: user_profiles, chats, enterprise_configs, user_usage, referrals, subscriptions
-- AI Engine: Anthropic Claude Haiku (claude-haiku-4-5-20251001), hard cap $50/mes
+- AI Engine: Anthropic Claude Haiku (claude-sonnet-4-6), hard cap $100/mes
 - Payments: RevenueCat + App Store (com.kovaapp.kova.starter/pro/enterprise.monthly)
 - Automation: n8n Cloud (9 workflows con bifurcación ES/EN)
 - Monitoring: BetterStack + Sentry
@@ -378,7 +378,7 @@ SISTEMAS IMPLEMENTADOS:
 - Referidos: KOVA-XXXXXXXX → 3 amigos → starter_trial 7 días (solo ALEX, no MAIA)
 - UsageWarningBanner al 80% en NOVA y ALEX
 - RLS activo, JWT auth, rate limiting 60 req/min, timeout 25s
-- Hard cap Anthropic $50/mes con alerta $40
+- Hard cap Anthropic $100/mes con alerta $40
 - Soporte 3 capas: email reenvío + botón email Settings + WhatsApp
 
 ESTADO ACTUAL (Junio 2026):
@@ -573,7 +573,7 @@ ESTADO SERVICIOS:
 - RevenueCat: SANDBOX (activar post-aprobación Apple)
 - Google Play: 10/12 testers
 - Alfester OÜ: EN PROCESO Xolo
-- Anthropic spend cap: $50/mes activo
+- Anthropic spend cap: $100/mes activo
 - n8n: 9 flujos activos (ES+EN)
 - npm audit: 12 moderate (kova-api) + 14 moderate (kova) — pendiente Expo upgrade
 - RLS: ACTIVO en todas las tablas
