@@ -79,7 +79,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--white);mi
 </div>
 <script>
 const SURL='https://thiqgazecrgxoavtpnqx.supabase.co';
-const SKEY='sb_publishable_WEq-5mmV53Ri7fEuSQhAxQ_r7SRcj-P';
+const SKEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRoaXFnYXplY3JneG9hdnRwbnF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1MDk1MTUsImV4cCI6MjA5MTA4NTUxNX0.HSL0CzMCIKEN8XnssTCMwWEr2wjqKy_w1a8rRUR6tDk';
 let sb;
 window.addEventListener('load',function(){
   try{ sb=(window.supabase||supabase).createClient(SURL,SKEY); loadAll(); setInterval(loadAll,30000); }
