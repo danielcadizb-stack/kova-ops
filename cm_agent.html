@@ -441,11 +441,11 @@ async function generateWithAI() {
   document.getElementById('aiSugContent').innerHTML = '<div class="spinner"></div> Generando ideas con IA...';
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://api.kova-app.net/api/proxy', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'x-api-key': 'alfester-jarvis-2026-kova' },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-sonnet-4-6',
         max_tokens: 600,
         messages: [{
           role: 'user',
@@ -618,11 +618,11 @@ async function generateCampaign() {
 
   // AI copy generation
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://api.kova-app.net/api/proxy', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'x-api-key': 'alfester-jarvis-2026-kova' },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-sonnet-4-6',
         max_tokens: 800,
         messages: [{
           role: 'user',
