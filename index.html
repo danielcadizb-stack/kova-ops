@@ -7,111 +7,177 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;600&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:#0d0b08;color:#f0ede6;font-family:'DM Sans',sans-serif;min-height:100vh;padding:48px 32px}
-.logo{display:flex;align-items:center;gap:10px;margin-bottom:48px}
+body{font-family:'DM Sans',sans-serif;background:#0d0b08;color:#f0ede6;min-height:100vh;padding:40px 32px}
+.logo{display:flex;align-items:center;gap:10px;margin-bottom:40px}
 .ek{width:36px;height:36px;background:#0f2820;border-radius:8px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(93,224,206,.25)}
 .brand{font-family:'Space Mono',monospace;font-size:16px;color:#5de0ce;font-weight:700}
-.sub{font-size:11px;color:rgba(93,224,206,.45);letter-spacing:.12em;text-transform:uppercase;margin-top:2px}
-h1{font-family:'Space Mono',monospace;font-size:13px;color:rgba(93,224,206,.5);letter-spacing:.14em;text-transform:uppercase;margin-bottom:24px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
-.card{background:#181c15;border:1px solid rgba(93,224,206,.12);border-radius:12px;padding:20px;text-decoration:none;transition:.2s;display:block}
-.card:hover{border-color:rgba(93,224,206,.35);transform:translateY(-2px)}
-.card-icon{font-size:22px;margin-bottom:10px}
-.card-title{font-size:14px;font-weight:600;color:#f0ede6;margin-bottom:4px}
-.card-sub{font-size:11px;color:rgba(160,155,145,.7);line-height:1.5}
-.badge{display:inline-block;font-size:9px;padding:2px 7px;border-radius:4px;background:rgba(93,224,206,.1);color:#5de0ce;border:1px solid rgba(93,224,206,.2);margin-top:8px;font-family:'Space Mono',monospace;letter-spacing:.06em}
-.badge.gold{background:rgba(255,195,80,.1);color:#ffc350;border-color:rgba(255,195,80,.2)}
-.badge.purp{background:rgba(167,139,250,.1);color:#a78bfa;border-color:rgba(167,139,250,.2)}
-.badge.green{background:rgba(52,210,150,.1);color:#34d296;border-color:rgba(52,210,150,.2)}
-.badge.blue{background:rgba(93,163,224,.1);color:#5da3e0;border-color:rgba(93,163,224,.2)}
-.badge.red{background:rgba(239,68,68,.1);color:#ef4444;border-color:rgba(239,68,68,.2)}
-.count{font-size:11px;color:rgba(93,224,206,.35);font-family:'Space Mono',monospace;margin-bottom:16px}
-footer{margin-top:48px;font-size:11px;color:rgba(93,224,206,.25);font-family:'Space Mono',monospace}
+.brand-sub{font-size:10px;color:rgba(93,224,206,.4);letter-spacing:.12em;text-transform:uppercase;margin-top:2px}
+.section{margin-bottom:36px}
+.sec-header{display:flex;align-items:center;gap:12px;margin-bottom:14px;padding-bottom:10px}
+.sec-kova{border-bottom:1px solid rgba(93,224,206,.15)}
+.sec-alfester{border-bottom:1px solid rgba(255,195,80,.15)}
+.sec-icon{font-size:16px}
+.sec-title-kova{font-family:'Space Mono',monospace;font-size:11px;color:rgba(93,224,206,.55);letter-spacing:.14em;text-transform:uppercase}
+.sec-title-alf{font-family:'Space Mono',monospace;font-size:11px;color:rgba(255,195,80,.55);letter-spacing:.14em;text-transform:uppercase}
+.sec-count{font-size:10px;color:rgba(160,155,145,.3);font-family:'Space Mono',monospace;margin-left:auto}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.card{background:#111410;border-radius:12px;padding:18px;text-decoration:none;transition:.2s;display:block}
+.card-k{border:1px solid rgba(93,224,206,.1)}
+.card-k:hover{border-color:rgba(93,224,206,.3);transform:translateY(-2px);background:#141813}
+.card-a{border:1px solid rgba(255,195,80,.1)}
+.card-a:hover{border-color:rgba(255,195,80,.3);transform:translateY(-2px);background:#161410}
+.card-icon{font-size:20px;margin-bottom:8px}
+.card-title{font-size:13px;font-weight:600;color:#f0ede6;margin-bottom:3px}
+.card-sub{font-size:10px;color:rgba(160,155,145,.6);line-height:1.5}
+.badge{display:inline-block;font-size:9px;padding:2px 7px;border-radius:4px;margin-top:7px;font-family:'Space Mono',monospace;letter-spacing:.05em}
+.b-teal{background:rgba(93,224,206,.1);color:#5de0ce;border:1px solid rgba(93,224,206,.18)}
+.b-gold{background:rgba(255,195,80,.1);color:#ffc350;border:1px solid rgba(255,195,80,.18)}
+.b-purp{background:rgba(167,139,250,.1);color:#a78bfa;border:1px solid rgba(167,139,250,.18)}
+.b-green{background:rgba(52,210,150,.1);color:#34d296;border:1px solid rgba(52,210,150,.18)}
+.b-blue{background:rgba(93,163,224,.1);color:#5da3e0;border:1px solid rgba(93,163,224,.18)}
+.b-red{background:rgba(239,68,68,.1);color:#ef4444;border:1px solid rgba(239,68,68,.18)}
+.b-gray{background:rgba(160,155,145,.06);color:#a09b91;border:1px solid rgba(160,155,145,.12)}
+.bar-k{border-left:3px solid rgba(93,224,206,.35)}
+.bar-a{border-left:3px solid rgba(255,195,80,.35)}
+footer{margin-top:40px;font-size:10px;color:rgba(93,224,206,.18);font-family:'Space Mono',monospace}
+@media(max-width:600px){body{padding:24px 16px}.grid{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
 <div class="logo">
   <div class="ek">
     <svg viewBox="0 0 28 17" fill="none" width="22" height="13">
-      <polyline points="0,8.5 3.5,8.5 6.5,2 9.5,15 12.5,2 15.5,8.5 19,8.5 23,8.5 28,8.5"
-        stroke="#5de0ce" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <polyline points="0,8.5 3.5,8.5 6.5,2 9.5,15 12.5,2 15.5,8.5 19,8.5 23,8.5 28,8.5" stroke="#5de0ce" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
   </div>
   <div>
     <div class="brand">KOVA OPS</div>
-    <div class="sub">Panel Interno · Alfester Technologies OÜ · Reg. 16250313527</div>
+    <div class="brand-sub">Panel Interno · Alfester Technologies OÜ · Reg. 16250313527</div>
   </div>
 </div>
 
-<h1>Dashboards internos</h1>
-<div class="count">9 paneles activos</div>
-
-<div class="grid">
-
-  <a href="ops.html" class="card">
-    <div class="card-icon">📊</div>
-    <div class="card-title">Operations Center</div>
-    <div class="card-sub">Supabase · Usuarios · Agentes IA · Seguridad</div>
-    <span class="badge">OPS</span>
-  </a>
-
-  <a href="social.html" class="card">
-    <div class="card-icon">📱</div>
-    <div class="card-title">Social Intelligence Center</div>
-    <div class="card-sub">KPIs · Contenido IA · CM Agent · Informes</div>
-    <span class="badge purp">NOVA-CM</span>
-  </a>
-
-  <a href="financial.html" class="card">
-    <div class="card-icon">💰</div>
-    <div class="card-title">Financial Intelligence Center</div>
-    <div class="card-sub">MRR · Costos · FELIX CFO · Alertas</div>
-    <span class="badge gold">FELIX</span>
-  </a>
-
-  <a href="command.html" class="card">
-    <div class="card-icon">⚡</div>
-    <div class="card-title">Command Center</div>
-    <div class="card-sub">BI Unificado · ATLAS · Métricas globales</div>
-    <span class="badge blue">ATLAS</span>
-  </a>
-
-  <a href="enterprise.html" class="card">
-    <div class="card-icon">🏢</div>
-    <div class="card-title">Enterprise Dashboard</div>
-    <div class="card-sub">Equipo · Rendimiento · KPIs · Actividad</div>
-    <span class="badge red">ENTERPRISE</span>
-  </a>
-
-  <a href="sistema.html" class="card">
-    <div class="card-icon">🔧</div>
-    <div class="card-title">Panel Sistema</div>
-    <div class="card-sub">Umbrales · Alertas · Seguridad · Escalabilidad</div>
-    <span class="badge">SISTEMA</span>
-  </a>
-
-  <a href="cost.html" class="card">
-    <div class="card-icon">🧮</div>
-    <div class="card-title">Cost Intelligence Center</div>
-    <div class="card-sub">Token Simulator · Fair Use Control · Implementación</div>
-    <span class="badge green">NUEVO</span>
-  </a>
-
-  <a href="jarvis.html" class="card">
-    <div class="card-icon">🤖</div>
-    <div class="card-title">JARVIS — Engineering Intelligence</div>
-    <div class="card-sub">Debug · Arquitectura · Monitoreo · Voz IA</div>
-    <span class="badge purp">JARVIS</span>
-  </a>
-
-  <a href="alfester_client_dashboard.html" class="card">
-    <div class="card-icon">🎯</div>
-    <div class="card-title">Alfester Client Dashboard</div>
-    <div class="card-sub">Dashboard universal para clientes de la agencia</div>
-    <span class="badge gold">AGENCIA</span>
-  </a>
-
+<div class="section">
+  <div class="sec-header sec-kova">
+    <span class="sec-icon">📱</span>
+    <span class="sec-title-kova">KOVA — App de Ventas con IA</span>
+    <span class="sec-count">8 paneles</span>
+  </div>
+  <div class="grid">
+    <a href="operations_center.html" class="card card-k bar-k">
+      <div class="card-icon">📊</div>
+      <div class="card-title">Operations Center</div>
+      <div class="card-sub">Supabase live · Usuarios · Agentes · Seguridad</div>
+      <span class="badge b-green">LIVE</span>
+    </a>
+    <a href="command.html" class="card card-k bar-k">
+      <div class="card-icon">⚡</div>
+      <div class="card-title">Command Center</div>
+      <div class="card-sub">BI Unificado · ATLAS · Metricas globales</div>
+      <span class="badge b-blue">ATLAS</span>
+    </a>
+    <a href="cost.html" class="card card-k bar-k">
+      <div class="card-icon">🧮</div>
+      <div class="card-title">Cost Intelligence</div>
+      <div class="card-sub">Token Simulator · Fair Use · Costos API</div>
+      <span class="badge b-teal">COSTOS</span>
+    </a>
+    <a href="enterprise.html" class="card card-k bar-k">
+      <div class="card-icon">🏢</div>
+      <div class="card-title">Enterprise Dashboard</div>
+      <div class="card-sub">Equipo · Rendimiento · KPIs · Actividad</div>
+      <span class="badge b-red">ENTERPRISE</span>
+    </a>
+    <a href="sistema.html" class="card card-k bar-k">
+      <div class="card-icon">🔧</div>
+      <div class="card-title">Panel Sistema</div>
+      <div class="card-sub">Umbrales · Alertas · Seguridad</div>
+      <span class="badge b-teal">SISTEMA</span>
+    </a>
+    <a href="jarvis.html" class="card card-k bar-k">
+      <div class="card-icon">🤖</div>
+      <div class="card-title">JARVIS Engineering</div>
+      <div class="card-sub">Debug · Arquitectura · Monitoreo · IA</div>
+      <span class="badge b-purp">JARVIS</span>
+    </a>
+    <a href="financial.html" class="card card-k bar-k">
+      <div class="card-icon">💰</div>
+      <div class="card-title">Financial Intelligence</div>
+      <div class="card-sub">MRR · Costos · FELIX CFO · Alertas</div>
+      <span class="badge b-gold">FELIX</span>
+    </a>
+    <a href="social.html" class="card card-k bar-k">
+      <div class="card-icon">📱</div>
+      <div class="card-title">Social Intelligence</div>
+      <div class="card-sub">KPIs sociales · Contenido · CM Agent</div>
+      <span class="badge b-purp">SOCIAL</span>
+    </a>
+  </div>
 </div>
-<footer>KOVA OPS · ops.kova-app.net · Alfester Technologies OÜ · Reg. 16250313527</footer>
+
+<div class="section">
+  <div class="sec-header sec-alfester">
+    <span class="sec-icon">🏢</span>
+    <span class="sec-title-alf">Alfester Agency — Marketing Digital &amp; IA</span>
+    <span class="sec-count">9 paneles</span>
+  </div>
+  <div class="grid">
+    <a href="alfester_client_dashboard.html" class="card card-a bar-a">
+      <div class="card-icon">🎯</div>
+      <div class="card-title">Client Dashboard</div>
+      <div class="card-sub">Dashboard universal para clientes de la agencia</div>
+      <span class="badge b-gold">CLIENTES</span>
+    </a>
+    <a href="clientes.html" class="card card-a bar-a">
+      <div class="card-icon">🤝</div>
+      <div class="card-title">CRM Interno</div>
+      <div class="card-sub">Pipeline · Estado de clientes · Seguimiento</div>
+      <span class="badge b-gold">CRM</span>
+    </a>
+    <a href="cliente_portal.html" class="card card-a bar-a">
+      <div class="card-icon">🔐</div>
+      <div class="card-title">Portal Cliente</div>
+      <div class="card-sub">Acceso de clientes a dashboards y reportes</div>
+      <span class="badge b-green">PORTAL</span>
+    </a>
+    <a href="onboarding.html" class="card card-a bar-a">
+      <div class="card-icon">🚀</div>
+      <div class="card-title">Onboarding</div>
+      <div class="card-sub">Flujo de incorporacion de nuevos clientes</div>
+      <span class="badge b-gold">ONBOARD</span>
+    </a>
+    <a href="informe_mensual.html" class="card card-a bar-a">
+      <div class="card-icon">📋</div>
+      <div class="card-title">Informe Mensual</div>
+      <div class="card-sub">Template de informes para clientes</div>
+      <span class="badge b-gray">INFORME</span>
+    </a>
+    <a href="template_factory.html" class="card card-a bar-a">
+      <div class="card-icon">🏭</div>
+      <div class="card-title">Template Factory</div>
+      <div class="card-sub">Generador de templates y documentos</div>
+      <span class="badge b-blue">FACTORY</span>
+    </a>
+    <a href="cm_agent.html" class="card card-a bar-a">
+      <div class="card-icon">✍️</div>
+      <div class="card-title">CM Agent</div>
+      <div class="card-sub">Generador de contenido IA para redes sociales</div>
+      <span class="badge b-purp">CM</span>
+    </a>
+    <a href="agent_team.html" class="card card-a bar-a">
+      <div class="card-icon">👥</div>
+      <div class="card-title">Agent Team</div>
+      <div class="card-sub">Gestion del equipo de agentes IA</div>
+      <span class="badge b-blue">TEAM</span>
+    </a>
+    <a href="ops.html" class="card card-a bar-a">
+      <div class="card-icon">⚙️</div>
+      <div class="card-title">Ops Legacy</div>
+      <div class="card-sub">Panel operativo anterior · Referencia</div>
+      <span class="badge b-gray">LEGACY</span>
+    </a>
+  </div>
+</div>
+
+<footer>KOVA OPS · ops.kova-app.net · Alfester Technologies OÜ · Reg. 16250313527 · Uso interno</footer>
 </body>
 </html>
