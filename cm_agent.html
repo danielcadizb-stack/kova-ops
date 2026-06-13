@@ -685,162 +685,144 @@ updateSwatches(); updateFormatLabel();
 
 function esc(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
-function buildFallbackSVG(headline, cta, pal, W, H){
-  const isV = H > W;
-  const hs = Math.round((isV?W:H) * (isV?0.085:0.11));
-  const ss = Math.round((isV?W:H) * 0.038);
-  const boxS = Math.round(W*0.11);
-  const boxX = W/2-boxS/2, boxY = isV ? H*0.13 : H*0.1;
-  const mW = boxS*0.74, mX = boxX+(boxS-mW)/2, mY = boxY+boxS/2;
-  const pts=[0,.12,.24,.36,.48,.60,.80,1.0], ys=[0,0,-.7,.7,-.7,0,0,0];
-  const mPts = pts.map((r,i)=>`${mX+r*mW},${mY+ys[i]*(boxS*0.22)}`).join(' ');
-  const words = headline.split(' ');
-  const maxC = isV ? 16 : 24;
-  let lines=[], cur='';
-  words.forEach(w=>{if((cur+' '+w).trim().length>maxC&&cur){lines.push(cur.trim());cur=w;}else cur=(cur+' '+w).trim();});
-  if(cur) lines.push(cur);
-  const hy = isV ? H*0.36 : H*0.34;
-  const lh = hs*1.28;
-  const headSVG = lines.map((l,i)=>`<text x="${W/2}" y="${hy+i*lh}" text-anchor="middle" font-family="Space Mono,monospace" font-size="${hs}" font-weight="700" fill="${i===lines.length-1?pal.accent:pal.text}">${esc(l)}</text>`).join('');
-  const divY = hy + lines.length*lh + H*0.025;
-  const ekgW = W*0.38, ekgX=(W-ekgW)/2, ekgY=divY+H*0.03, ekgH=H*0.04;
-  const ekgPts = pts.map((r,i)=>`${ekgX+r*ekgW},${ekgY+ys[i]*ekgH}`).join(' ');
-  let dots='';
-  for(let x=0;x<=W;x+=W/12) for(let y=0;y<=H;y+=H/12)
-    dots+=`<circle cx="${x}" cy="${y}" r="${W*0.0025}" fill="${pal.accent}" opacity="0.05"/>`;
+function buildFallbackSVG(headline, cta, pal, W, H, styleOverride){
+  const style = styleOverride || document.getElementById('d-style').value;
+  const isV = H > W; // vertical format
+  const ratio = Math.min(W, H);
+
+  // FONT SIZES — proportional, never overflow
+  const HS = Math.round(ratio * (isV ? 0.072 : 0.082)); // headline
+  const SS = Math.round(ratio * 0.032); // subtext
+  const XS = Math.round(ratio * 0.024); // small
+  const LOGO_S = Math.round(ratio * 0.095); // logo box
+
+  // TEXT WRAPPING — max chars based on canvas
+  const maxChars = isV ? Math.round(W / (HS * 0.62)) : Math.round(W / (HS * 0.60));
+  function wrapText(text, maxC) {
+    const words = text.split(' ');
+    const lines = [];
+    let cur = '';
+    words.forEach(w => {
+      if ((cur + ' ' + w).trim().length > maxC && cur) { lines.push(cur.trim()); cur = w; }
+      else cur = (cur + ' ' + w).trim();
+    });
+    if (cur) lines.push(cur);
+    return lines.slice(0, 4); // max 4 lines
+  }
+  const headLines = wrapText(headline, maxChars);
+  const LH = HS * 1.22; // line height
+
+  // LAYOUT POSITIONS
+  const logoY = isV ? H * 0.10 : H * 0.12;
+  const headY = isV ? H * 0.42 : H * 0.38;
+  const ctaY = headY + headLines.length * LH + HS * 0.9;
+  const ekgY = ctaY + SS * 1.8;
+
+  // LOGO EKG
+  const boxS = LOGO_S;
+  const boxX = W/2 - boxS/2, boxY = logoY;
+  const mW = boxS*0.72, mX = boxX+(boxS-mW)/2, mY = boxY+boxS*0.52;
+  const pts=[0,.12,.25,.38,.50,.63,.80,1.0], ys=[0,0,-.72,.72,-.72,0,0,0];
+  const mPts = pts.map((r,i)=>`${(mX+r*mW).toFixed(1)},${(mY+ys[i]*(boxS*0.22)).toFixed(1)}`).join(' ');
+
+  // EKG DECORATIVE LINE
+  const ekgW = W*0.55, ekgX=(W-ekgW)/2;
+  const ekgH = H*0.035;
+  const ekgPts = pts.map((r,i)=>`${(ekgX+r*ekgW).toFixed(1)},${(ekgY+ys[i]*ekgH).toFixed(1)}`).join(' ');
+
+  // HEADLINE SVG
+  const headSVG = headLines.map((l,i) => {
+    const isLast = i === headLines.length-1;
+    const fill = isLast ? pal.accent : pal.text;
+    const fw = isLast ? '700' : '700';
+    return `<text x="${W/2}" y="${(headY+i*LH).toFixed(1)}" text-anchor="middle" font-family="Space Mono,monospace" font-size="${HS}" font-weight="${fw}" fill="${fill}" letter-spacing="-0.5">${esc(l)}</text>`;
+  }).join('');
+
+  // BRAND TAG
+  const brandName = (document.getElementById('d-brand')?.value||'alfester') === 'kova' ? 'KOVA' : 'ALFESTER';
+
+  // STYLE-SPECIFIC BACKGROUNDS
+  let bgExtra = '', decorExtra = '';
+
+  if(style.includes('tech') || style.includes('grid')) {
+    // Tech grid
+    let gridLines = '';
+    for(let x=0; x<=W; x+=W/16) gridLines += `<line x1="${x}" y1="0" x2="${x}" y2="${H}" stroke="${pal.accent}" stroke-width="0.5" opacity="0.04"/>`;
+    for(let y=0; y<=H; y+=H/16) gridLines += `<line x1="0" y1="${y}" x2="${W}" y2="${y}" stroke="${pal.accent}" stroke-width="0.5" opacity="0.04"/>`;
+    bgExtra = gridLines;
+    // Corner accents
+    const ca = ratio*0.04;
+    decorExtra = `
+      <line x1="0" y1="${ca}" x2="0" y2="0" stroke="${pal.accent}" stroke-width="${ratio*0.004}" opacity="0.6"/>
+      <line x1="0" y1="0" x2="${ca}" y2="0" stroke="${pal.accent}" stroke-width="${ratio*0.004}" opacity="0.6"/>
+      <line x1="${W}" y1="${ca}" x2="${W}" y2="0" stroke="${pal.accent}" stroke-width="${ratio*0.004}" opacity="0.6"/>
+      <line x1="${W-ca}" y1="0" x2="${W}" y2="0" stroke="${pal.accent}" stroke-width="${ratio*0.004}" opacity="0.6"/>
+      <line x1="0" y1="${H-ca}" x2="0" y2="${H}" stroke="${pal.accent}" stroke-width="${ratio*0.004}" opacity="0.6"/>
+      <line x1="0" y1="${H}" x2="${ca}" y2="${H}" stroke="${pal.accent}" stroke-width="${ratio*0.004}" opacity="0.6"/>
+      <line x1="${W}" y1="${H-ca}" x2="${W}" y2="${H}" stroke="${pal.accent}" stroke-width="${ratio*0.004}" opacity="0.6"/>
+      <line x1="${W-ca}" y1="${H}" x2="${W}" y2="${H}" stroke="${pal.accent}" stroke-width="${ratio*0.004}" opacity="0.6"/>`;
+  } else if(style.includes('gradient') || style.includes('dinamico')) {
+    bgExtra = `<radialGradient id="rglow" cx="50%" cy="45%" r="55%">
+      <stop offset="0%" stop-color="${pal.accent2||pal.accent}" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="${pal.bg}" stop-opacity="0"/>
+    </radialGradient>
+    <rect width="${W}" height="${H}" fill="url(#rglow)"/>`;
+  } else if(style.includes('bold')) {
+    // Bold accent strip
+    bgExtra = `<rect x="0" y="${isV?H*0.38:H*0.32}" width="${W*0.006}" height="${headLines.length*LH + HS*0.4}" fill="${pal.accent}"/>`;
+  } else {
+    // Minimal dot grid
+    let dots = '';
+    const step = ratio/11;
+    for(let x=step; x<W; x+=step) for(let y=step; y<H; y+=step)
+      dots += `<circle cx="${x.toFixed(0)}" cy="${y.toFixed(0)}" r="${ratio*0.0022}" fill="${pal.accent}" opacity="0.055"/>`;
+    bgExtra = dots;
+  }
+
+  // GLOW BEHIND LOGO
+  const glowR = boxS * 1.1;
+
   return `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
-  <defs><linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="${pal.bg}"/><stop offset="100%" stop-color="${pal.bg2}"/></linearGradient></defs>
-  <rect width="${W}" height="${H}" fill="url(#g1)"/>
-  ${dots}
-  <rect x="0" y="0" width="${W}" height="${H*0.0035}" fill="${pal.accent}"/>
-  <rect x="${boxX}" y="${boxY}" width="${boxS}" height="${boxS}" rx="${boxS*0.2}" fill="${pal.bg2}" stroke="${pal.accent}" stroke-width="${W*0.003}" opacity="0.95"/>
-  <polyline points="${mPts}" fill="none" stroke="${pal.accent}" stroke-width="${W*0.0048}" stroke-linecap="round" stroke-linejoin="round"/>
-  <text x="${W/2}" y="${boxY+boxS+H*0.04}" text-anchor="middle" font-family="Space Mono,monospace" font-size="${ss*0.85}" font-weight="700" fill="${pal.accent}" letter-spacing="3">ALFESTER</text>
+  <defs>
+    <linearGradient id="bg1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="${pal.bg}"/>
+      <stop offset="100%" stop-color="${pal.bg2}"/>
+    </linearGradient>
+    <radialGradient id="logo-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="${pal.accent}" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="${pal.accent}" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="glow-filter">
+      <feGaussianBlur stdDeviation="${ratio*0.008}" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <!-- Background -->
+  <rect width="${W}" height="${H}" fill="url(#bg1)"/>
+  <!-- Style background -->
+  ${bgExtra}
+  <!-- Top accent line -->
+  <rect x="0" y="0" width="${W}" height="${ratio*0.004}" fill="${pal.accent}"/>
+  <!-- Logo glow -->
+  <ellipse cx="${W/2}" cy="${boxY+boxS/2}" rx="${glowR}" ry="${glowR*0.7}" fill="url(#logo-glow)"/>
+  <!-- Logo box -->
+  <rect x="${boxX.toFixed(1)}" y="${boxY.toFixed(1)}" width="${boxS}" height="${boxS}" rx="${(boxS*0.18).toFixed(1)}" fill="${pal.bg2}" stroke="${pal.accent}" stroke-width="${(ratio*0.003).toFixed(1)}"/>
+  <polyline points="${mPts}" fill="none" stroke="${pal.accent}" stroke-width="${(ratio*0.005).toFixed(1)}" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow-filter)"/>
+  <!-- Brand name -->
+  <text x="${W/2}" y="${(boxY+boxS+XS*1.6).toFixed(1)}" text-anchor="middle" font-family="Space Mono,monospace" font-size="${XS}" font-weight="700" fill="${pal.accent}" letter-spacing="${(XS*0.35).toFixed(1)}" opacity="0.9">${brandName}</text>
+  <!-- Headline -->
   ${headSVG}
-  <polyline points="${ekgPts}" fill="none" stroke="${pal.accent}" stroke-width="${W*0.0038}" stroke-linecap="round" stroke-linejoin="round" opacity="0.45"/>
-  <text x="${W/2}" y="${divY+H*0.07}" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="${ss}" fill="${pal.dim}">${esc(cta.substring(0,55))}</text>
-  <rect x="0" y="${H-H*0.065}" width="${W}" height="${H*0.065}" fill="${pal.bg2}" opacity="0.85"/>
-  <text x="${W/2}" y="${H-H*0.022}" text-anchor="middle" font-family="Space Mono,monospace" font-size="${ss*0.68}" fill="${pal.accent}" letter-spacing="1.5" opacity="0.55">agencia.kova-app.net · kova-app.net</text>
+  <!-- EKG line -->
+  <polyline points="${ekgPts}" fill="none" stroke="${pal.accent}" stroke-width="${(ratio*0.0038).toFixed(1)}" stroke-linecap="round" stroke-linejoin="round" opacity="0.5" filter="url(#glow-filter)"/>
+  <!-- CTA -->
+  <text x="${W/2}" y="${ctaY.toFixed(1)}" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="${SS}" fill="${pal.dim}" opacity="0.85">${esc(cta.substring(0,55))}</text>
+  <!-- Corner decorations -->
+  ${decorExtra}
+  <!-- Bottom bar -->
+  <rect x="0" y="${(H-H*0.06).toFixed(1)}" width="${W}" height="${(H*0.06).toFixed(1)}" fill="${pal.bg2}" opacity="0.9"/>
+  <text x="${W/2}" y="${(H-H*0.019).toFixed(1)}" text-anchor="middle" font-family="Space Mono,monospace" font-size="${XS*0.72}" fill="${pal.accent}" letter-spacing="1.5" opacity="0.6">agencia.kova-app.net · kova-app.net</text>
 </svg>`;
 }
-
-async function generateDesign(){
-  const network = document.getElementById('d-network').value;
-  const type = document.getElementById('d-type').value;
-  const brand = document.getElementById('d-brand').value;
-  const headline = document.getElementById('d-headline').value || 'Tu negocio en piloto automático';
-  const cta = document.getElementById('d-cta').value || 'Primera consulta gratis · agencia.kova-app.net';
-  const context = document.getElementById('d-context').value;
-  const palette = document.getElementById('d-palette').value;
-  const style = document.getElementById('d-style').value;
-  const pal = PALETTES[palette];
-  const size = SIZES[network];
-
-  const btn = document.getElementById('d-gen-btn');
-  btn.disabled = true; btn.textContent = '⟳ Diseñando...';
-
-  const area = document.getElementById('d-area');
-  area.innerHTML = `<div style="text-align:center"><div class="spinner"></div><div style="margin-top:12px;font-size:11px;color:var(--teal);font-family:Space Mono,monospace">Diseñando con IA...</div></div>`;
-
-  const prompt = `Actúa como un diseñador gráfico experto con 10 años creando contenido visual viral para marcas de tecnología e IA.
-
-BRIEF DE DISEÑO:
-- Marca: ${BRAND_DESC[brand].split('.')[0]}
-- Plataforma: ${network} — ${size.w}×${size.h}px
-- Tipo: ${type}
-- Headline: "${headline}"
-- CTA/Subtexto: "${cta}"
-- Estilo: ${style}
-- Contexto adicional: ${context || 'ninguno'}
-- Paleta: fondo ${pal.bg}, acento ${pal.accent}, texto ${pal.text}
-
-REGLAS DISEÑO EXPERTO:
-1. Regla de los tercios — elemento principal en tercio superior-central
-2. Tipografía Space Mono para headlines, DM Sans para subtextos
-3. Incluir logo EKG KOVA (polyline con forma EKG sobre rect redondeado verde oscuro)
-4. Máximo 60% del canvas con elementos — espacio de respiración
-5. Jerarquía visual clara: headline dominante > subtexto > CTA > logo
-6. El texto debe ser legible a 150px de alto
-7. Incluir elementos decorativos del estilo: ${style}
-8. Asegúrate de que el viewBox sea "0 0 ${size.w} ${size.h}"
-
-Genera SOLO el código SVG completo. Empieza con <svg y termina con </svg>. Sin markdown, sin explicaciones.`;
-
-  try {
-    const res = await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json','x-api-key':KEY},
-      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:3500,messages:[{role:'user',content:prompt}]})});
-    const d = await res.json();
-    let txt = d.content?.[0]?.text || '';
-    const m = txt.match(/<svg[\s\S]*<\/svg>/i);
-    if(m) txt = m[0];
-    if(txt.startsWith('<svg')) { displaySVG(txt, size); currentSVG = txt; }
-    else throw new Error('SVG no generado');
-  } catch(e){
-    const fallback = buildFallbackSVG(headline, cta, pal, size.w, size.h);
-    displaySVG(fallback, size); currentSVG = fallback;
-  } finally {
-    btn.disabled = false; btn.textContent = '✨ Generar diseño con IA';
-    generateDesignCopy(network, type, brand, headline, cta, context);
-  }
-}
-
-function displaySVG(svgText, size){
-  const area = document.getElementById('d-area');
-  const maxW = area.clientWidth - 32;
-  const scale = Math.min(maxW/size.w, 560/size.h);
-  const dW = Math.round(size.w*scale), dH = Math.round(size.h*scale);
-  area.innerHTML = svgText.replace('<svg', `<svg style="width:${dW}px;height:${dH}px;max-width:100%;border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,.5)"`);
-  document.getElementById('d-size-label').textContent = `${size.w}×${size.h}px — generado`;
-}
-
-async function generateDesignCopy(network, type, brand, headline, cta, context){
-  document.getElementById('d-copy-out').textContent = '⟳ Generando copy...';
-  const prompt = `Copywriter experto Alfester/KOVA. Genera copy para este diseño:
-Plataforma: ${network} | Tipo: ${type} | Marca: ${BRAND_DESC[brand].split('.')[0]}
-Headline del diseño: "${headline}" | CTA: "${cta}"
-Contexto: ${context || 'lanzamiento'}
-
-POST:
-[post completo con emojis listo para publicar]
-
-VERSION_CORTA:
-[máx 2 líneas]
-
-HASHTAGS:
-[20 hashtags relevantes]`;
-  try {
-    const res = await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json','x-api-key':KEY},
-      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:800,messages:[{role:'user',content:prompt}]})});
-    const d = await res.json();
-    const text = d.content?.[0]?.text||'';
-    const get = (k,n) => { const r=new RegExp(k+':\\n([\\s\\S]*?)(?=\\n'+n+':|$)'); return text.match(r)?.[1]?.trim()||''; };
-    designCopyData = {
-      post: get('POST','VERSION_CORTA')||text,
-      short: get('VERSION_CORTA','HASHTAGS'),
-      hashtags: text.match(/HASHTAGS:\n([\s\S]*?)$/)?.[1]?.trim()||'',
-    };
-    document.getElementById('d-copy-out').textContent = designCopyData.post;
-  } catch(e){ document.getElementById('d-copy-out').textContent = 'Error: '+e.message; }
-}
-
-function setDCopyTab(tab, btn){
-  document.querySelectorAll('#tab-designer .out-tab').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('d-copy-out').textContent = designCopyData[tab] || 'Genera el diseño primero.';
-}
-async function regenerateDCopy(){ await generateDesignCopy(document.getElementById('d-network').value, document.getElementById('d-type').value, document.getElementById('d-brand').value, document.getElementById('d-headline').value||'', document.getElementById('d-cta').value||'', document.getElementById('d-context').value); }
-async function translateDCopy(){
-  const cur = designCopyData.post;
-  if(!cur) return;
-  document.getElementById('d-copy-out').textContent = '⟳ Traduciendo...';
-  try {
-    const res = await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json','x-api-key':KEY},
-      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:500,messages:[{role:'user',content:`Translate to English naturally:\n\n${cur}`}]})});
-    const d = await res.json();
-    document.getElementById('d-copy-out').textContent = d.content?.[0]?.text||'Error';
-  } catch(e){ document.getElementById('d-copy-out').textContent='Error: '+e.message; }
-}
-
 async function generateVariants(){
   document.getElementById('d-variants-section').style.display = 'block';
   const grid = document.getElementById('d-variants-grid');
