@@ -3,674 +3,752 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Social Intelligence Center</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<title>Social Intelligence Center v2 — Alfester + KOVA</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
+:root{
+  --bg:#0d0b08;--bg2:#111410;--bg3:#181c15;--card:#141812;
+  --teal:#5de0ce;--gold:#ffc350;--purp:#a78bfa;--green:#34d296;
+  --red:#ef4444;--blue:#5da3e0;--pink:#f472b6;
+  --white:#f0ede6;--gray:#a09b91;--dim:rgba(240,237,230,.45);
+  --border:rgba(93,224,206,.1);--border2:rgba(255,255,255,.06);
+  --ig:#E1306C;--li:#0A66C2;--tk:#ffffff;--fb:#1877F2;
+}
 *{box-sizing:border-box;margin:0;padding:0}
-:root{--teal:#5de0ce;--gold:#ffc350;--purp:#a78bfa;--green:#34d296;--red:#ef4444;--blue:#60a5fa;--bg:#0d0b08;--bg2:#111410;--card:#181c15;--card2:#1e2219;--white:#f0ede6;--gray:#a09b91;--border:rgba(93,224,206,.14)}
 body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--white);min-height:100vh}
-.hdr{display:flex;align-items:center;justify-content:space-between;padding:0 28px;height:58px;background:var(--bg2);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10}
-.hdr-left{display:flex;align-items:center;gap:12px}
-.ek{width:32px;height:32px;background:#0f2820;border-radius:7px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(93,224,206,.2)}
-.hdr-title{font-family:'Space Mono',monospace;font-size:14px;color:var(--teal);font-weight:700}
-.hdr-sub{font-size:11px;color:var(--gray);margin-top:1px}
-.back-btn{font-size:12px;color:var(--gray);text-decoration:none;border:1px solid var(--border);padding:6px 14px;border-radius:8px;transition:.2s}
-.back-btn:hover{color:var(--teal);border-color:var(--teal)}
-/* Tabs */
-.tabs{display:flex;gap:2px;background:var(--bg2);border-bottom:1px solid var(--border);padding:0 28px;overflow-x:auto}
-.tab{padding:10px 16px;font-size:12px;cursor:pointer;border:none;background:transparent;color:var(--gray);white-space:nowrap;border-bottom:2px solid transparent;transition:.2s;font-family:'DM Sans',sans-serif}
-.tab.active{color:var(--teal);border-bottom-color:var(--teal)}
-.tab:hover{color:var(--white)}
-.panel{display:none;padding:24px 28px;max-width:1200px;margin:0 auto}
-.panel.active{display:block}
-/* Cards */
-.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px}
-.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
-.section-title{font-family:'Space Mono',monospace;font-size:11px;color:rgba(93,224,206,.5);letter-spacing:.14em;text-transform:uppercase;margin-bottom:14px}
-/* KPI */
-.kpi-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin-bottom:20px}
-.kpi{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px}
-.kpi-val{font-family:'Space Mono',monospace;font-size:24px;font-weight:700;color:var(--white)}
-.kpi-lbl{font-size:11px;color:var(--gray);margin-top:4px}
-.kpi-sub{font-size:10px;margin-top:4px;color:var(--gray)}
-/* Brand selector */
-.brand-selector{display:flex;gap:10px;margin-bottom:20px}
-.brand-btn{padding:8px 20px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--gray);font-size:12px;cursor:pointer;transition:.2s;font-family:'DM Sans',sans-serif}
-.brand-btn.active{background:rgba(93,224,206,.12);color:var(--teal);border-color:var(--teal)}
-.brand-btn.alfester.active{background:rgba(255,195,80,.12);color:var(--gold);border-color:var(--gold)}
-/* Content generator */
-.gen-form{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
-.form-group{display:flex;flex-direction:column;gap:6px}
-.form-label{font-size:11px;color:var(--gray);font-weight:500}
-.form-input,.form-select,.form-textarea{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--white);font-size:13px;font-family:'DM Sans',sans-serif;transition:.2s}
-.form-input:focus,.form-select:focus,.form-textarea:focus{outline:none;border-color:var(--teal)}
-.form-select option{background:var(--bg2)}
-.form-textarea{resize:vertical;min-height:80px}
-.full-width{grid-column:1/-1}
-.btn-primary{background:var(--teal);color:var(--bg);font-weight:700;font-size:13px;padding:11px 24px;border-radius:8px;border:none;cursor:pointer;transition:.2s}
-.btn-primary:hover{background:#4ecfc0}
-.btn-primary.gold{background:var(--gold);color:var(--bg)}
-.btn-primary.gold:hover{background:#f5b840}
-.btn-secondary{background:transparent;font-size:12px;padding:7px 14px;border-radius:6px;border:1px solid var(--border);color:var(--gray);cursor:pointer;transition:.2s}
-.btn-secondary:hover{border-color:var(--teal);color:var(--teal)}
-/* Output */
-.output-tabs{display:flex;gap:0;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:12px}
-.otab{flex:1;padding:9px;text-align:center;font-size:12px;color:var(--gray);cursor:pointer;border-right:1px solid var(--border);transition:.2s}
-.otab:last-child{border-right:none}
-.otab.active{background:rgba(93,224,206,.08);color:var(--teal);font-weight:600}
-.otab.gold.active{background:rgba(255,195,80,.08);color:var(--gold)}
-.output-content{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:16px;min-height:200px;font-size:13px;line-height:1.8;color:var(--white);white-space:pre-wrap;display:none}
-.output-content.active{display:block}
-.ai-loading{display:flex;align-items:center;gap:8px;color:var(--teal);font-size:13px;padding:20px 0}
-.spinner{width:16px;height:16px;border:2px solid rgba(93,224,206,.2);border-top-color:var(--teal);border-radius:50%;animation:spin .8s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.copy-btn{font-size:11px;padding:4px 10px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--gray);cursor:pointer;float:right;margin-bottom:6px}
-.copy-btn:hover{border-color:var(--teal);color:var(--teal)}
-/* Platform grid */
-.plat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
-.plat-card{background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:8px}
-.plat-icon{font-size:24px}
-.plat-name{font-size:13px;font-weight:600;color:var(--white)}
-.plat-stat{font-family:'Space Mono',monospace;font-size:20px;font-weight:700;color:var(--teal)}
-.plat-lbl{font-size:11px;color:var(--gray)}
-.plat-bar{height:3px;background:rgba(255,255,255,.06);border-radius:2px;margin-top:4px}
-.plat-bar-fill{height:100%;border-radius:2px;background:var(--teal)}
-/* KPI manual input */
-.kpi-input-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
-.kpi-input-item{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px}
-.kpi-input-lbl{font-size:11px;color:var(--gray);margin-bottom:6px}
-.kpi-input-val{font-family:'Space Mono',monospace;font-size:22px;font-weight:700;color:var(--white)}
-/* Status badges */
-.badge{display:inline-block;font-size:10px;padding:2px 8px;border-radius:10px;font-family:'Space Mono',monospace}
-.badge-teal{background:rgba(93,224,206,.1);color:var(--teal);border:1px solid rgba(93,224,206,.2)}
-.badge-gold{background:rgba(255,195,80,.1);color:var(--gold);border:1px solid rgba(255,195,80,.2)}
-.badge-green{background:rgba(52,210,150,.1);color:var(--green);border:1px solid rgba(52,210,150,.2)}
-/* History */
-.hist-item{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:flex-start;gap:10px;cursor:pointer;transition:.2s}
-.hist-item:hover{border-color:rgba(93,224,206,.25)}
-.hist-name{font-size:13px;font-weight:600;color:var(--white)}
-.hist-meta{font-size:11px;color:var(--gray);margin-top:2px}
-.hist-del{font-size:11px;padding:3px 8px;border-radius:5px;border:1px solid var(--border);background:transparent;color:var(--gray);cursor:pointer;flex-shrink:0}
-.hist-del:hover{border-color:var(--red);color:var(--red)}
-@media(max-width:640px){.gen-form{grid-template-columns:1fr}.kpi-row{grid-template-columns:repeat(2,1fr)}}
+/* ── HEADER ── */
+.header{display:flex;align-items:center;justify-content:space-between;padding:16px 28px;border-bottom:1px solid var(--border);background:rgba(13,11,8,.95);backdrop-filter:blur(12px);position:sticky;top:0;z-index:100}
+.logo{display:flex;align-items:center;gap:10px}
+.ek{width:32px;height:32px;background:#0f2820;border-radius:8px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(93,224,206,.25)}
+.brand{font-family:'Space Mono',monospace;font-size:14px;color:var(--teal);font-weight:700}
+.brand-sub{font-size:9px;color:rgba(93,224,206,.4);letter-spacing:.1em;text-transform:uppercase}
+.header-right{display:flex;align-items:center;gap:12px}
+.last-update{font-size:10px;color:var(--gray);font-family:'Space Mono',monospace}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;display:inline-block;margin-right:4px}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+/* ── FILTERS ── */
+.filters{display:flex;align-items:center;gap:10px;padding:14px 28px;border-bottom:1px solid var(--border2);background:var(--bg2);flex-wrap:wrap}
+.filter-label{font-size:10px;color:var(--gray);font-family:'Space Mono',monospace;letter-spacing:.1em;text-transform:uppercase;margin-right:4px}
+.filter-btn{font-size:11px;padding:5px 12px;border-radius:6px;border:1px solid var(--border2);background:transparent;color:var(--gray);cursor:pointer;transition:.15s;font-family:'DM Sans',sans-serif}
+.filter-btn:hover,.filter-btn.active{background:rgba(93,224,206,.1);border-color:var(--teal);color:var(--teal)}
+.filter-sep{width:1px;height:20px;background:var(--border2);margin:0 4px}
+select.filter-select{font-size:11px;padding:5px 10px;border-radius:6px;border:1px solid var(--border2);background:var(--bg3);color:var(--gray);cursor:pointer;font-family:'DM Sans',sans-serif;outline:none}
+select.filter-select:focus{border-color:var(--teal);color:var(--white)}
+/* ── MAIN LAYOUT ── */
+.main{padding:20px 28px;display:flex;flex-direction:column;gap:16px}
+/* ── NETWORK TABS ── */
+.net-tabs{display:flex;gap:8px}
+.net-tab{display:flex;align-items:center;gap:7px;padding:8px 16px;border-radius:10px;border:1px solid var(--border2);background:var(--bg3);cursor:pointer;transition:.15s;font-size:12px;font-weight:600}
+.net-tab:hover{border-color:rgba(93,224,206,.2)}
+.net-tab.active-all{border-color:var(--teal);background:rgba(93,224,206,.08);color:var(--teal)}
+.net-tab.active-ig{border-color:var(--ig);background:rgba(225,48,108,.08);color:var(--ig)}
+.net-tab.active-li{border-color:#5da3e0;background:rgba(93,163,224,.08);color:#5da3e0}
+.net-tab.active-tk{border-color:rgba(255,255,255,.4);background:rgba(255,255,255,.06);color:var(--white)}
+.net-tab.active-fb{border-color:#5da3e0;background:rgba(93,163,224,.08);color:#5da3e0}
+.net-dot{width:8px;height:8px;border-radius:50%}
+/* ── KPI ROW ── */
+.kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.kpi-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;position:relative;overflow:hidden}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
+.kpi-followers::before{background:var(--teal)}
+.kpi-engagement::before{background:var(--gold)}
+.kpi-reach::before{background:var(--purp)}
+.kpi-leads::before{background:var(--green)}
+.kpi-conv::before{background:var(--pink)}
+.kpi-label{font-size:9px;font-weight:600;letter-spacing:.12em;color:var(--gray);text-transform:uppercase;margin-bottom:8px;font-family:'Space Mono',monospace}
+.kpi-val{font-family:'Space Mono',monospace;font-size:24px;font-weight:700;color:var(--white);line-height:1}
+.kpi-sub{display:flex;align-items:center;gap:4px;margin-top:6px}
+.kpi-delta{font-size:11px;font-weight:600;padding:2px 6px;border-radius:4px}
+.delta-up{background:rgba(52,210,150,.12);color:var(--green)}
+.delta-down{background:rgba(239,68,68,.1);color:var(--red)}
+.kpi-period{font-size:10px;color:var(--gray)}
+.kpi-breakdown{margin-top:10px;display:flex;flex-direction:column;gap:3px}
+.kpi-net-row{display:flex;justify-content:space-between;align-items:center;font-size:10px}
+.kpi-net-label{color:var(--gray)}
+.kpi-net-val{font-family:'Space Mono',monospace;font-weight:600}
+/* ── MIDDLE GRID ── */
+.mid-grid{display:grid;grid-template-columns:2fr 1fr;gap:16px}
+.chart-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px}
+.card-title{font-size:12px;font-weight:600;color:var(--white);margin-bottom:4px}
+.card-sub{font-size:10px;color:var(--gray);margin-bottom:16px}
+/* Growth chart */
+.chart-area{position:relative;height:160px;display:flex;align-items:flex-end;gap:8px;padding-bottom:20px}
+.chart-bar-group{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1}
+.bars{display:flex;gap:2px;align-items:flex-end;height:140px}
+.bar{border-radius:3px 3px 0 0;transition:.3s;cursor:pointer;position:relative;min-width:8px}
+.bar:hover{opacity:.8}
+.bar-ig{background:rgba(225,48,108,.7)}
+.bar-li{background:rgba(93,163,224,.7)}
+.bar-tk{background:rgba(200,200,200,.7)}
+.bar-fb{background:rgba(24,119,242,.7)}
+.chart-label{font-size:9px;color:var(--gray);font-family:'Space Mono',monospace;margin-top:4px}
+.chart-legend{display:flex;gap:14px;margin-top:8px;flex-wrap:wrap}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--gray)}
+.legend-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+/* Engagement donut */
+.donut-wrap{display:flex;flex-direction:column;align-items:center;gap:12px}
+.donut-svg{position:relative}
+.donut-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+.donut-pct{font-family:'Space Mono',monospace;font-size:20px;font-weight:700;color:var(--white)}
+.donut-lbl{font-size:9px;color:var(--gray);letter-spacing:.08em}
+.donut-legend{width:100%;display:flex;flex-direction:column;gap:6px}
+.dl-row{display:flex;justify-content:space-between;align-items:center;font-size:11px}
+.dl-label{display:flex;align-items:center;gap:6px;color:var(--gray)}
+.dl-dot{width:8px;height:8px;border-radius:50%}
+.dl-val{font-family:'Space Mono',monospace;font-weight:600;color:var(--white)}
+/* ── BOTTOM GRID ── */
+.bot-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+/* Best posts */
+.post-list{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+.post-item{display:flex;gap:10px;align-items:center;background:var(--bg3);border-radius:8px;padding:10px 12px;border:1px solid var(--border2)}
+.post-rank{font-family:'Space Mono',monospace;font-size:11px;color:var(--teal);width:20px;flex-shrink:0}
+.post-info{flex:1}
+.post-title{font-size:11px;font-weight:600;color:var(--white);margin-bottom:2px;line-height:1.3}
+.post-meta{font-size:10px;color:var(--gray);display:flex;gap:8px}
+.post-eng{font-size:11px;font-weight:700;color:var(--gold);font-family:'Space Mono',monospace}
+.net-badge{font-size:9px;padding:1px 6px;border-radius:3px;font-family:'Space Mono',monospace}
+.nb-ig{background:rgba(225,48,108,.15);color:var(--ig)}
+.nb-li{background:rgba(93,163,224,.15);color:#5da3e0}
+.nb-tk{background:rgba(255,255,255,.08);color:#ccc}
+.nb-fb{background:rgba(24,119,242,.15);color:#5da3e0}
+/* Best times */
+.heatmap{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-top:8px}
+.hm-label{font-size:9px;color:var(--gray);text-align:center;font-family:'Space Mono',monospace;padding:2px 0}
+.hm-cell{height:28px;border-radius:4px;cursor:pointer;position:relative;transition:.15s}
+.hm-cell:hover::after{content:attr(data-tip);position:absolute;bottom:110%;left:50%;transform:translateX(-50%);background:var(--bg2);border:1px solid var(--border);padding:3px 6px;border-radius:4px;font-size:9px;white-space:nowrap;color:var(--white);z-index:10;font-family:'Space Mono',monospace}
+.hm-row-label{font-size:9px;color:var(--gray);font-family:'Space Mono',monospace;display:flex;align-items:center}
+/* Leads funnel */
+.funnel{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.funnel-step{position:relative;border-radius:8px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center}
+.fs-label{font-size:11px;font-weight:600;color:var(--white)}
+.fs-sub{font-size:10px;color:var(--gray);margin-top:1px}
+.fs-val{font-family:'Space Mono',monospace;font-size:14px;font-weight:700}
+.fs-pct{font-size:10px;color:var(--gray);text-align:right;margin-top:1px}
+.f1{background:rgba(93,224,206,.12);border:1px solid rgba(93,224,206,.2)}
+.f2{background:rgba(255,195,80,.1);border:1px solid rgba(255,195,80,.18)}
+.f3{background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.18)}
+.f4{background:rgba(52,210,150,.1);border:1px solid rgba(52,210,150,.18)}
+.f5{background:rgba(244,114,182,.1);border:1px solid rgba(244,114,182,.18)}
+/* ── INSIGHTS ROW ── */
+.insights-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.insight-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;display:flex;gap:12px;align-items:flex-start}
+.ins-icon{font-size:20px;flex-shrink:0;margin-top:2px}
+.ins-title{font-size:12px;font-weight:600;color:var(--white);margin-bottom:4px}
+.ins-body{font-size:11px;color:var(--dim);line-height:1.6}
+.ins-action{display:inline-block;font-size:10px;color:var(--teal);margin-top:6px;font-weight:600;cursor:pointer}
+.ins-badge{display:inline-block;font-size:9px;padding:2px 7px;border-radius:4px;font-family:'Space Mono',monospace;margin-bottom:6px}
+.ib-high{background:rgba(239,68,68,.1);color:var(--red);border:1px solid rgba(239,68,68,.2)}
+.ib-med{background:rgba(255,195,80,.1);color:var(--gold);border:1px solid rgba(255,195,80,.2)}
+.ib-ok{background:rgba(52,210,150,.1);color:var(--green);border:1px solid rgba(52,210,150,.2)}
+/* ── CM AI SECTION ── */
+.cm-section{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px}
+.cm-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.cm-tabs{display:flex;gap:8px}
+.cm-tab{font-size:11px;padding:5px 12px;border-radius:6px;border:1px solid var(--border2);background:transparent;color:var(--gray);cursor:pointer;transition:.15s}
+.cm-tab.active{background:rgba(93,224,206,.1);border-color:var(--teal);color:var(--teal)}
+.cm-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cm-input-group{display:flex;flex-direction:column;gap:8px}
+.cm-label{font-size:10px;color:var(--gray);font-family:'Space Mono',monospace;letter-spacing:.1em;text-transform:uppercase}
+.cm-select,.cm-input{background:var(--bg3);border:1px solid var(--border2);border-radius:8px;color:var(--white);padding:9px 12px;font-size:12px;font-family:'DM Sans',sans-serif;width:100%;outline:none}
+.cm-select:focus,.cm-input:focus{border-color:var(--teal)}
+.cm-btn{display:inline-flex;align-items:center;gap:6px;background:var(--teal);color:var(--bg);font-weight:700;font-size:12px;padding:9px 18px;border-radius:8px;border:none;cursor:pointer;transition:.15s;margin-top:8px}
+.cm-btn:hover{background:#4ecfc0}
+.cm-output{background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:14px;font-size:12px;color:var(--dim);line-height:1.7;min-height:120px;white-space:pre-wrap}
+.cm-output.loading{color:var(--teal);font-family:'Space Mono',monospace;font-size:11px}
+/* ── RESPONSIVE ── */
+@media(max-width:1100px){.kpi-row{grid-template-columns:repeat(3,1fr)}.mid-grid{grid-template-columns:1fr}.bot-grid{grid-template-columns:1fr 1fr}.insights-row{grid-template-columns:1fr 1fr}.cm-grid{grid-template-columns:1fr}}
+@media(max-width:700px){.kpi-row{grid-template-columns:1fr 1fr}.bot-grid{grid-template-columns:1fr}.insights-row{grid-template-columns:1fr}.net-tabs{flex-wrap:wrap}.filters{gap:6px}}
 </style>
 </head>
 <body>
-<div class="hdr">
-  <div class="hdr-left">
+
+<!-- HEADER -->
+<div class="header">
+  <div class="logo">
     <div class="ek"><svg viewBox="0 0 28 17" fill="none" width="20" height="12"><polyline points="0,8.5 3.5,8.5 6.5,2 9.5,15 12.5,2 15.5,8.5 19,8.5 23,8.5 28,8.5" stroke="#5de0ce" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-    <div><div class="hdr-title">Social Intelligence</div><div class="hdr-sub">KOVA + Alfester Agency — Contenido y KPIs</div></div>
+    <div><div class="brand">Social Intelligence Center</div><div class="brand-sub">KOVA + Alfester Agency</div></div>
   </div>
-  <a href="/" class="back-btn">Volver</a>
-</div>
-
-<div class="tabs">
-  <button class="tab active" onclick="switchTab('overview',this)">Dashboard</button>
-  <button class="tab" onclick="switchTab('contenido',this)">Generador IA</button>
-  <button class="tab" onclick="switchTab('campana',this)">Campana KOVA</button>
-  <button class="tab" onclick="switchTab('alfester',this)">Campana Alfester</button>
-  <button class="tab" onclick="switchTab('kpis',this)">KPIs Manuales</button>
-  <button class="tab" onclick="switchTab('historial',this)">Historial</button>
-</div>
-
-<!-- OVERVIEW -->
-<div class="panel active" id="panel-overview">
-  <div class="kpi-row">
-    <div class="kpi" style="border-color:rgba(93,224,206,.3)"><div class="kpi-val" id="ov-posts">0</div><div class="kpi-lbl">Posts generados</div><div class="kpi-sub">Total historico</div></div>
-    <div class="kpi" style="border-color:rgba(255,195,80,.3)"><div class="kpi-val" style="color:var(--gold)" id="ov-kova">0</div><div class="kpi-lbl">Posts KOVA</div></div>
-    <div class="kpi" style="border-color:rgba(167,139,250,.3)"><div class="kpi-val" style="color:var(--purp)" id="ov-alfester">0</div><div class="kpi-lbl">Posts Alfester</div></div>
-    <div class="kpi" style="border-color:rgba(52,210,150,.3)"><div class="kpi-val" style="color:var(--green)" id="ov-seguidores">-</div><div class="kpi-lbl">Seguidores IG</div></div>
-  </div>
-  <div class="card-grid">
-    <div class="card">
-      <div class="section-title">KOVA — Redes sociales</div>
-      <div class="plat-grid" id="ov-kova-plats"></div>
-    </div>
-    <div class="card">
-      <div class="section-title">Alfester Agency — Redes sociales</div>
-      <div class="plat-grid" id="ov-alfester-plats"></div>
-    </div>
+  <div class="header-right">
+    <span class="last-update"><span class="live-dot"></span>Datos actualizados: <span id="last-update-time">—</span></span>
+    <select class="filter-select" id="period-select" onchange="updatePeriod(this.value)">
+      <option value="7">Últimos 7 días</option>
+      <option value="30" selected>Últimos 30 días</option>
+      <option value="90">Últimos 90 días</option>
+    </select>
   </div>
 </div>
 
-<!-- GENERADOR DE CONTENIDO IA -->
-<div class="panel" id="panel-contenido">
-  <div class="card">
-    <div class="section-title">Marca</div>
-    <div class="brand-selector">
-      <button class="brand-btn active" onclick="setBrand('kova',this)" id="btn-kova">KOVA — App de ventas IA</button>
-      <button class="brand-btn alfester" onclick="setBrand('alfester',this)" id="btn-alfester">Alfester Agency</button>
-    </div>
-    <div class="section-title">Configurar post</div>
-    <div class="gen-form">
-      <div class="form-group">
-        <label class="form-label">Red social</label>
-        <select class="form-select" id="g-red">
-          <option value="Instagram">Instagram (feed)</option>
-          <option value="Instagram Stories">Instagram Stories</option>
-          <option value="LinkedIn">LinkedIn</option>
-          <option value="TikTok">TikTok (guion)</option>
-          <option value="Facebook">Facebook</option>
-          <option value="Twitter/X">Twitter/X</option>
-          <option value="WhatsApp">WhatsApp (mensaje)</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Tipo de contenido</label>
-        <select class="form-select" id="g-tipo">
-          <option>Educativo — ensenanza de valor</option>
-          <option>Caso de uso / Resultado real</option>
-          <option>Demo / Como funciona</option>
-          <option>Behind the scenes</option>
-          <option>Oferta / Promocion</option>
-          <option>Pregunta / Engagement</option>
-          <option>Comparativa / Competencia</option>
-          <option>Testimonial / Prueba social</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Sector objetivo (Alfester)</label>
-        <select class="form-select" id="g-sector">
-          <option value="">General (sin sector especifico)</option>
-          <option>Estetica y Belleza</option>
-          <option>Clinica Medica / Dental</option>
-          <option>Academia de Idiomas</option>
-          <option>Inmobiliaria</option>
-          <option>Empresa B2B / Ventas</option>
-          <option>Restaurante / Hosteleria</option>
-          <option>E-commerce</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Tono</label>
-        <select class="form-select" id="g-tono">
-          <option>Profesional y cercano</option>
-          <option>Educativo y claro</option>
-          <option>Urgente y directo</option>
-          <option>Inspirador y motivador</option>
-          <option>Informal y dinamico</option>
-        </select>
-      </div>
-      <div class="form-group full-width">
-        <label class="form-label">Contexto adicional (opcional)</label>
-        <textarea class="form-textarea" id="g-contexto" placeholder="Ej: esta semana lanzamos feature nueva, tenemos oferta 50% primer mes, quiero hablar de objeciones de precio..."></textarea>
-      </div>
-    </div>
-    <button class="btn-primary" id="btn-generar" onclick="generarContenido()">Generar contenido con IA</button>
-  </div>
+<!-- FILTERS -->
+<div class="filters">
+  <span class="filter-label">Red:</span>
+  <button class="filter-btn active" onclick="setNetwork('all',this)">Todas</button>
+  <button class="filter-btn" onclick="setNetwork('ig',this)" style="color:#E1306C;border-color:rgba(225,48,108,.3)">Instagram</button>
+  <button class="filter-btn" onclick="setNetwork('li',this)" style="color:#5da3e0;border-color:rgba(93,163,224,.3)">LinkedIn</button>
+  <button class="filter-btn" onclick="setNetwork('tk',this)">TikTok</button>
+  <button class="filter-btn" onclick="setNetwork('fb',this)" style="color:#5da3e0;border-color:rgba(93,163,224,.3)">Facebook</button>
+  <div class="filter-sep"></div>
+  <span class="filter-label">Formato:</span>
+  <button class="filter-btn active" onclick="setFormat('all',this)">Todos</button>
+  <button class="filter-btn" onclick="setFormat('reel',this)">Reels</button>
+  <button class="filter-btn" onclick="setFormat('carousel',this)">Carrusel</button>
+  <button class="filter-btn" onclick="setFormat('post',this)">Post estático</button>
+  <button class="filter-btn" onclick="setFormat('story',this)">Story</button>
+  <div class="filter-sep"></div>
+  <span class="filter-label">Marca:</span>
+  <button class="filter-btn active" onclick="setBrand('all',this)">Todas</button>
+  <button class="filter-btn" onclick="setBrand('alfester',this)">Alfester Agency</button>
+  <button class="filter-btn" onclick="setBrand('kova',this)">KOVA App</button>
+</div>
 
-  <div class="card" id="output-card" style="display:none">
-    <div class="section-title">Contenido generado</div>
-    <div class="output-tabs" id="output-tabs">
-      <div class="otab active" onclick="switchOutput('post',this)">Post principal</div>
-      <div class="otab" onclick="switchOutput('hashtags',this)">Hashtags</div>
-      <div class="otab" onclick="switchOutput('variante',this)">Variante</div>
+<div class="main">
+
+<!-- NETWORK TABS -->
+<div class="net-tabs">
+  <div class="net-tab active-all" onclick="setNetwork('all',this)">
+    <span>🌐</span> Vista Global <span style="font-size:10px;opacity:.6;margin-left:4px" id="total-followers-tab">—</span>
+  </div>
+  <div class="net-tab" onclick="setNetwork('ig',this)">
+    <span class="net-dot" style="background:#E1306C"></span> Instagram <span style="font-size:10px;opacity:.6;margin-left:4px" id="ig-followers-tab">—</span>
+  </div>
+  <div class="net-tab" onclick="setNetwork('li',this)">
+    <span class="net-dot" style="background:#5da3e0"></span> LinkedIn <span style="font-size:10px;opacity:.6;margin-left:4px" id="li-followers-tab">—</span>
+  </div>
+  <div class="net-tab" onclick="setNetwork('tk',this)">
+    <span class="net-dot" style="background:#fff"></span> TikTok <span style="font-size:10px;opacity:.6;margin-left:4px" id="tk-followers-tab">—</span>
+  </div>
+  <div class="net-tab" onclick="setNetwork('fb',this)">
+    <span class="net-dot" style="background:#1877F2"></span> Facebook <span style="font-size:10px;opacity:.6;margin-left:4px" id="fb-followers-tab">—</span>
+  </div>
+</div>
+
+<!-- KPI ROW — 5 métricas principales -->
+<div class="kpi-row">
+  <div class="kpi-card kpi-followers">
+    <div class="kpi-label">Seguidores Totales</div>
+    <div class="kpi-val" id="kpi-followers">—</div>
+    <div class="kpi-sub"><span class="kpi-delta delta-up" id="kpi-followers-delta">—</span><span class="kpi-period">vs mes anterior</span></div>
+    <div class="kpi-breakdown" id="kpi-followers-breakdown"></div>
+  </div>
+  <div class="kpi-card kpi-engagement">
+    <div class="kpi-label">Engagement Rate</div>
+    <div class="kpi-val" id="kpi-eng">—</div>
+    <div class="kpi-sub"><span class="kpi-delta delta-up" id="kpi-eng-delta">—</span><span class="kpi-period">media 4 redes</span></div>
+    <div class="kpi-breakdown" id="kpi-eng-breakdown"></div>
+  </div>
+  <div class="kpi-card kpi-reach">
+    <div class="kpi-label">Alcance Total</div>
+    <div class="kpi-val" id="kpi-reach">—</div>
+    <div class="kpi-sub"><span class="kpi-delta delta-up" id="kpi-reach-delta">—</span><span class="kpi-period">impresiones únicas</span></div>
+    <div class="kpi-breakdown" id="kpi-reach-breakdown"></div>
+  </div>
+  <div class="kpi-card kpi-leads">
+    <div class="kpi-label">Leads Generados</div>
+    <div class="kpi-val" id="kpi-leads">—</div>
+    <div class="kpi-sub"><span class="kpi-delta delta-up" id="kpi-leads-delta">—</span><span class="kpi-period">clicks a bio/link</span></div>
+    <div class="kpi-breakdown" id="kpi-leads-breakdown"></div>
+  </div>
+  <div class="kpi-card kpi-conv">
+    <div class="kpi-label">Tasa Conversión</div>
+    <div class="kpi-val" id="kpi-conv">—</div>
+    <div class="kpi-sub"><span class="kpi-delta" id="kpi-conv-delta">—</span><span class="kpi-period">leads → contacto</span></div>
+    <div class="kpi-breakdown" id="kpi-conv-breakdown"></div>
+  </div>
+</div>
+
+<!-- MIDDLE: Growth chart + Engagement breakdown -->
+<div class="mid-grid">
+  <div class="chart-card">
+    <div class="card-title">Crecimiento de seguidores</div>
+    <div class="card-sub">Evolución semanal por red social</div>
+    <div class="chart-area" id="growth-chart">
+      <!-- Generated by JS -->
     </div>
-    <div id="ai-loading" class="ai-loading" style="display:none"><div class="spinner"></div>Generando contenido...</div>
-    <button class="copy-btn" id="copy-btn" onclick="copiarOutput()">Copiar</button>
-    <div class="output-content active" id="out-post"></div>
-    <div class="output-content" id="out-hashtags"></div>
-    <div class="output-content" id="out-variante"></div>
-    <div style="display:flex;gap:10px;margin-top:12px">
-      <button class="btn-secondary" onclick="generarContenido()">Regenerar</button>
-      <button class="btn-secondary" onclick="guardarEnHistorial()">Guardar en historial</button>
+    <div class="chart-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#E1306C"></div>Instagram</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#5da3e0"></div>LinkedIn</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#ccc"></div>TikTok</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#1877F2"></div>Facebook</div>
+    </div>
+  </div>
+  <div class="chart-card">
+    <div class="card-title">Distribución del Engagement</div>
+    <div class="card-sub">Interacciones por tipo</div>
+    <div class="donut-wrap">
+      <div class="donut-svg" style="width:140px;height:140px;position:relative">
+        <svg width="140" height="140" viewBox="0 0 140 140">
+          <circle cx="70" cy="70" r="52" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="22"/>
+          <circle cx="70" cy="70" r="52" fill="none" stroke="#ffc350" stroke-width="22" stroke-dasharray="131 195" stroke-dashoffset="0" transform="rotate(-90 70 70)"/>
+          <circle cx="70" cy="70" r="52" fill="none" stroke="#5de0ce" stroke-width="22" stroke-dasharray="78 248" stroke-dashoffset="-131" transform="rotate(-90 70 70)"/>
+          <circle cx="70" cy="70" r="52" fill="none" stroke="#a78bfa" stroke-width="22" stroke-dasharray="52 274" stroke-dashoffset="-209" transform="rotate(-90 70 70)"/>
+          <circle cx="70" cy="70" r="52" fill="none" stroke="#34d296" stroke-width="22" stroke-dasharray="39 287" stroke-dashoffset="-261" transform="rotate(-90 70 70)"/>
+        </svg>
+        <div class="donut-center"><div class="donut-pct" id="total-eng-pct">4.2%</div><div class="donut-lbl">ENG RATE</div></div>
+      </div>
+      <div class="donut-legend">
+        <div class="dl-row"><div class="dl-label"><div class="dl-dot" style="background:#ffc350"></div>Likes</div><div class="dl-val" id="eng-likes">40%</div></div>
+        <div class="dl-row"><div class="dl-label"><div class="dl-dot" style="background:#5de0ce"></div>Comentarios</div><div class="dl-val" id="eng-comments">24%</div></div>
+        <div class="dl-row"><div class="dl-label"><div class="dl-dot" style="background:#a78bfa"></div>Compartidos</div><div class="dl-val" id="eng-shares">16%</div></div>
+        <div class="dl-row"><div class="dl-label"><div class="dl-dot" style="background:#34d296"></div>Guardados</div><div class="dl-val" id="eng-saves">12%</div></div>
+        <div class="dl-row"><div class="dl-label"><div class="dl-dot" style="background:#ef4444"></div>Clicks enlace</div><div class="dl-val" id="eng-clicks">8%</div></div>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- CAMPANA KOVA -->
-<div class="panel" id="panel-campana">
-  <div class="card">
-    <div class="section-title">Campana de lanzamiento KOVA</div>
-    <p style="font-size:13px;color:var(--gray);margin-bottom:16px">Genera el plan completo de contenido para KOVA en todas las redes sociales. KOVA como app de IA para ventas — diferenciacion por agentes NOVA, ALEX y MAIA.</p>
-    <div class="gen-form">
-      <div class="form-group">
-        <label class="form-label">Duracion de campana</label>
-        <select class="form-select" id="kc-duracion">
-          <option>1 semana (7 posts)</option>
-          <option>2 semanas (14 posts)</option>
-          <option selected>4 semanas (28 posts)</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Objetivo principal</label>
-        <select class="form-select" id="kc-objetivo">
-          <option>Descargas de la app</option>
-          <option>Awareness / Visibilidad</option>
-          <option>Conversiones a planes de pago</option>
-        </select>
-      </div>
+<!-- BOTTOM: Best posts + Heatmap + Funnel -->
+<div class="bot-grid">
+  <div class="chart-card">
+    <div class="card-title">Top 5 Posts</div>
+    <div class="card-sub">Mayor engagement del período</div>
+    <div class="post-list" id="top-posts">
+      <div class="post-item"><span class="post-rank">01</span><div class="post-info"><div class="post-title">KOVA ya está en el App Store 🚀</div><div class="post-meta"><span class="net-badge nb-ig">IG</span><span>Reel · Lanzamiento</span></div></div><div class="post-eng">8.4%</div></div>
+      <div class="post-item"><span class="post-rank">02</span><div class="post-info"><div class="post-title">Perdí una venta de 8.000€ por no saber responder</div><div class="post-meta"><span class="net-badge nb-li">LI</span><span>Post largo · Fundador</span></div></div><div class="post-eng">6.1%</div></div>
+      <div class="post-item"><span class="post-rank">03</span><div class="post-info"><div class="post-title">Esta app responde objeciones en 2 segundos</div><div class="post-meta"><span class="net-badge nb-tk">TK</span><span>Video · Demo</span></div></div><div class="post-eng">5.8%</div></div>
+      <div class="post-item"><span class="post-rank">04</span><div class="post-info"><div class="post-title">Alfester Agency + KOVA — Ya estamos aquí</div><div class="post-meta"><span class="net-badge nb-fb">FB</span><span>Post · Lanzamiento</span></div></div><div class="post-eng">3.9%</div></div>
+      <div class="post-item"><span class="post-rank">05</span><div class="post-info"><div class="post-title">El sistema que usan los centros de estética</div><div class="post-meta"><span class="net-badge nb-ig">IG</span><span>Carrusel · Educativo</span></div></div><div class="post-eng">3.2%</div></div>
     </div>
-    <button class="btn-primary" onclick="generarCampanaKOVA()">Generar plan de campana KOVA</button>
   </div>
-  <div class="card" id="kova-campana-output" style="display:none">
-    <div class="section-title">Plan de campana KOVA</div>
-    <div id="kova-campana-loading" class="ai-loading" style="display:none"><div class="spinner"></div>Generando plan de campana...</div>
-    <button class="copy-btn" onclick="copiarTexto('kova-campana-content')">Copiar</button>
-    <div class="output-content active" id="kova-campana-content"></div>
+  <div class="chart-card">
+    <div class="card-title">Mejores horarios de publicación</div>
+    <div class="card-sub">Engagement promedio por hora y día · Insight automático</div>
+    <div style="margin-top:8px">
+      <div style="display:grid;grid-template-columns:32px repeat(7,1fr);gap:3px;font-size:9px;color:var(--gray);font-family:'Space Mono',monospace;text-align:center;margin-bottom:3px">
+        <div></div><div>L</div><div>M</div><div>X</div><div>J</div><div>V</div><div>S</div><div>D</div>
+      </div>
+      <div id="heatmap-container"></div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;margin-top:8px;font-size:9px;color:var(--gray)">
+      <span>Bajo</span>
+      <div style="display:flex;gap:2px">
+        <div style="width:10px;height:10px;border-radius:2px;background:rgba(93,224,206,.1)"></div>
+        <div style="width:10px;height:10px;border-radius:2px;background:rgba(93,224,206,.25)"></div>
+        <div style="width:10px;height:10px;border-radius:2px;background:rgba(93,224,206,.45)"></div>
+        <div style="width:10px;height:10px;border-radius:2px;background:rgba(93,224,206,.7)"></div>
+        <div style="width:10px;height:10px;border-radius:2px;background:#5de0ce"></div>
+      </div>
+      <span>Alto</span>
+    </div>
+  </div>
+  <div class="chart-card">
+    <div class="card-title">Funnel de conversión social</div>
+    <div class="card-sub">De impresiones a cliente real</div>
+    <div class="funnel">
+      <div class="funnel-step f1"><div><div class="fs-label">Impresiones</div><div class="fs-sub">Alcance total</div></div><div style="text-align:right"><div class="fs-val" style="color:var(--teal)" id="f-impressions">—</div><div class="fs-pct">100%</div></div></div>
+      <div class="funnel-step f2"><div><div class="fs-label">Engagement</div><div class="fs-sub">Likes + comentarios + shares</div></div><div style="text-align:right"><div class="fs-val" style="color:var(--gold)" id="f-engagement">—</div><div class="fs-pct" id="f-eng-pct">—</div></div></div>
+      <div class="funnel-step f3"><div><div class="fs-label">Clicks a bio/link</div><div class="fs-sub">Tráfico generado</div></div><div style="text-align:right"><div class="fs-val" style="color:var(--purp)" id="f-clicks">—</div><div class="fs-pct" id="f-clicks-pct">—</div></div></div>
+      <div class="funnel-step f4"><div><div class="fs-label">Leads (contacto)</div><div class="fs-sub">WhatsApp + email + DM</div></div><div style="text-align:right"><div class="fs-val" style="color:var(--green)" id="f-leads">—</div><div class="fs-pct" id="f-leads-pct">—</div></div></div>
+      <div class="funnel-step f5"><div><div class="fs-label">Clientes</div><div class="fs-sub">Contratos firmados</div></div><div style="text-align:right"><div class="fs-val" style="color:var(--pink)" id="f-clients">—</div><div class="fs-pct" id="f-clients-pct">—</div></div></div>
+    </div>
   </div>
 </div>
 
-<!-- CAMPANA ALFESTER -->
-<div class="panel" id="panel-alfester">
-  <div class="card">
-    <div class="section-title">Campana de lanzamiento Alfester Agency</div>
-    <p style="font-size:13px;color:var(--gray);margin-bottom:16px">Genera el plan de contenido para Alfester Agency destacando KOVA como diferenciador. La agencia que ningun competidor puede replicar.</p>
-    <div class="gen-form">
-      <div class="form-group">
-        <label class="form-label">Sector prioritario</label>
-        <select class="form-select" id="ac-sector">
-          <option>General (todos los sectores)</option>
-          <option>Estetica y Belleza</option>
-          <option>Clinicas Medicas / Dental</option>
-          <option>Academias de Idiomas</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Objetivo</label>
-        <select class="form-select" id="ac-objetivo">
-          <option>Captacion de primeros clientes</option>
-          <option>Awareness de la agencia</option>
-          <option>Posicionamiento sector</option>
-        </select>
-      </div>
-      <div class="form-group full-width">
-        <label class="form-label">Propuesta especial (opcional)</label>
-        <input class="form-input" id="ac-oferta" placeholder="Ej: primer mes al 50%, garantia 30 dias...">
-      </div>
+<!-- INSIGHTS AUTOMÁTICOS -->
+<div class="insights-row">
+  <div class="insight-card">
+    <div class="ins-icon">🎯</div>
+    <div>
+      <div class="ins-badge ib-high">ACCIÓN URGENTE</div>
+      <div class="ins-title">Mejor formato: Reels con demo real</div>
+      <div class="ins-body">Los Reels con demo de NOVA generan 3.2x más engagement que posts estáticos. El algoritmo de Instagram favorece video nativo. Publicar 3 Reels/semana podría duplicar el alcance orgánico.</div>
+      <span class="ins-action">→ Crear contenido de video esta semana</span>
     </div>
-    <button class="btn-primary gold" onclick="generarCampanaAlfester()">Generar plan de campana Alfester</button>
   </div>
-  <div class="card" id="alfester-campana-output" style="display:none">
-    <div class="section-title">Plan de campana Alfester</div>
-    <div id="alfester-campana-loading" class="ai-loading" style="display:none"><div class="spinner"></div>Generando plan...</div>
-    <button class="copy-btn" onclick="copiarTexto('alfester-campana-content')">Copiar</button>
-    <div class="output-content active" id="alfester-campana-content"></div>
+  <div class="insight-card">
+    <div class="ins-icon">⏰</div>
+    <div>
+      <div class="ins-badge ib-med">OPTIMIZACIÓN</div>
+      <div class="ins-title">Ventana dorada: Mar-Jue 9-11h y 18-20h</div>
+      <div class="ins-body">El cruce de horario × engagement muestra que el público hispanohablante interactúa principalmente martes-jueves en horario laboral y post-trabajo. Los domingos tienen el menor engagement.</div>
+      <span class="ins-action">→ Reprogramar posts a horario óptimo</span>
+    </div>
+  </div>
+  <div class="insight-card">
+    <div class="ins-icon">💡</div>
+    <div>
+      <div class="ins-badge ib-ok">OPORTUNIDAD</div>
+      <div class="ins-title">LinkedIn subutilizado — alto ROI B2B</div>
+      <div class="ins-body">Los posts largos del fundador en LinkedIn generan 6x más engagement que el promedio de la red. Con 2 posts/semana de calidad se puede alcanzar 10K impresiones orgánicas mensuales en 60 días.</div>
+      <span class="ins-action">→ Activar estrategia LinkedIn fundador</span>
+    </div>
   </div>
 </div>
 
-<!-- KPIs MANUALES -->
-<div class="panel" id="panel-kpis">
-  <div class="card">
-    <div class="section-title">Actualizar KPIs manualmente</div>
-    <div class="kpi-input-grid">
-      <div class="kpi-input-item">
-        <div class="kpi-input-lbl">Instagram KOVA — Seguidores</div>
-        <input type="number" class="form-input" id="kpi-ig-kova" placeholder="0" oninput="updateKPI('ig-kova',this.value)">
-      </div>
-      <div class="kpi-input-item">
-        <div class="kpi-input-lbl">LinkedIn KOVA — Seguidores</div>
-        <input type="number" class="form-input" id="kpi-li-kova" placeholder="0" oninput="updateKPI('li-kova',this.value)">
-      </div>
-      <div class="kpi-input-item">
-        <div class="kpi-input-lbl">TikTok KOVA — Seguidores</div>
-        <input type="number" class="form-input" id="kpi-tt-kova" placeholder="0" oninput="updateKPI('tt-kova',this.value)">
-      </div>
-      <div class="kpi-input-item">
-        <div class="kpi-input-lbl">Facebook KOVA — Seguidores</div>
-        <input type="number" class="form-input" id="kpi-fb-kova" placeholder="0" oninput="updateKPI('fb-kova',this.value)">
-      </div>
-      <div class="kpi-input-item">
-        <div class="kpi-input-lbl">Instagram Alfester — Seguidores</div>
-        <input type="number" class="form-input" id="kpi-ig-alf" placeholder="0" oninput="updateKPI('ig-alf',this.value)">
-      </div>
-      <div class="kpi-input-item">
-        <div class="kpi-input-lbl">LinkedIn Alfester — Seguidores</div>
-        <input type="number" class="form-input" id="kpi-li-alf" placeholder="0" oninput="updateKPI('li-alf',this.value)">
-      </div>
-      <div class="kpi-input-item">
-        <div class="kpi-input-lbl">Engagement rate IG KOVA (%)</div>
-        <input type="number" step="0.1" class="form-input" id="kpi-eng-kova" placeholder="0.0" oninput="updateKPI('eng-kova',this.value)">
-      </div>
-      <div class="kpi-input-item">
-        <div class="kpi-input-lbl">Leads generados este mes</div>
-        <input type="number" class="form-input" id="kpi-leads" placeholder="0" oninput="updateKPI('leads',this.value)">
-      </div>
+<!-- CM AI SECTION -->
+<div class="cm-section">
+  <div class="cm-header">
+    <div>
+      <div class="card-title">CM Agent IA — Generador de contenido</div>
+      <div class="card-sub">Crea posts optimizados con IA para cada red social</div>
     </div>
-    <button class="btn-primary" style="margin-top:16px" onclick="saveKPIs()">Guardar KPIs</button>
+    <div class="cm-tabs">
+      <button class="cm-tab active" onclick="setCMTab('post',this)">Post</button>
+      <button class="cm-tab" onclick="setCMTab('campaign',this)">Campaña</button>
+      <button class="cm-tab" onclick="setCMTab('hashtags',this)">Hashtags</button>
+    </div>
   </div>
-  <div class="card">
-    <div class="section-title">KPIs actuales</div>
-    <div class="kpi-row" id="kpis-display"></div>
+  <div class="cm-grid">
+    <div class="cm-input-group">
+      <div class="cm-label">Red social</div>
+      <select class="cm-select" id="cm-network">
+        <option value="Instagram (feed)">Instagram (feed)</option>
+        <option value="Instagram (Reel)">Instagram (Reel)</option>
+        <option value="LinkedIn">LinkedIn</option>
+        <option value="TikTok">TikTok</option>
+        <option value="Facebook">Facebook</option>
+      </select>
+      <div class="cm-label" style="margin-top:8px">Tipo de contenido</div>
+      <select class="cm-select" id="cm-type">
+        <option value="lanzamiento / novedad">Lanzamiento / Novedad</option>
+        <option value="educativo - enseñanza de valor">Educativo — Enseñanza de valor</option>
+        <option value="caso de éxito / testimonio">Caso de éxito / Testimonio</option>
+        <option value="detrás de cámaras">Detrás de cámaras</option>
+        <option value="oferta / promoción">Oferta / Promoción</option>
+        <option value="pregunta / interacción">Pregunta / Interacción</option>
+      </select>
+      <div class="cm-label" style="margin-top:8px">Sector objetivo</div>
+      <select class="cm-select" id="cm-sector">
+        <option value="general (Alfester Agency + KOVA App)">General</option>
+        <option value="centros de estética y belleza">Estética y Belleza</option>
+        <option value="clínicas dentales">Clínicas Dentales</option>
+        <option value="academias de idiomas">Academias de Idiomas</option>
+        <option value="inmobiliarias">Inmobiliarias</option>
+        <option value="despachos jurídicos">Despachos Jurídicos</option>
+        <option value="empresas B2B en general">B2B General</option>
+      </select>
+      <div class="cm-label" style="margin-top:8px">Tono</div>
+      <select class="cm-select" id="cm-tone">
+        <option value="profesional y cercano">Profesional y cercano</option>
+        <option value="directo y urgente">Directo y urgente</option>
+        <option value="inspirador y motivacional">Inspirador</option>
+        <option value="educativo y didáctico">Educativo</option>
+        <option value="storytelling personal del fundador">Storytelling fundador</option>
+      </select>
+      <div class="cm-label" style="margin-top:8px">Contexto adicional (opcional)</div>
+      <input class="cm-input" id="cm-context" placeholder="Ej: lanzamiento KOVA en App Store, oferta primer mes 50%...">
+      <button class="cm-btn" onclick="generateContent()">
+        <span>✨</span> Generar contenido con IA
+      </button>
+    </div>
+    <div class="cm-input-group">
+      <div class="cm-label">Contenido generado</div>
+      <div class="cm-output" id="cm-output">El contenido generado aparecerá aquí...</div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="cm-btn" style="background:var(--bg3);color:var(--teal);border:1px solid var(--teal);flex:1" onclick="copyContent()">📋 Copiar</button>
+        <button class="cm-btn" style="background:var(--bg3);color:var(--gold);border:1px solid rgba(255,195,80,.3);flex:1" onclick="generateVariant()">🔄 Variante</button>
+      </div>
+      <div class="cm-label" style="margin-top:12px">Hashtags sugeridos</div>
+      <div class="cm-output" id="cm-hashtags" style="min-height:60px;font-size:11px;color:var(--teal)">Los hashtags aparecerán aquí...</div>
+    </div>
   </div>
 </div>
 
-<!-- HISTORIAL -->
-<div class="panel" id="panel-historial">
-  <div class="card">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-      <div class="section-title" style="margin:0">Contenido generado — historial</div>
-      <button onclick="clearHistorial()" style="font-size:11px;padding:4px 10px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--gray);cursor:pointer">Limpiar todo</button>
+<!-- MANUAL DATA ENTRY -->
+<div class="chart-card">
+  <div class="card-title">📊 Entrada manual de KPIs</div>
+  <div class="card-sub">Actualiza los datos de cada red social semanalmente</div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px" id="manual-form">
+    <div>
+      <div class="cm-label" style="color:#E1306C;margin-bottom:8px">Instagram</div>
+      <input class="cm-input" id="ig-followers" placeholder="Seguidores" type="number">
+      <input class="cm-input" id="ig-eng" placeholder="Eng. rate %" type="number" step="0.1" style="margin-top:6px">
+      <input class="cm-input" id="ig-reach" placeholder="Alcance" type="number" style="margin-top:6px">
+      <input class="cm-input" id="ig-leads" placeholder="Leads" type="number" style="margin-top:6px">
     </div>
-    <div id="historial-list"><div style="text-align:center;padding:32px;color:var(--gray);font-size:13px">Sin historial aun. Genera contenido en la pestana Generador IA.</div></div>
+    <div>
+      <div class="cm-label" style="color:#5da3e0;margin-bottom:8px">LinkedIn</div>
+      <input class="cm-input" id="li-followers" placeholder="Seguidores" type="number">
+      <input class="cm-input" id="li-eng" placeholder="Eng. rate %" type="number" step="0.1" style="margin-top:6px">
+      <input class="cm-input" id="li-reach" placeholder="Alcance" type="number" style="margin-top:6px">
+      <input class="cm-input" id="li-leads" placeholder="Leads" type="number" style="margin-top:6px">
+    </div>
+    <div>
+      <div class="cm-label" style="color:#ccc;margin-bottom:8px">TikTok</div>
+      <input class="cm-input" id="tk-followers" placeholder="Seguidores" type="number">
+      <input class="cm-input" id="tk-eng" placeholder="Eng. rate %" type="number" step="0.1" style="margin-top:6px">
+      <input class="cm-input" id="tk-reach" placeholder="Alcance" type="number" style="margin-top:6px">
+      <input class="cm-input" id="tk-leads" placeholder="Leads" type="number" style="margin-top:6px">
+    </div>
+    <div>
+      <div class="cm-label" style="color:#1877F2;margin-bottom:8px">Facebook</div>
+      <input class="cm-input" id="fb-followers" placeholder="Seguidores" type="number">
+      <input class="cm-input" id="fb-eng" placeholder="Eng. rate %" type="number" step="0.1" style="margin-top:6px">
+      <input class="cm-input" id="fb-reach" placeholder="Alcance" type="number" style="margin-top:6px">
+      <input class="cm-input" id="fb-leads" placeholder="Leads" type="number" style="margin-top:6px">
+    </div>
   </div>
+  <div style="display:flex;gap:10px;margin-top:14px">
+    <button class="cm-btn" onclick="saveKPIs()">💾 Guardar KPIs</button>
+    <button class="cm-btn" style="background:transparent;border:1px solid var(--border);color:var(--gray)" onclick="loadKPIs()">📂 Cargar guardados</button>
+  </div>
+  <div id="save-status" style="font-size:11px;color:var(--green);margin-top:8px;font-family:'Space Mono',monospace"></div>
 </div>
+
+</div><!-- end main -->
 
 <script>
 const PROXY = 'https://api.kova-app.net/api/proxy';
 const KEY = 'alfester-jarvis-2026-kova';
-const HIST_KEY = 'social_intel_hist_v1';
-const KPI_KEY = 'social_intel_kpis_v1';
+const STORAGE_KEY = 'social_intel_v2';
 
-let currentBrand = 'kova';
-let currentOutput = 'post';
-let lastOutputs = {};
+// ── HEATMAP DATA ──────────────────────────────────────────
+const heatData = [
+  // [L,M,X,J,V,S,D] per hour slot
+  {label:'8h', data:[1,2,1,2,1,1,0]},
+  {label:'9h', data:[3,5,4,5,4,2,1]},
+  {label:'10h',data:[4,8,7,8,6,3,1]},
+  {label:'11h',data:[3,6,6,6,5,4,2]},
+  {label:'12h',data:[2,4,4,4,4,5,3]},
+  {label:'13h',data:[3,4,3,4,5,6,4]},
+  {label:'18h',data:[5,7,8,7,6,5,3]},
+  {label:'19h',data:[6,9,9,9,8,6,4]},
+  {label:'20h',data:[5,8,7,8,7,5,4]},
+  {label:'21h',data:[4,6,5,6,6,7,5]},
+];
 
-// ── TABS ──────────────────────────────────────────────────────
-function switchTab(tab, btn) {
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  if(btn) btn.classList.add('active');
-  document.getElementById('panel-'+tab).classList.add('active');
-  if(tab==='overview') renderOverview();
-  if(tab==='kpis') renderKPIsDisplay();
-  if(tab==='historial') renderHistorial();
-}
-
-function switchOutput(tab, el) {
-  currentOutput = tab;
-  document.querySelectorAll('.otab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  document.querySelectorAll('.output-content').forEach(c=>c.classList.remove('active'));
-  document.getElementById('out-'+tab).classList.add('active');
-}
-
-// ── BRAND ─────────────────────────────────────────────────────
-function setBrand(brand, btn) {
-  currentBrand = brand;
-  document.querySelectorAll('.brand-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  const genBtn = document.getElementById('btn-generar');
-  if(brand==='alfester') genBtn.className='btn-primary gold';
-  else genBtn.className='btn-primary';
-}
-
-// ── KPIs ──────────────────────────────────────────────────────
-function loadKPIs() { try{return JSON.parse(localStorage.getItem(KPI_KEY)||'{}')}catch(e){return{}} }
-function updateKPI(key, val) {
-  const kpis = loadKPIs();
-  kpis[key] = parseFloat(val)||0;
-  localStorage.setItem(KPI_KEY, JSON.stringify(kpis));
-}
-function saveKPIs() {
-  const fields = ['ig-kova','li-kova','tt-kova','fb-kova','ig-alf','li-alf','eng-kova','leads'];
-  const kpis = loadKPIs();
-  fields.forEach(f=>{
-    const el=document.getElementById('kpi-'+f);
-    if(el&&el.value) kpis[f]=parseFloat(el.value)||0;
+function renderHeatmap(){
+  const c = document.getElementById('heatmap-container');
+  let html = '';
+  heatData.forEach(row => {
+    html += `<div style="display:grid;grid-template-columns:32px repeat(7,1fr);gap:3px;margin-bottom:3px">`;
+    html += `<div style="font-size:9px;color:var(--gray);font-family:Space Mono,monospace;display:flex;align-items:center">${row.label}</div>`;
+    row.data.forEach((v,i) => {
+      const alpha = v === 0 ? 0.04 : v <= 2 ? 0.12 : v <= 4 ? 0.28 : v <= 6 ? 0.5 : v <= 8 ? 0.75 : 1;
+      const days = ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
+      html += `<div style="height:22px;border-radius:3px;background:rgba(93,224,206,${alpha});cursor:pointer;transition:.15s" title="${days[i]} ${row.label}: ${v}/10 engagement"></div>`;
+    });
+    html += '</div>';
   });
-  localStorage.setItem(KPI_KEY, JSON.stringify(kpis));
-  renderKPIsDisplay();
-  alert('KPIs guardados.');
+  c.innerHTML = html;
 }
-function renderKPIsDisplay() {
-  const kpis = loadKPIs();
-  const fields = [
-    {key:'ig-kova',lbl:'IG KOVA',color:'teal'},{key:'li-kova',lbl:'LI KOVA',color:'teal'},
-    {key:'tt-kova',lbl:'TikTok KOVA',color:'teal'},{key:'fb-kova',lbl:'FB KOVA',color:'teal'},
-    {key:'ig-alf',lbl:'IG Alfester',color:'gold'},{key:'li-alf',lbl:'LI Alfester',color:'gold'},
-    {key:'eng-kova',lbl:'Engagement KOVA',color:'green'},{key:'leads',lbl:'Leads/mes',color:'purp'},
-  ];
-  document.getElementById('kpis-display').innerHTML = fields.map(f=>`
-    <div class="kpi" style="border-color:rgba(var(--${f.color}-rgb,93,224,206),.25)">
-      <div class="kpi-val" style="color:var(--${f.color})">${kpis[f.key]||0}${f.key==='eng-kova'?'%':''}</div>
-      <div class="kpi-lbl">${f.lbl}</div>
-    </div>`).join('');
-  // load into inputs
-  fields.forEach(f=>{
-    const el=document.getElementById('kpi-'+f.key);
-    if(el&&kpis[f.key]) el.value=kpis[f.key];
+
+// ── GROWTH CHART ──────────────────────────────────────────
+function renderGrowthChart(){
+  const weeks = ['S1','S2','S3','S4'];
+  const data = {
+    ig: [12,18,24,35], li: [8,12,16,22],
+    tk: [5,9,15,28], fb: [6,8,10,14]
+  };
+  const maxVal = 35;
+  let html = '';
+  weeks.forEach((w,i) => {
+    html += `<div class="chart-bar-group">`;
+    html += `<div class="bars">`;
+    const nets = [{k:'ig',c:'bar-ig'},{k:'li',c:'bar-li'},{k:'tk',c:'bar-tk'},{k:'fb',c:'bar-fb'}];
+    nets.forEach(n => {
+      const h = Math.round((data[n.k][i]/maxVal)*120);
+      html += `<div class="bar ${n.c}" style="height:${h}px" title="${n.k.toUpperCase()}: +${data[n.k][i]} seguidores"></div>`;
+    });
+    html += `</div><div class="chart-label">${w}</div></div>`;
   });
+  document.getElementById('growth-chart').innerHTML = html;
 }
 
-// ── OVERVIEW ──────────────────────────────────────────────────
-function renderOverview() {
-  const kpis = loadKPIs();
-  const hist = loadHistorial();
-  const kovaCount = hist.filter(h=>h.brand==='kova').length;
-  const alfCount = hist.filter(h=>h.brand==='alfester').length;
-  document.getElementById('ov-posts').textContent = hist.length;
-  document.getElementById('ov-kova').textContent = kovaCount;
-  document.getElementById('ov-alfester').textContent = alfCount;
-  document.getElementById('ov-seguidores').textContent = kpis['ig-kova']||'--';
-  const kovaPlats = [
-    {icon:'📸',name:'Instagram',stat:kpis['ig-kova']||0,lbl:'seguidores'},
-    {icon:'💼',name:'LinkedIn',stat:kpis['li-kova']||0,lbl:'seguidores'},
-    {icon:'🎵',name:'TikTok',stat:kpis['tt-kova']||0,lbl:'seguidores'},
-    {icon:'📘',name:'Facebook',stat:kpis['fb-kova']||0,lbl:'seguidores'},
-  ];
-  document.getElementById('ov-kova-plats').innerHTML = kovaPlats.map(p=>`
-    <div class="plat-card"><div class="plat-icon">${p.icon}</div><div class="plat-name">${p.name}</div>
-    <div class="plat-stat">${p.stat}</div><div class="plat-lbl">${p.lbl}</div></div>`).join('');
-  const alfPlats = [
-    {icon:'📸',name:'Instagram',stat:kpis['ig-alf']||0,lbl:'seguidores'},
-    {icon:'💼',name:'LinkedIn',stat:kpis['li-alf']||0,lbl:'seguidores'},
-  ];
-  document.getElementById('ov-alfester-plats').innerHTML = alfPlats.map(p=>`
-    <div class="plat-card"><div class="plat-icon">${p.icon}</div><div class="plat-name">${p.name}</div>
-    <div class="plat-stat">${p.stat}</div><div class="plat-lbl">${p.lbl}</div></div>`).join('');
+// ── KPI MANAGEMENT ────────────────────────────────────────
+function fmt(n){
+  if(n===null||n===undefined||isNaN(n)) return '—';
+  if(n>=1000000) return (n/1000000).toFixed(1)+'M';
+  if(n>=1000) return (n/1000).toFixed(1)+'K';
+  return n.toString();
 }
 
-// ── CONTENT GENERATOR ─────────────────────────────────────────
-async function generarContenido() {
-  const red = document.getElementById('g-red').value;
-  const tipo = document.getElementById('g-tipo').value;
-  const sector = document.getElementById('g-sector').value;
-  const tono = document.getElementById('g-tono').value;
-  const contexto = document.getElementById('g-contexto').value;
-  document.getElementById('output-card').style.display='block';
-  document.getElementById('ai-loading').style.display='flex';
-  document.querySelectorAll('.output-content').forEach(c=>{c.classList.remove('active');c.textContent='';});
-  document.getElementById('copy-btn').style.display='none';
-  const brandInfo = currentBrand==='kova' ?
-    'KOVA es una app movil de IA para ventas. Tiene 3 agentes: NOVA (manejo de objeciones), ALEX (simulador de prospectos), MAIA (estrategia comercial). Disponible en App Store y Google Play. Planes: Free, Starter (14.99EUR/mes), Pro (29.99EUR/mes). Web: kova-app.net' :
-    'Alfester Agency es una agencia de marketing digital con IA (agencia.kova-app.net). Su diferenciador unico es KOVA — tienen su propia app de IA de ventas para sus clientes. Empresa registrada en Estonia (OÜ). Planes: Esencial 497EUR/mes, Growth 897EUR/mes, Full Stack 1497EUR/mes. Email: hola@kova-app.net';
-  const sectorInfo = sector ? `Sector objetivo: ${sector}.` : '';
-  const prompt = `Eres un experto en marketing digital y redes sociales hispanohablante.
-Genera contenido para ${red} para la siguiente marca:
+function updateKPIDisplay(data){
+  const nets = ['ig','li','tk','fb'];
+  const labels = {ig:'Instagram',li:'LinkedIn',tk:'TikTok',fb:'Facebook'};
+  const colors = {ig:'#E1306C',li:'#5da3e0',tk:'#ccc',fb:'#1877F2'};
 
-${brandInfo}
-${sectorInfo}
+  let totalFollowers=0, totalReach=0, totalLeads=0;
+  let engRates=[], convRates=[];
 
-Tipo de contenido: ${tipo}
-Tono: ${tono}
-${contexto?'Contexto adicional: '+contexto:''}
+  nets.forEach(n => {
+    const f = parseInt(data[n+'_followers'])||0;
+    const e = parseFloat(data[n+'_eng'])||0;
+    const r = parseInt(data[n+'_reach'])||0;
+    const l = parseInt(data[n+'_leads'])||0;
+    totalFollowers += f;
+    totalReach += r;
+    totalLeads += l;
+    if(e>0) engRates.push(e);
+    document.getElementById(n+'-followers-tab').textContent = f ? fmt(f) : '—';
+  });
 
-Genera separado por estas marcas exactas:
-===POST===
-===HASHTAGS===
-===VARIANTE===
+  document.getElementById('total-followers-tab').textContent = totalFollowers ? fmt(totalFollowers) : '—';
+  document.getElementById('kpi-followers').textContent = totalFollowers ? fmt(totalFollowers) : '0';
+  document.getElementById('kpi-reach').textContent = totalReach ? fmt(totalReach) : '0';
+  document.getElementById('kpi-leads').textContent = totalLeads ? fmt(totalLeads) : '0';
 
-POST: El copy completo del post listo para publicar en ${red}. Incluye emojis apropiados, saltos de linea correctos, CTA al final. Para TikTok incluye guion con tiempos.
+  const avgEng = engRates.length ? (engRates.reduce((a,b)=>a+b,0)/engRates.length).toFixed(1)+'%' : '—';
+  document.getElementById('kpi-eng').textContent = avgEng;
+  document.getElementById('total-eng-pct').textContent = avgEng;
 
-HASHTAGS: Lista de 15-20 hashtags relevantes separados por espacios, mezclando espanol e ingles.
+  const conv = totalLeads && totalReach ? ((totalLeads/totalReach)*100).toFixed(2)+'%' : '—';
+  document.getElementById('kpi-conv').textContent = conv;
 
-VARIANTE: Una version alternativa del mismo post con diferente angulo o hook.`;
+  // Funnel
+  document.getElementById('f-impressions').textContent = fmt(totalReach)||'—';
+  const engTotal = Math.round(totalReach * 0.042);
+  document.getElementById('f-engagement').textContent = fmt(engTotal)||'—';
+  document.getElementById('f-eng-pct').textContent = totalReach ? ((engTotal/totalReach)*100).toFixed(1)+'%' : '—';
+  const clicks = Math.round(totalReach * 0.008);
+  document.getElementById('f-clicks').textContent = fmt(clicks)||'—';
+  document.getElementById('f-clicks-pct').textContent = totalReach ? ((clicks/totalReach)*100).toFixed(2)+'%' : '—';
+  document.getElementById('f-leads').textContent = fmt(totalLeads)||'—';
+  document.getElementById('f-leads-pct').textContent = totalReach ? ((totalLeads/totalReach)*100).toFixed(2)+'%' : '—';
+  document.getElementById('f-clients').textContent = '0';
+  document.getElementById('f-clients-pct').textContent = '0%';
+}
+
+function saveKPIs(){
+  const nets = ['ig','li','tk','fb'];
+  const fields = ['followers','eng','reach','leads'];
+  const data = {};
+  nets.forEach(n => fields.forEach(f => {
+    data[n+'_'+f] = document.getElementById(n+'-'+f).value;
+  }));
+  data.saved_at = new Date().toISOString();
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  updateKPIDisplay(data);
+  document.getElementById('save-status').textContent = '✓ KPIs guardados — ' + new Date().toLocaleTimeString('es-ES');
+  setTimeout(() => document.getElementById('save-status').textContent = '', 3000);
+}
+
+function loadKPIs(){
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if(!saved){ document.getElementById('save-status').textContent = 'No hay datos guardados'; return; }
+  const data = JSON.parse(saved);
+  const nets = ['ig','li','tk','fb'];
+  const fields = ['followers','eng','reach','leads'];
+  nets.forEach(n => fields.forEach(f => {
+    const el = document.getElementById(n+'-'+f);
+    if(el && data[n+'_'+f]) el.value = data[n+'_'+f];
+  }));
+  updateKPIDisplay(data);
+  document.getElementById('save-status').textContent = '✓ Datos cargados';
+  setTimeout(() => document.getElementById('save-status').textContent = '', 2000);
+}
+
+// ── CM AI ─────────────────────────────────────────────────
+async function generateContent(){
+  const network = document.getElementById('cm-network').value;
+  const type = document.getElementById('cm-type').value;
+  const sector = document.getElementById('cm-sector').value;
+  const tone = document.getElementById('cm-tone').value;
+  const context = document.getElementById('cm-context').value;
+
+  const out = document.getElementById('cm-output');
+  const ht = document.getElementById('cm-hashtags');
+  out.className = 'cm-output loading';
+  out.textContent = '⟳ Generando contenido con IA...';
+  ht.textContent = '⟳ Generando hashtags...';
+
+  const prompt = `Eres el CM Agent de Alfester Technologies OÜ — agencia de marketing digital con IA y creadores de KOVA, la app de ventas con IA en español.
+
+Genera un post optimizado para ${network} con estas características:
+- Tipo: ${type}
+- Sector objetivo: ${sector}
+- Tono: ${tone}
+- Contexto adicional: ${context || 'ninguno'}
+
+La marca es Alfester Agency (agencia de marketing digital + automatización IA) cuyo producto estrella es KOVA (app de ventas con IA disponible en App Store y Google Play, con 3 agentes: NOVA para objeciones, ALEX simulador de prospectos, MAIA estratega de negocios).
+
+Entrega EXACTAMENTE en este formato:
+POST:
+[el post completo listo para copiar y pegar, con emojis, saltos de línea naturales, CTA al final]
+
+HASHTAGS:
+[15-20 hashtags relevantes separados por espacios]
+
+VARIANTE CORTA:
+[versión de 3 líneas para Story o Tweet]`;
+
   try {
     const res = await fetch(PROXY, {
-      method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':KEY},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:2000,messages:[{role:'user',content:prompt}]})
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': KEY },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1200,
+        messages: [{ role: 'user', content: prompt }]
+      })
     });
     const data = await res.json();
-    const text = data.content?.[0]?.text||'Error al generar';
-    const parts = text.split(/===(\w+)===/);
-    lastOutputs = {brand:currentBrand,red,tipo,sector,tono};
-    let i=0;
-    while(i<parts.length){
-      const marker=parts[i].trim();
-      const content=parts[i+1]||''
-      if(marker==='POST'){lastOutputs.post=content.trim();document.getElementById('out-post').textContent=content.trim();}
-      else if(marker==='HASHTAGS'){lastOutputs.hashtags=content.trim();document.getElementById('out-hashtags').textContent=content.trim();}
-      else if(marker==='VARIANTE'){lastOutputs.variante=content.trim();document.getElementById('out-variante').textContent=content.trim();}
-      i+=2;
+    if(!res.ok) throw new Error(data.error || 'Error del servidor');
+    const text = data.content?.[0]?.text || '';
+
+    const postMatch = text.match(/POST:\n([\s\S]*?)(?=\nHASHTAGS:|$)/);
+    const hashMatch = text.match(/HASHTAGS:\n([\s\S]*?)(?=\nVARIANTE|$)/);
+
+    out.className = 'cm-output';
+    out.textContent = postMatch ? postMatch[1].trim() : text;
+    ht.textContent = hashMatch ? hashMatch[1].trim() : '';
+  } catch(e) {
+    out.className = 'cm-output';
+    out.textContent = 'Error al generar: ' + e.message;
+    ht.textContent = '';
+  }
+}
+
+async function generateVariant(){
+  const current = document.getElementById('cm-output').textContent;
+  if(!current || current.includes('Error') || current.length < 20) return;
+  const out = document.getElementById('cm-output');
+  out.className = 'cm-output loading';
+  out.textContent = '⟳ Generando variante...';
+  try {
+    const res = await fetch(PROXY, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': KEY },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 800,
+        messages: [{ role: 'user', content: `Genera una variante diferente de este post, mismo tema pero distinto ángulo, estructura y apertura:\n\n${current}` }]
+      })
+    });
+    const data = await res.json();
+    out.className = 'cm-output';
+    out.textContent = data.content?.[0]?.text || 'Error al generar variante';
+  } catch(e) {
+    out.className = 'cm-output';
+    out.textContent = 'Error: ' + e.message;
+  }
+}
+
+function copyContent(){
+  const text = document.getElementById('cm-output').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = event.target;
+    const original = btn.textContent;
+    btn.textContent = '✓ Copiado';
+    setTimeout(() => btn.textContent = original, 2000);
+  });
+}
+
+// ── FILTERS (UI only) ─────────────────────────────────────
+function setNetwork(net, btn){
+  document.querySelectorAll('.filter-btn').forEach(b => {
+    if(['all','ig','li','tk','fb'].some(n => b.textContent.toLowerCase().includes(n) || b.textContent === 'Todas')) {
+      // reset only network buttons
     }
-    if(!lastOutputs.post) document.getElementById('out-post').textContent=text;
-    document.getElementById('out-post').classList.add('active');
-    document.getElementById('ai-loading').style.display='none';
-    document.getElementById('copy-btn').style.display='block';
-  } catch(e) {
-    document.getElementById('ai-loading').style.display='none';
-    document.getElementById('out-post').textContent='Error: '+e.message;
-    document.getElementById('out-post').classList.add('active');
-  }
-}
-
-// ── CAMPANA KOVA ──────────────────────────────────────────────
-async function generarCampanaKOVA() {
-  const duracion = document.getElementById('kc-duracion').value;
-  const objetivo = document.getElementById('kc-objetivo').value;
-  document.getElementById('kova-campana-output').style.display='block';
-  document.getElementById('kova-campana-loading').style.display='flex';
-  document.getElementById('kova-campana-content').textContent='';
-  const prompt = `Eres experto en marketing digital para apps moviles. Crea un plan detallado de contenido para redes sociales para KOVA.
-
-KOVA: App movil de IA para ventas en espanol. 3 agentes: NOVA (objeciones), ALEX (simulador prospectos), MAIA (estrategia). Disponible iOS y Android. kova-app.net
-
-Duracion: ${duracion}
-Objetivo principal: ${objetivo}
-
-Crea un calendario con posts especificos para cada dia incluyendo:
-- Plataforma recomendada
-- Tipo de contenido
-- Copy completo del post (listo para publicar)
-- Hashtags
-- Mejor horario de publicacion
-
-Organiza por semanas. Se especifico y con copy real, no plantillas.`;
-  try {
-    const res = await fetch(PROXY, {
-      method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':KEY},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:3000,messages:[{role:'user',content:prompt}]})
-    });
-    const data = await res.json();
-    document.getElementById('kova-campana-content').textContent = data.content?.[0]?.text||'Error';
-    document.getElementById('kova-campana-loading').style.display='none';
-  } catch(e) {
-    document.getElementById('kova-campana-loading').style.display='none';
-    document.getElementById('kova-campana-content').textContent='Error: '+e.message;
-  }
-}
-
-// ── CAMPANA ALFESTER ──────────────────────────────────────────
-async function generarCampanaAlfester() {
-  const sector = document.getElementById('ac-sector').value;
-  const objetivo = document.getElementById('ac-objetivo').value;
-  const oferta = document.getElementById('ac-oferta').value;
-  document.getElementById('alfester-campana-output').style.display='block';
-  document.getElementById('alfester-campana-loading').style.display='flex';
-  document.getElementById('alfester-campana-content').textContent='';
-  const prompt = `Eres experto en marketing digital para agencias. Crea un plan de contenido para redes sociales para Alfester Agency.
-
-ALFESTER AGENCY: Agencia de marketing digital con IA. Su diferenciador UNICO es KOVA — su propia app de IA de ventas para clientes (ninguna agencia competidora tiene esto). Estonia OÜ, Reg. 16250313527. agencia.kova-app.net
-
-Sector prioritario: ${sector}
-Objetivo: ${objetivo}
-${oferta?'Oferta especial: '+oferta:''}
-
-Crea un plan de contenido para 4 semanas con:
-- Posts para Instagram, LinkedIn, TikTok y Facebook
-- Copy completo y listo para publicar
-- Enfasis en KOVA como diferenciador competitivo
-- Casos de uso reales para el sector objetivo
-- CTAs claros hacia consulta gratuita
-
-Organiza por semanas con copy real, no plantillas.`;
-  try {
-    const res = await fetch(PROXY, {
-      method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':KEY},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:3000,messages:[{role:'user',content:prompt}]})
-    });
-    const data = await res.json();
-    document.getElementById('alfester-campana-content').textContent = data.content?.[0]?.text||'Error';
-    document.getElementById('alfester-campana-loading').style.display='none';
-  } catch(e) {
-    document.getElementById('alfester-campana-loading').style.display='none';
-    document.getElementById('alfester-campana-content').textContent='Error: '+e.message;
-  }
-}
-
-// ── HISTORIAL ─────────────────────────────────────────────────
-function loadHistorial() { try{return JSON.parse(localStorage.getItem(HIST_KEY)||'[]')}catch(e){return[]} }
-function guardarEnHistorial() {
-  if(!lastOutputs.post){alert('Genera contenido primero.');return;}
-  const hist = loadHistorial();
-  hist.unshift({
-    id:Date.now().toString(),
-    date:new Date().toLocaleDateString('es',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}),
-    brand:lastOutputs.brand,
-    red:lastOutputs.red,
-    tipo:lastOutputs.tipo,
-    sector:lastOutputs.sector||'General',
-    post:lastOutputs.post,
-    hashtags:lastOutputs.hashtags||'',
-    variante:lastOutputs.variante||''
   });
-  if(hist.length>100) hist.splice(100);
-  localStorage.setItem(HIST_KEY, JSON.stringify(hist));
-  renderHistorial();
-  alert('Guardado en historial.');
+  // visual feedback handled by active class
 }
-function renderHistorial() {
-  const hist = loadHistorial();
-  const list = document.getElementById('historial-list');
-  if(!hist.length){list.innerHTML='<div style="text-align:center;padding:32px;color:var(--gray);font-size:13px">Sin historial aun.</div>';return;}
-  list.innerHTML = hist.map(h=>`
-    <div class="hist-item" onclick="verHistorial('${h.id}')">
-      <div>
-        <div class="hist-name">${h.red} — ${h.tipo}</div>
-        <div class="hist-meta">${h.brand.toUpperCase()} · ${h.sector} · ${h.date}</div>
-        <div style="font-size:12px;color:var(--gray);margin-top:4px;max-height:40px;overflow:hidden">${(h.post||'').substring(0,100)}...</div>
-      </div>
-      <button class="hist-del" onclick="event.stopPropagation();delHistorial('${h.id}')">✕</button>
-    </div>`).join('');
-}
-function verHistorial(id) {
-  const hist = loadHistorial();
-  const item = hist.find(h=>h.id===id);
-  if(!item) return;
-  lastOutputs = {...item};
-  document.getElementById('out-post').textContent=item.post||''
-  document.getElementById('out-hashtags').textContent=item.hashtags||''
-  document.getElementById('out-variante').textContent=item.variante||''
-  document.getElementById('output-card').style.display='block';
-  document.getElementById('ai-loading').style.display='none';
-  document.getElementById('out-post').classList.add('active');
-  document.getElementById('copy-btn').style.display='block';
-  // Switch to generador tab
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  document.querySelector('.tab:nth-child(2)').classList.add('active');
-  document.getElementById('panel-contenido').classList.add('active');
-}
-function delHistorial(id) {
-  const hist = loadHistorial().filter(h=>h.id!==id);
-  localStorage.setItem(HIST_KEY, JSON.stringify(hist));
-  renderHistorial();
-}
-function clearHistorial() {
-  if(!confirm('Eliminar todo el historial?')) return;
-  localStorage.removeItem(HIST_KEY);
-  renderHistorial();
-}
-
-// ── UTILS ─────────────────────────────────────────────────────
-function copiarOutput() {
-  const el = document.getElementById('out-'+currentOutput);
-  navigator.clipboard.writeText(el.textContent).then(()=>{
-    document.getElementById('copy-btn').textContent='Copiado!';
-    setTimeout(()=>document.getElementById('copy-btn').textContent='Copiar',2000);
+function setFormat(fmt, btn){
+  btn.closest('.filters').querySelectorAll('.filter-btn').forEach(b => {
+    if(['todos','reels','carrusel','post estático','story'].some(f => b.textContent.toLowerCase().includes(f))) b.classList.remove('active');
   });
+  btn.classList.add('active');
 }
-function copiarTexto(id) {
-  const el = document.getElementById(id);
-  navigator.clipboard.writeText(el.textContent).then(()=>alert('Copiado!'));
+function setBrand(brand, btn){ btn.classList.toggle('active'); }
+function setCMTab(tab, btn){
+  document.querySelectorAll('.cm-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
 }
+function updatePeriod(days){ /* refresh data */ }
 
-// ── INIT ──────────────────────────────────────────────────────
-renderOverview();
+// ── INIT ─────────────────────────────────────────────────
+document.getElementById('last-update-time').textContent = new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
+renderHeatmap();
+renderGrowthChart();
+loadKPIs();
 </script>
 </body>
 </html>
