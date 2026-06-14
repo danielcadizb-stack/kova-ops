@@ -3,752 +3,1177 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Social Intelligence Center v2 — Alfester + KOVA</title>
+<title>Social Intelligence + CM + Diseñador — Alfester + KOVA</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#0d0b08;--bg2:#111410;--bg3:#181c15;--card:#141812;
   --teal:#5de0ce;--gold:#ffc350;--purp:#a78bfa;--green:#34d296;
   --red:#ef4444;--blue:#5da3e0;--pink:#f472b6;
-  --white:#f0ede6;--gray:#a09b91;--dim:rgba(240,237,230,.45);
+  --white:#f0ede6;--gray:#a09b91;--dim:rgba(240,237,230,.5);
   --border:rgba(93,224,206,.1);--border2:rgba(255,255,255,.06);
-  --ig:#E1306C;--li:#0A66C2;--tk:#ffffff;--fb:#1877F2;
+  --ig:#E1306C;--li:#0A66C2;--fb:#1877F2;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--white);min-height:100vh}
+body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--white);min-height:100vh}
+
 /* ── HEADER ── */
-.header{display:flex;align-items:center;justify-content:space-between;padding:16px 28px;border-bottom:1px solid var(--border);background:rgba(13,11,8,.95);backdrop-filter:blur(12px);position:sticky;top:0;z-index:100}
-.logo{display:flex;align-items:center;gap:10px}
-.ek{width:32px;height:32px;background:#0f2820;border-radius:8px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(93,224,206,.25)}
-.brand{font-family:'Space Mono',monospace;font-size:14px;color:var(--teal);font-weight:700}
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;border-bottom:1px solid var(--border);background:rgba(13,11,8,.96);backdrop-filter:blur(12px);position:sticky;top:0;z-index:100}
+.hdr-logo{display:flex;align-items:center;gap:9px}
+.ek{width:30px;height:30px;background:#0f2820;border-radius:7px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(93,224,206,.25)}
+.brand{font-family:"Space Mono",monospace;font-size:13px;color:var(--teal);font-weight:700}
 .brand-sub{font-size:9px;color:rgba(93,224,206,.4);letter-spacing:.1em;text-transform:uppercase}
-.header-right{display:flex;align-items:center;gap:12px}
-.last-update{font-size:10px;color:var(--gray);font-family:'Space Mono',monospace}
-.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;display:inline-block;margin-right:4px}
+.live-dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;display:inline-block;margin-right:4px}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-/* ── FILTERS ── */
-.filters{display:flex;align-items:center;gap:10px;padding:14px 28px;border-bottom:1px solid var(--border2);background:var(--bg2);flex-wrap:wrap}
-.filter-label{font-size:10px;color:var(--gray);font-family:'Space Mono',monospace;letter-spacing:.1em;text-transform:uppercase;margin-right:4px}
-.filter-btn{font-size:11px;padding:5px 12px;border-radius:6px;border:1px solid var(--border2);background:transparent;color:var(--gray);cursor:pointer;transition:.15s;font-family:'DM Sans',sans-serif}
-.filter-btn:hover,.filter-btn.active{background:rgba(93,224,206,.1);border-color:var(--teal);color:var(--teal)}
-.filter-sep{width:1px;height:20px;background:var(--border2);margin:0 4px}
-select.filter-select{font-size:11px;padding:5px 10px;border-radius:6px;border:1px solid var(--border2);background:var(--bg3);color:var(--gray);cursor:pointer;font-family:'DM Sans',sans-serif;outline:none}
-select.filter-select:focus{border-color:var(--teal);color:var(--white)}
-/* ── MAIN LAYOUT ── */
-.main{padding:20px 28px;display:flex;flex-direction:column;gap:16px}
-/* ── NETWORK TABS ── */
-.net-tabs{display:flex;gap:8px}
-.net-tab{display:flex;align-items:center;gap:7px;padding:8px 16px;border-radius:10px;border:1px solid var(--border2);background:var(--bg3);cursor:pointer;transition:.15s;font-size:12px;font-weight:600}
-.net-tab:hover{border-color:rgba(93,224,206,.2)}
-.net-tab.active-all{border-color:var(--teal);background:rgba(93,224,206,.08);color:var(--teal)}
-.net-tab.active-ig{border-color:var(--ig);background:rgba(225,48,108,.08);color:var(--ig)}
-.net-tab.active-li{border-color:#5da3e0;background:rgba(93,163,224,.08);color:#5da3e0}
-.net-tab.active-tk{border-color:rgba(255,255,255,.4);background:rgba(255,255,255,.06);color:var(--white)}
-.net-tab.active-fb{border-color:#5da3e0;background:rgba(93,163,224,.08);color:#5da3e0}
-.net-dot{width:8px;height:8px;border-radius:50%}
-/* ── KPI ROW ── */
-.kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
-.kpi-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;position:relative;overflow:hidden}
-.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px}
-.kpi-followers::before{background:var(--teal)}
-.kpi-engagement::before{background:var(--gold)}
-.kpi-reach::before{background:var(--purp)}
-.kpi-leads::before{background:var(--green)}
-.kpi-conv::before{background:var(--pink)}
-.kpi-label{font-size:9px;font-weight:600;letter-spacing:.12em;color:var(--gray);text-transform:uppercase;margin-bottom:8px;font-family:'Space Mono',monospace}
-.kpi-val{font-family:'Space Mono',monospace;font-size:24px;font-weight:700;color:var(--white);line-height:1}
-.kpi-sub{display:flex;align-items:center;gap:4px;margin-top:6px}
-.kpi-delta{font-size:11px;font-weight:600;padding:2px 6px;border-radius:4px}
-.delta-up{background:rgba(52,210,150,.12);color:var(--green)}
-.delta-down{background:rgba(239,68,68,.1);color:var(--red)}
-.kpi-period{font-size:10px;color:var(--gray)}
-.kpi-breakdown{margin-top:10px;display:flex;flex-direction:column;gap:3px}
-.kpi-net-row{display:flex;justify-content:space-between;align-items:center;font-size:10px}
-.kpi-net-label{color:var(--gray)}
-.kpi-net-val{font-family:'Space Mono',monospace;font-weight:600}
-/* ── MIDDLE GRID ── */
-.mid-grid{display:grid;grid-template-columns:2fr 1fr;gap:16px}
-.chart-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px}
-.card-title{font-size:12px;font-weight:600;color:var(--white);margin-bottom:4px}
-.card-sub{font-size:10px;color:var(--gray);margin-bottom:16px}
-/* Growth chart */
-.chart-area{position:relative;height:160px;display:flex;align-items:flex-end;gap:8px;padding-bottom:20px}
-.chart-bar-group{display:flex;flex-direction:column;align-items:center;gap:3px;flex:1}
-.bars{display:flex;gap:2px;align-items:flex-end;height:140px}
-.bar{border-radius:3px 3px 0 0;transition:.3s;cursor:pointer;position:relative;min-width:8px}
-.bar:hover{opacity:.8}
+
+/* ── MAIN TABS ── */
+.main-tabs{display:flex;gap:4px;padding:12px 24px;border-bottom:1px solid var(--border2);background:var(--bg2)}
+.m-tab{font-size:12px;font-weight:600;padding:7px 16px;border-radius:8px;border:1px solid var(--border2);background:transparent;color:var(--gray);cursor:pointer;transition:.15s;display:flex;align-items:center;gap:6px}
+.m-tab:hover{color:var(--white);border-color:rgba(93,224,206,.2)}
+.m-tab.active{background:rgba(93,224,206,.1);border-color:var(--teal);color:var(--teal)}
+.tab-pane{display:none;padding:18px 24px}
+.tab-pane.active{display:block}
+
+/* ── ANALYTICS FILTERS ── */
+.filters{display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.f-label{font-size:10px;color:var(--gray);font-family:"Space Mono",monospace;letter-spacing:.1em;text-transform:uppercase}
+.f-btn{font-size:11px;padding:5px 11px;border-radius:6px;border:1px solid var(--border2);background:transparent;color:var(--gray);cursor:pointer;transition:.15s}
+.f-btn:hover,.f-btn.act{background:rgba(93,224,206,.08);border-color:var(--teal);color:var(--teal)}
+.f-sep{width:1px;height:18px;background:var(--border2);margin:0 2px}
+.f-sel{font-size:11px;padding:5px 10px;border-radius:6px;border:1px solid var(--border2);background:var(--bg3);color:var(--gray);outline:none;cursor:pointer}
+.f-sel:focus{border-color:var(--teal)}
+
+/* ── GRIDS ── */
+.kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px}
+.mid-grid{display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:14px}
+.bot-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px}
+.ins-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px}
+
+/* ── CARDS ── */
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px}
+.card-title{font-size:12px;font-weight:600;color:var(--white);margin-bottom:2px}
+.card-sub{font-size:10px;color:var(--gray);margin-bottom:12px}
+
+/* ── KPI CARDS ── */
+.kpi{background:var(--card);border-radius:12px;padding:14px;position:relative;overflow:hidden}
+.kpi::before{content:"";position:absolute;top:0;left:0;right:0;height:2px}
+.kpi-a::before{background:var(--teal)}.kpi-b::before{background:var(--gold)}
+.kpi-c::before{background:var(--purp)}.kpi-d::before{background:var(--green)}
+.kpi-e::before{background:var(--pink)}
+.kpi-lbl{font-size:9px;font-weight:600;letter-spacing:.12em;color:var(--gray);text-transform:uppercase;margin-bottom:6px;font-family:"Space Mono",monospace}
+.kpi-val{font-family:"Space Mono",monospace;font-size:22px;font-weight:700;line-height:1}
+.kpi-sub{display:flex;align-items:center;gap:4px;margin-top:5px}
+.delta{font-size:10px;font-weight:600;padding:1px 5px;border-radius:3px}
+.d-up{background:rgba(52,210,150,.12);color:var(--green)}
+.d-dn{background:rgba(239,68,68,.1);color:var(--red)}
+.kpi-period{font-size:9px;color:var(--gray)}
+.kpi-breakdown{margin-top:8px}
+.kb-row{display:flex;justify-content:space-between;font-size:10px;padding:2px 0}
+.kb-label{color:var(--gray)}.kb-val{font-family:"Space Mono",monospace;font-weight:600}
+
+/* ── CHART ── */
+.chart-area{display:flex;align-items:flex-end;gap:6px;height:140px;padding-bottom:18px;position:relative}
+.bar-group{display:flex;flex-direction:column;align-items:center;gap:2px;flex:1}
+.bars{display:flex;gap:2px;align-items:flex-end;height:120px}
+.bar{border-radius:3px 3px 0 0;min-width:7px;cursor:pointer;transition:.2s}
+.bar:hover{opacity:.75}
 .bar-ig{background:rgba(225,48,108,.7)}
 .bar-li{background:rgba(93,163,224,.7)}
 .bar-tk{background:rgba(200,200,200,.7)}
 .bar-fb{background:rgba(24,119,242,.7)}
-.chart-label{font-size:9px;color:var(--gray);font-family:'Space Mono',monospace;margin-top:4px}
-.chart-legend{display:flex;gap:14px;margin-top:8px;flex-wrap:wrap}
-.legend-item{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--gray)}
-.legend-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
-/* Engagement donut */
-.donut-wrap{display:flex;flex-direction:column;align-items:center;gap:12px}
-.donut-svg{position:relative}
+.bar-lbl{font-size:8px;color:var(--gray);font-family:"Space Mono",monospace}
+.chart-legend{display:flex;gap:12px;margin-top:8px;flex-wrap:wrap}
+.leg{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--gray)}
+.leg-dot{width:7px;height:7px;border-radius:2px}
+
+/* ── DONUT ── */
+.donut-wrap{display:flex;flex-direction:column;align-items:center;gap:10px}
 .donut-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
-.donut-pct{font-family:'Space Mono',monospace;font-size:20px;font-weight:700;color:var(--white)}
-.donut-lbl{font-size:9px;color:var(--gray);letter-spacing:.08em}
-.donut-legend{width:100%;display:flex;flex-direction:column;gap:6px}
-.dl-row{display:flex;justify-content:space-between;align-items:center;font-size:11px}
-.dl-label{display:flex;align-items:center;gap:6px;color:var(--gray)}
-.dl-dot{width:8px;height:8px;border-radius:50%}
-.dl-val{font-family:'Space Mono',monospace;font-weight:600;color:var(--white)}
-/* ── BOTTOM GRID ── */
-.bot-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
-/* Best posts */
-.post-list{display:flex;flex-direction:column;gap:8px;margin-top:8px}
-.post-item{display:flex;gap:10px;align-items:center;background:var(--bg3);border-radius:8px;padding:10px 12px;border:1px solid var(--border2)}
-.post-rank{font-family:'Space Mono',monospace;font-size:11px;color:var(--teal);width:20px;flex-shrink:0}
+.donut-pct{font-family:"Space Mono",monospace;font-size:18px;font-weight:700}
+.donut-lbl{font-size:8px;color:var(--gray);letter-spacing:.08em}
+.dl-row{display:flex;justify-content:space-between;align-items:center;font-size:11px;width:100%}
+.dl-label{display:flex;align-items:center;gap:5px;color:var(--gray)}
+.dl-dot{width:7px;height:7px;border-radius:50%}
+.dl-val{font-family:"Space Mono",monospace;font-weight:600}
+
+/* ── TOP POSTS ── */
+.post-item{display:flex;gap:8px;align-items:center;background:var(--bg3);border-radius:7px;padding:9px 11px;border:1px solid var(--border2);margin-bottom:6px}
+.post-rank{font-family:"Space Mono",monospace;font-size:10px;color:var(--teal);width:18px;flex-shrink:0}
 .post-info{flex:1}
-.post-title{font-size:11px;font-weight:600;color:var(--white);margin-bottom:2px;line-height:1.3}
-.post-meta{font-size:10px;color:var(--gray);display:flex;gap:8px}
-.post-eng{font-size:11px;font-weight:700;color:var(--gold);font-family:'Space Mono',monospace}
-.net-badge{font-size:9px;padding:1px 6px;border-radius:3px;font-family:'Space Mono',monospace}
+.post-title{font-size:11px;font-weight:600;margin-bottom:2px}
+.post-meta{font-size:10px;color:var(--gray);display:flex;gap:6px}
+.post-eng{font-size:11px;font-weight:700;color:var(--gold);font-family:"Space Mono",monospace}
+.nb{font-size:9px;padding:1px 5px;border-radius:3px;font-family:"Space Mono",monospace}
 .nb-ig{background:rgba(225,48,108,.15);color:var(--ig)}
-.nb-li{background:rgba(93,163,224,.15);color:#5da3e0}
+.nb-li{background:rgba(93,163,224,.15);color:var(--blue)}
 .nb-tk{background:rgba(255,255,255,.08);color:#ccc}
-.nb-fb{background:rgba(24,119,242,.15);color:#5da3e0}
-/* Best times */
-.heatmap{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-top:8px}
-.hm-label{font-size:9px;color:var(--gray);text-align:center;font-family:'Space Mono',monospace;padding:2px 0}
-.hm-cell{height:28px;border-radius:4px;cursor:pointer;position:relative;transition:.15s}
-.hm-cell:hover::after{content:attr(data-tip);position:absolute;bottom:110%;left:50%;transform:translateX(-50%);background:var(--bg2);border:1px solid var(--border);padding:3px 6px;border-radius:4px;font-size:9px;white-space:nowrap;color:var(--white);z-index:10;font-family:'Space Mono',monospace}
-.hm-row-label{font-size:9px;color:var(--gray);font-family:'Space Mono',monospace;display:flex;align-items:center}
-/* Leads funnel */
-.funnel{display:flex;flex-direction:column;gap:6px;margin-top:8px}
-.funnel-step{position:relative;border-radius:8px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center}
-.fs-label{font-size:11px;font-weight:600;color:var(--white)}
-.fs-sub{font-size:10px;color:var(--gray);margin-top:1px}
-.fs-val{font-family:'Space Mono',monospace;font-size:14px;font-weight:700}
-.fs-pct{font-size:10px;color:var(--gray);text-align:right;margin-top:1px}
-.f1{background:rgba(93,224,206,.12);border:1px solid rgba(93,224,206,.2)}
-.f2{background:rgba(255,195,80,.1);border:1px solid rgba(255,195,80,.18)}
-.f3{background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.18)}
-.f4{background:rgba(52,210,150,.1);border:1px solid rgba(52,210,150,.18)}
-.f5{background:rgba(244,114,182,.1);border:1px solid rgba(244,114,182,.18)}
-/* ── INSIGHTS ROW ── */
-.insights-row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.insight-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;display:flex;gap:12px;align-items:flex-start}
-.ins-icon{font-size:20px;flex-shrink:0;margin-top:2px}
-.ins-title{font-size:12px;font-weight:600;color:var(--white);margin-bottom:4px}
+.nb-fb{background:rgba(24,119,242,.15);color:var(--blue)}
+
+/* ── HEATMAP ── */
+.hm-wrap{display:grid;grid-template-columns:28px repeat(7,1fr);gap:2px;margin-top:6px}
+.hm-lbl{font-size:8px;color:var(--gray);font-family:"Space Mono",monospace;display:flex;align-items:center}
+.hm-cell{height:20px;border-radius:3px;cursor:pointer;transition:.15s}
+.hm-cell:hover{opacity:.8}
+.hm-hdr{font-size:8px;color:var(--gray);text-align:center;font-family:"Space Mono",monospace;padding:1px 0}
+
+/* ── FUNNEL ── */
+.f-step{border-radius:7px;padding:9px 12px;display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.f1{background:rgba(93,224,206,.1);border:1px solid rgba(93,224,206,.18)}
+.f2{background:rgba(255,195,80,.08);border:1px solid rgba(255,195,80,.15)}
+.f3{background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.15)}
+.f4{background:rgba(52,210,150,.08);border:1px solid rgba(52,210,150,.15)}
+.f5{background:rgba(244,114,182,.08);border:1px solid rgba(244,114,182,.15)}
+.f-lbl{font-size:11px;font-weight:600}.f-sub{font-size:9px;color:var(--gray);margin-top:1px}
+.f-val{font-family:"Space Mono",monospace;font-size:13px;font-weight:700;text-align:right}
+.f-pct{font-size:9px;color:var(--gray)}
+
+/* ── INSIGHT CARDS ── */
+.ins-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;display:flex;gap:10px}
+.ins-icon{font-size:18px;flex-shrink:0;margin-top:2px}
+.ins-badge{display:inline-block;font-size:9px;padding:2px 6px;border-radius:3px;font-family:"Space Mono",monospace;margin-bottom:5px}
+.ib-r{background:rgba(239,68,68,.1);color:var(--red);border:1px solid rgba(239,68,68,.18)}
+.ib-y{background:rgba(255,195,80,.1);color:var(--gold);border:1px solid rgba(255,195,80,.18)}
+.ib-g{background:rgba(52,210,150,.1);color:var(--green);border:1px solid rgba(52,210,150,.18)}
+.ins-title{font-size:12px;font-weight:600;margin-bottom:3px}
 .ins-body{font-size:11px;color:var(--dim);line-height:1.6}
-.ins-action{display:inline-block;font-size:10px;color:var(--teal);margin-top:6px;font-weight:600;cursor:pointer}
-.ins-badge{display:inline-block;font-size:9px;padding:2px 7px;border-radius:4px;font-family:'Space Mono',monospace;margin-bottom:6px}
-.ib-high{background:rgba(239,68,68,.1);color:var(--red);border:1px solid rgba(239,68,68,.2)}
-.ib-med{background:rgba(255,195,80,.1);color:var(--gold);border:1px solid rgba(255,195,80,.2)}
-.ib-ok{background:rgba(52,210,150,.1);color:var(--green);border:1px solid rgba(52,210,150,.2)}
-/* ── CM AI SECTION ── */
-.cm-section{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px}
-.cm-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
-.cm-tabs{display:flex;gap:8px}
-.cm-tab{font-size:11px;padding:5px 12px;border-radius:6px;border:1px solid var(--border2);background:transparent;color:var(--gray);cursor:pointer;transition:.15s}
-.cm-tab.active{background:rgba(93,224,206,.1);border-color:var(--teal);color:var(--teal)}
-.cm-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.cm-input-group{display:flex;flex-direction:column;gap:8px}
-.cm-label{font-size:10px;color:var(--gray);font-family:'Space Mono',monospace;letter-spacing:.1em;text-transform:uppercase}
-.cm-select,.cm-input{background:var(--bg3);border:1px solid var(--border2);border-radius:8px;color:var(--white);padding:9px 12px;font-size:12px;font-family:'DM Sans',sans-serif;width:100%;outline:none}
-.cm-select:focus,.cm-input:focus{border-color:var(--teal)}
-.cm-btn{display:inline-flex;align-items:center;gap:6px;background:var(--teal);color:var(--bg);font-weight:700;font-size:12px;padding:9px 18px;border-radius:8px;border:none;cursor:pointer;transition:.15s;margin-top:8px}
-.cm-btn:hover{background:#4ecfc0}
-.cm-output{background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:14px;font-size:12px;color:var(--dim);line-height:1.7;min-height:120px;white-space:pre-wrap}
-.cm-output.loading{color:var(--teal);font-family:'Space Mono',monospace;font-size:11px}
+.ins-action{font-size:10px;color:var(--teal);font-weight:600;margin-top:5px;cursor:pointer;display:block}
+
+/* ── FORM ── */
+.layout2{display:grid;grid-template-columns:310px 1fr;gap:16px}
+.layout3{display:grid;grid-template-columns:330px 1fr;gap:16px}
+.panel{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:11px}
+.result-panel{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:11px;color:var(--gray);font-weight:500}
+select,input,textarea{background:var(--bg3);border:1px solid var(--border2);border-radius:7px;color:var(--white);padding:8px 11px;font-size:12px;font-family:"DM Sans",sans-serif;width:100%;outline:none;transition:.15s}
+select:focus,input:focus,textarea:focus{border-color:var(--teal)}
+textarea{resize:vertical;min-height:65px;line-height:1.5}
+.sec-lbl{font-family:"Space Mono",monospace;font-size:9px;letter-spacing:.16em;color:rgba(93,224,206,.45);text-transform:uppercase;margin-bottom:5px}
+.divider{height:1px;background:var(--border2)}
+.btn-main{display:flex;align-items:center;justify-content:center;gap:7px;background:var(--teal);color:var(--bg);font-weight:700;font-size:12px;padding:11px;border-radius:9px;border:none;cursor:pointer;transition:.2s;width:100%}
+.btn-main:hover{background:#4ecfc0;transform:translateY(-1px)}
+.btn-main:disabled{background:rgba(93,224,206,.25);cursor:not-allowed;transform:none}
+.btn-sec{display:flex;align-items:center;justify-content:center;gap:6px;background:transparent;color:var(--teal);font-size:12px;font-weight:600;padding:8px;border-radius:8px;border:1px solid rgba(93,224,206,.3);cursor:pointer;transition:.15s;width:100%}
+.btn-sec:hover{background:rgba(93,224,206,.07)}
+.btn-sm{font-size:11px;padding:5px 11px;border-radius:5px;border:1px solid var(--border2);background:var(--bg3);color:var(--gray);cursor:pointer;transition:.15s}
+.btn-sm:hover{border-color:var(--teal);color:var(--teal)}
+.btn-sm.ok{background:var(--teal);color:var(--bg);border-color:var(--teal);font-weight:700}
+.btn-gold{background:rgba(255,195,80,.1);color:var(--gold);border:1px solid rgba(255,195,80,.25);font-size:11px;padding:5px 11px;border-radius:5px;cursor:pointer}
+
+/* ── OUTPUT ── */
+.out-tabs{display:flex;gap:5px;margin-bottom:10px;flex-wrap:wrap}
+.o-tab{font-size:11px;padding:4px 11px;border-radius:5px;border:1px solid var(--border2);background:transparent;color:var(--gray);cursor:pointer;transition:.15s}
+.o-tab.active{background:rgba(255,195,80,.1);border-color:var(--gold);color:var(--gold)}
+.out-box{background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:13px;font-size:12px;color:var(--dim);line-height:1.8;min-height:140px;white-space:pre-wrap}
+.out-actions{display:flex;gap:7px;margin-top:9px;flex-wrap:wrap}
+
+/* ── DESIGNER ── */
+.swatches{display:flex;gap:5px;flex-wrap:wrap}
+.swatch{width:24px;height:24px;border-radius:5px;cursor:pointer;border:2px solid transparent;transition:.15s}
+.swatch.sel{border-color:var(--white);transform:scale(1.12)}
+.design-area{display:flex;justify-content:center;align-items:center;min-height:360px;background:var(--bg2);border-radius:10px;border:1px solid var(--border2);padding:14px;position:relative;overflow:hidden}
+.d-placeholder{text-align:center;color:var(--gray)}
+.variants-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.v-card{background:var(--bg2);border:1px solid var(--border2);border-radius:9px;padding:9px;cursor:pointer;transition:.15s;text-align:center}
+.v-card:hover{border-color:var(--teal)}
+.v-canvas{width:100%;aspect-ratio:1;border-radius:5px;overflow:hidden;margin-bottom:5px}
+.v-lbl{font-size:9px;color:var(--gray);font-family:"Space Mono",monospace}
+
+/* ── PLATFORM GRID ── */
+.plat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.plat-card{background:var(--bg3);border:1px solid var(--border2);border-radius:9px;padding:12px;cursor:pointer;transition:.15s}
+.plat-card:hover,.plat-card.sel{border-color:var(--teal);background:rgba(93,224,206,.04)}
+.pc-icon{font-size:18px;margin-bottom:5px}
+.pc-name{font-size:12px;font-weight:600}
+.pc-sub{font-size:10px;color:var(--gray);margin-top:1px}
+
+/* ── MANUAL KPI ── */
+.kpi-form-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.kpi-net-label{font-size:10px;font-weight:700;margin-bottom:7px;font-family:"Space Mono",monospace;letter-spacing:.06em}
+
+/* ── SPINNER ── */
+.spinner{width:30px;height:30px;border:3px solid rgba(93,224,206,.15);border-top-color:var(--teal);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+
 /* ── RESPONSIVE ── */
-@media(max-width:1100px){.kpi-row{grid-template-columns:repeat(3,1fr)}.mid-grid{grid-template-columns:1fr}.bot-grid{grid-template-columns:1fr 1fr}.insights-row{grid-template-columns:1fr 1fr}.cm-grid{grid-template-columns:1fr}}
-@media(max-width:700px){.kpi-row{grid-template-columns:1fr 1fr}.bot-grid{grid-template-columns:1fr}.insights-row{grid-template-columns:1fr}.net-tabs{flex-wrap:wrap}.filters{gap:6px}}
+@media(max-width:1100px){.kpi-row{grid-template-columns:repeat(3,1fr)}.mid-grid{grid-template-columns:1fr}.bot-grid{grid-template-columns:1fr 1fr}.ins-row{grid-template-columns:1fr 1fr}.layout2,.layout3{grid-template-columns:1fr}}
+@media(max-width:700px){.kpi-row{grid-template-columns:1fr 1fr}.bot-grid{grid-template-columns:1fr}.ins-row{grid-template-columns:1fr}.main-tabs{flex-wrap:wrap}}
 </style>
 </head>
 <body>
 
 <!-- HEADER -->
-<div class="header">
-  <div class="logo">
-    <div class="ek"><svg viewBox="0 0 28 17" fill="none" width="20" height="12"><polyline points="0,8.5 3.5,8.5 6.5,2 9.5,15 12.5,2 15.5,8.5 19,8.5 23,8.5 28,8.5" stroke="#5de0ce" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-    <div><div class="brand">Social Intelligence Center</div><div class="brand-sub">KOVA + Alfester Agency</div></div>
+<div class="hdr">
+  <div class="hdr-logo">
+    <div class="ek"><svg viewBox="0 0 28 17" fill="none" width="19" height="11"><polyline points="0,8.5 3.5,8.5 6.5,2 9.5,15 12.5,2 15.5,8.5 19,8.5 23,8.5 28,8.5" stroke="#5de0ce" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div><div class="brand">Social Intelligence + CM + Diseñador</div><div class="brand-sub">KOVA + Alfester Agency · Dashboard Unificado</div></div>
   </div>
-  <div class="header-right">
-    <span class="last-update"><span class="live-dot"></span>Datos actualizados: <span id="last-update-time">—</span></span>
-    <select class="filter-select" id="period-select" onchange="updatePeriod(this.value)">
-      <option value="7">Últimos 7 días</option>
-      <option value="30" selected>Últimos 30 días</option>
-      <option value="90">Últimos 90 días</option>
+  <div style="display:flex;align-items:center;gap:10px">
+    <span style="font-size:10px;color:var(--gray);font-family:Space Mono,monospace"><span class="live-dot"></span><span id="upd-time">—</span></span>
+    <select class="f-sel" onchange="updatePeriod(this.value)" style="width:auto">
+      <option value="7">7 días</option><option value="30" selected>30 días</option><option value="90">90 días</option>
     </select>
   </div>
 </div>
 
-<!-- FILTERS -->
-<div class="filters">
-  <span class="filter-label">Red:</span>
-  <button class="filter-btn active" onclick="setNetwork('all',this)">Todas</button>
-  <button class="filter-btn" onclick="setNetwork('ig',this)" style="color:#E1306C;border-color:rgba(225,48,108,.3)">Instagram</button>
-  <button class="filter-btn" onclick="setNetwork('li',this)" style="color:#5da3e0;border-color:rgba(93,163,224,.3)">LinkedIn</button>
-  <button class="filter-btn" onclick="setNetwork('tk',this)">TikTok</button>
-  <button class="filter-btn" onclick="setNetwork('fb',this)" style="color:#5da3e0;border-color:rgba(93,163,224,.3)">Facebook</button>
-  <div class="filter-sep"></div>
-  <span class="filter-label">Formato:</span>
-  <button class="filter-btn active" onclick="setFormat('all',this)">Todos</button>
-  <button class="filter-btn" onclick="setFormat('reel',this)">Reels</button>
-  <button class="filter-btn" onclick="setFormat('carousel',this)">Carrusel</button>
-  <button class="filter-btn" onclick="setFormat('post',this)">Post estático</button>
-  <button class="filter-btn" onclick="setFormat('story',this)">Story</button>
-  <div class="filter-sep"></div>
-  <span class="filter-label">Marca:</span>
-  <button class="filter-btn active" onclick="setBrand('all',this)">Todas</button>
-  <button class="filter-btn" onclick="setBrand('alfester',this)">Alfester Agency</button>
-  <button class="filter-btn" onclick="setBrand('kova',this)">KOVA App</button>
+<!-- MAIN TABS -->
+<div class="main-tabs">
+  <button class="m-tab active" onclick="showTab('analytics',this)">📊 Analytics</button>
+  <button class="m-tab" onclick="showTab('designer',this)">🎨 Diseñador</button>
+  <button class="m-tab" onclick="showTab('cm',this)">✍️ CM Agent</button>
+  <button class="m-tab" onclick="showTab('campaign',this)">🚀 Campaña</button>
+  <button class="m-tab" onclick="showTab('calendar',this)">📅 Calendario</button>
 </div>
 
-<div class="main">
+<!-- ══════════ TAB 1: ANALYTICS ══════════ -->
+<div id="pane-analytics" class="tab-pane active">
 
-<!-- NETWORK TABS -->
-<div class="net-tabs">
-  <div class="net-tab active-all" onclick="setNetwork('all',this)">
-    <span>🌐</span> Vista Global <span style="font-size:10px;opacity:.6;margin-left:4px" id="total-followers-tab">—</span>
+  <!-- Filters -->
+  <div class="filters">
+    <span class="f-label">Red:</span>
+    <button class="f-btn act" onclick="setNet('all',this)">Todas</button>
+    <button class="f-btn" onclick="setNet('ig',this)" style="color:#E1306C">Instagram</button>
+    <button class="f-btn" onclick="setNet('li',this)" style="color:#5da3e0">LinkedIn</button>
+    <button class="f-btn" onclick="setNet('tk',this)">TikTok</button>
+    <button class="f-btn" onclick="setNet('fb',this)" style="color:#5da3e0">Facebook</button>
+    <div class="f-sep"></div>
+    <span class="f-label">Formato:</span>
+    <button class="f-btn act" onclick="setFmt('all',this)">Todos</button>
+    <button class="f-btn" onclick="setFmt('reel',this)">Reels</button>
+    <button class="f-btn" onclick="setFmt('carousel',this)">Carrusel</button>
+    <button class="f-btn" onclick="setFmt('post',this)">Post</button>
+    <button class="f-btn" onclick="setFmt('story',this)">Story</button>
+    <div class="f-sep"></div>
+    <span class="f-label">Marca:</span>
+    <button class="f-btn act" onclick="setBrand('all',this)">Todas</button>
+    <button class="f-btn" onclick="setBrand('alfester',this)">Alfester</button>
+    <button class="f-btn" onclick="setBrand('kova',this)">KOVA</button>
   </div>
-  <div class="net-tab" onclick="setNetwork('ig',this)">
-    <span class="net-dot" style="background:#E1306C"></span> Instagram <span style="font-size:10px;opacity:.6;margin-left:4px" id="ig-followers-tab">—</span>
-  </div>
-  <div class="net-tab" onclick="setNetwork('li',this)">
-    <span class="net-dot" style="background:#5da3e0"></span> LinkedIn <span style="font-size:10px;opacity:.6;margin-left:4px" id="li-followers-tab">—</span>
-  </div>
-  <div class="net-tab" onclick="setNetwork('tk',this)">
-    <span class="net-dot" style="background:#fff"></span> TikTok <span style="font-size:10px;opacity:.6;margin-left:4px" id="tk-followers-tab">—</span>
-  </div>
-  <div class="net-tab" onclick="setNetwork('fb',this)">
-    <span class="net-dot" style="background:#1877F2"></span> Facebook <span style="font-size:10px;opacity:.6;margin-left:4px" id="fb-followers-tab">—</span>
-  </div>
-</div>
 
-<!-- KPI ROW — 5 métricas principales -->
-<div class="kpi-row">
-  <div class="kpi-card kpi-followers">
-    <div class="kpi-label">Seguidores Totales</div>
-    <div class="kpi-val" id="kpi-followers">—</div>
-    <div class="kpi-sub"><span class="kpi-delta delta-up" id="kpi-followers-delta">—</span><span class="kpi-period">vs mes anterior</span></div>
-    <div class="kpi-breakdown" id="kpi-followers-breakdown"></div>
-  </div>
-  <div class="kpi-card kpi-engagement">
-    <div class="kpi-label">Engagement Rate</div>
-    <div class="kpi-val" id="kpi-eng">—</div>
-    <div class="kpi-sub"><span class="kpi-delta delta-up" id="kpi-eng-delta">—</span><span class="kpi-period">media 4 redes</span></div>
-    <div class="kpi-breakdown" id="kpi-eng-breakdown"></div>
-  </div>
-  <div class="kpi-card kpi-reach">
-    <div class="kpi-label">Alcance Total</div>
-    <div class="kpi-val" id="kpi-reach">—</div>
-    <div class="kpi-sub"><span class="kpi-delta delta-up" id="kpi-reach-delta">—</span><span class="kpi-period">impresiones únicas</span></div>
-    <div class="kpi-breakdown" id="kpi-reach-breakdown"></div>
-  </div>
-  <div class="kpi-card kpi-leads">
-    <div class="kpi-label">Leads Generados</div>
-    <div class="kpi-val" id="kpi-leads">—</div>
-    <div class="kpi-sub"><span class="kpi-delta delta-up" id="kpi-leads-delta">—</span><span class="kpi-period">clicks a bio/link</span></div>
-    <div class="kpi-breakdown" id="kpi-leads-breakdown"></div>
-  </div>
-  <div class="kpi-card kpi-conv">
-    <div class="kpi-label">Tasa Conversión</div>
-    <div class="kpi-val" id="kpi-conv">—</div>
-    <div class="kpi-sub"><span class="kpi-delta" id="kpi-conv-delta">—</span><span class="kpi-period">leads → contacto</span></div>
-    <div class="kpi-breakdown" id="kpi-conv-breakdown"></div>
-  </div>
-</div>
-
-<!-- MIDDLE: Growth chart + Engagement breakdown -->
-<div class="mid-grid">
-  <div class="chart-card">
-    <div class="card-title">Crecimiento de seguidores</div>
-    <div class="card-sub">Evolución semanal por red social</div>
-    <div class="chart-area" id="growth-chart">
-      <!-- Generated by JS -->
+  <!-- KPI Row -->
+  <div class="kpi-row">
+    <div class="kpi kpi-a" style="border:1px solid var(--border)">
+      <div class="kpi-lbl">Seguidores</div>
+      <div class="kpi-val" id="k-followers">0</div>
+      <div class="kpi-sub"><span class="delta d-up" id="k-fol-d">+0</span><span class="kpi-period">vs anterior</span></div>
+      <div class="kpi-breakdown" id="k-fol-bd"></div>
     </div>
-    <div class="chart-legend">
-      <div class="legend-item"><div class="legend-dot" style="background:#E1306C"></div>Instagram</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#5da3e0"></div>LinkedIn</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#ccc"></div>TikTok</div>
-      <div class="legend-item"><div class="legend-dot" style="background:#1877F2"></div>Facebook</div>
+    <div class="kpi kpi-b" style="border:1px solid var(--border)">
+      <div class="kpi-lbl">Engagement Rate</div>
+      <div class="kpi-val" id="k-eng">0%</div>
+      <div class="kpi-sub"><span class="delta d-up" id="k-eng-d">+0</span><span class="kpi-period">media 4 redes</span></div>
+      <div class="kpi-breakdown" id="k-eng-bd"></div>
+    </div>
+    <div class="kpi kpi-c" style="border:1px solid var(--border)">
+      <div class="kpi-lbl">Alcance Total</div>
+      <div class="kpi-val" id="k-reach">0</div>
+      <div class="kpi-sub"><span class="delta d-up" id="k-reach-d">+0</span><span class="kpi-period">impresiones</span></div>
+      <div class="kpi-breakdown" id="k-reach-bd"></div>
+    </div>
+    <div class="kpi kpi-d" style="border:1px solid var(--border)">
+      <div class="kpi-lbl">Leads</div>
+      <div class="kpi-val" id="k-leads">0</div>
+      <div class="kpi-sub"><span class="delta d-up" id="k-leads-d">+0</span><span class="kpi-period">clicks a bio</span></div>
+      <div class="kpi-breakdown" id="k-leads-bd"></div>
+    </div>
+    <div class="kpi kpi-e" style="border:1px solid var(--border)">
+      <div class="kpi-lbl">Conversión</div>
+      <div class="kpi-val" id="k-conv">0%</div>
+      <div class="kpi-sub"><span class="delta" id="k-conv-d" style="background:rgba(244,114,182,.1);color:var(--pink)">+0</span><span class="kpi-period">leads→cliente</span></div>
     </div>
   </div>
-  <div class="chart-card">
-    <div class="card-title">Distribución del Engagement</div>
-    <div class="card-sub">Interacciones por tipo</div>
-    <div class="donut-wrap">
-      <div class="donut-svg" style="width:140px;height:140px;position:relative">
-        <svg width="140" height="140" viewBox="0 0 140 140">
-          <circle cx="70" cy="70" r="52" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="22"/>
-          <circle cx="70" cy="70" r="52" fill="none" stroke="#ffc350" stroke-width="22" stroke-dasharray="131 195" stroke-dashoffset="0" transform="rotate(-90 70 70)"/>
-          <circle cx="70" cy="70" r="52" fill="none" stroke="#5de0ce" stroke-width="22" stroke-dasharray="78 248" stroke-dashoffset="-131" transform="rotate(-90 70 70)"/>
-          <circle cx="70" cy="70" r="52" fill="none" stroke="#a78bfa" stroke-width="22" stroke-dasharray="52 274" stroke-dashoffset="-209" transform="rotate(-90 70 70)"/>
-          <circle cx="70" cy="70" r="52" fill="none" stroke="#34d296" stroke-width="22" stroke-dasharray="39 287" stroke-dashoffset="-261" transform="rotate(-90 70 70)"/>
-        </svg>
-        <div class="donut-center"><div class="donut-pct" id="total-eng-pct">4.2%</div><div class="donut-lbl">ENG RATE</div></div>
+
+  <!-- Mid: chart + donut -->
+  <div class="mid-grid">
+    <div class="card">
+      <div class="card-title">Crecimiento de seguidores</div>
+      <div class="card-sub">Evolución semanal por red social</div>
+      <div class="chart-area" id="growth-chart"></div>
+      <div class="chart-legend">
+        <div class="leg"><div class="leg-dot" style="background:#E1306C"></div>Instagram</div>
+        <div class="leg"><div class="leg-dot" style="background:#5da3e0"></div>LinkedIn</div>
+        <div class="leg"><div class="leg-dot" style="background:#ccc"></div>TikTok</div>
+        <div class="leg"><div class="leg-dot" style="background:#1877F2"></div>Facebook</div>
       </div>
-      <div class="donut-legend">
-        <div class="dl-row"><div class="dl-label"><div class="dl-dot" style="background:#ffc350"></div>Likes</div><div class="dl-val" id="eng-likes">40%</div></div>
-        <div class="dl-row"><div class="dl-label"><div class="dl-dot" style="background:#5de0ce"></div>Comentarios</div><div class="dl-val" id="eng-comments">24%</div></div>
-        <div class="dl-row"><div class="dl-label"><div class="dl-dot" style="background:#a78bfa"></div>Compartidos</div><div class="dl-val" id="eng-shares">16%</div></div>
-        <div class="dl-row"><div class="dl-label"><div class="dl-dot" style="background:#34d296"></div>Guardados</div><div class="dl-val" id="eng-saves">12%</div></div>
-        <div class="dl-row"><div class="dl-label"><div class="dl-dot" style="background:#ef4444"></div>Clicks enlace</div><div class="dl-val" id="eng-clicks">8%</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Distribución del Engagement</div>
+      <div class="card-sub">Por tipo de interacción</div>
+      <div class="donut-wrap">
+        <div style="width:130px;height:130px;position:relative">
+          <svg width="130" height="130" viewBox="0 0 130 130">
+            <circle cx="65" cy="65" r="48" fill="none" stroke="rgba(255,255,255,.04)" stroke-width="20"/>
+            <circle cx="65" cy="65" r="48" fill="none" stroke="#ffc350" stroke-width="20" stroke-dasharray="120 181" stroke-dashoffset="0" transform="rotate(-90 65 65)"/>
+            <circle cx="65" cy="65" r="48" fill="none" stroke="#5de0ce" stroke-width="20" stroke-dasharray="72 229" stroke-dashoffset="-120" transform="rotate(-90 65 65)"/>
+            <circle cx="65" cy="65" r="48" fill="none" stroke="#a78bfa" stroke-width="20" stroke-dasharray="48 253" stroke-dashoffset="-192" transform="rotate(-90 65 65)"/>
+            <circle cx="65" cy="65" r="48" fill="none" stroke="#34d296" stroke-width="20" stroke-dasharray="36 265" stroke-dashoffset="-240" transform="rotate(-90 65 65)"/>
+          </svg>
+          <div class="donut-center"><div class="donut-pct" id="eng-pct">—</div><div class="donut-lbl">ENG</div></div>
+        </div>
+        <div style="width:100%;display:flex;flex-direction:column;gap:5px">
+          <div class="dl-row"><div class="dl-label"><div class="dl-dot" style="background:#ffc350"></div>Likes</div><div class="dl-val">40%</div></div>
+          <div class="dl-row"><div class="dl-label"><div class="dl-dot" style="background:#5de0ce"></div>Comentarios</div><div class="dl-val">24%</div></div>
+          <div class="dl-row"><div class="dl-label"><div class="dl-dot" style="background:#a78bfa"></div>Compartidos</div><div class="dl-val">16%</div></div>
+          <div class="dl-row"><div class="dl-label"><div class="dl-dot" style="background:#34d296"></div>Guardados</div><div class="dl-val">20%</div></div>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<!-- BOTTOM: Best posts + Heatmap + Funnel -->
-<div class="bot-grid">
-  <div class="chart-card">
-    <div class="card-title">Top 5 Posts</div>
-    <div class="card-sub">Mayor engagement del período</div>
-    <div class="post-list" id="top-posts">
-      <div class="post-item"><span class="post-rank">01</span><div class="post-info"><div class="post-title">KOVA ya está en el App Store 🚀</div><div class="post-meta"><span class="net-badge nb-ig">IG</span><span>Reel · Lanzamiento</span></div></div><div class="post-eng">8.4%</div></div>
-      <div class="post-item"><span class="post-rank">02</span><div class="post-info"><div class="post-title">Perdí una venta de 8.000€ por no saber responder</div><div class="post-meta"><span class="net-badge nb-li">LI</span><span>Post largo · Fundador</span></div></div><div class="post-eng">6.1%</div></div>
-      <div class="post-item"><span class="post-rank">03</span><div class="post-info"><div class="post-title">Esta app responde objeciones en 2 segundos</div><div class="post-meta"><span class="net-badge nb-tk">TK</span><span>Video · Demo</span></div></div><div class="post-eng">5.8%</div></div>
-      <div class="post-item"><span class="post-rank">04</span><div class="post-info"><div class="post-title">Alfester Agency + KOVA — Ya estamos aquí</div><div class="post-meta"><span class="net-badge nb-fb">FB</span><span>Post · Lanzamiento</span></div></div><div class="post-eng">3.9%</div></div>
-      <div class="post-item"><span class="post-rank">05</span><div class="post-info"><div class="post-title">El sistema que usan los centros de estética</div><div class="post-meta"><span class="net-badge nb-ig">IG</span><span>Carrusel · Educativo</span></div></div><div class="post-eng">3.2%</div></div>
-    </div>
-  </div>
-  <div class="chart-card">
-    <div class="card-title">Mejores horarios de publicación</div>
-    <div class="card-sub">Engagement promedio por hora y día · Insight automático</div>
-    <div style="margin-top:8px">
-      <div style="display:grid;grid-template-columns:32px repeat(7,1fr);gap:3px;font-size:9px;color:var(--gray);font-family:'Space Mono',monospace;text-align:center;margin-bottom:3px">
-        <div></div><div>L</div><div>M</div><div>X</div><div>J</div><div>V</div><div>S</div><div>D</div>
+  <!-- Bottom: posts + heatmap + funnel -->
+  <div class="bot-grid">
+    <div class="card">
+      <div class="card-title">Top 5 Posts</div>
+      <div class="card-sub">Mayor engagement del período</div>
+      <div id="top-posts">
+        <div class="post-item"><span class="post-rank">01</span><div class="post-info"><div class="post-title">KOVA ya está en App Store 🚀</div><div class="post-meta"><span class="nb nb-ig">IG</span><span>Reel · Lanzamiento</span></div></div><div class="post-eng">8.4%</div></div>
+        <div class="post-item"><span class="post-rank">02</span><div class="post-info"><div class="post-title">Perdí una venta de €8.000 por no saber responder</div><div class="post-meta"><span class="nb nb-li">LI</span><span>Post · Fundador</span></div></div><div class="post-eng">6.1%</div></div>
+        <div class="post-item"><span class="post-rank">03</span><div class="post-info"><div class="post-title">Esta app responde objeciones en 2 segundos</div><div class="post-meta"><span class="nb nb-tk">TK</span><span>Video · Demo</span></div></div><div class="post-eng">5.8%</div></div>
+        <div class="post-item"><span class="post-rank">04</span><div class="post-info"><div class="post-title">Alfester Agency + KOVA — Ya estamos aquí</div><div class="post-meta"><span class="nb nb-fb">FB</span><span>Post · Lanzamiento</span></div></div><div class="post-eng">3.9%</div></div>
+        <div class="post-item"><span class="post-rank">05</span><div class="post-info"><div class="post-title">El sistema que usan los centros de estética</div><div class="post-meta"><span class="nb nb-ig">IG</span><span>Carrusel · Educativo</span></div></div><div class="post-eng">3.2%</div></div>
       </div>
-      <div id="heatmap-container"></div>
     </div>
-    <div style="display:flex;gap:8px;align-items:center;margin-top:8px;font-size:9px;color:var(--gray)">
-      <span>Bajo</span>
-      <div style="display:flex;gap:2px">
-        <div style="width:10px;height:10px;border-radius:2px;background:rgba(93,224,206,.1)"></div>
-        <div style="width:10px;height:10px;border-radius:2px;background:rgba(93,224,206,.25)"></div>
-        <div style="width:10px;height:10px;border-radius:2px;background:rgba(93,224,206,.45)"></div>
-        <div style="width:10px;height:10px;border-radius:2px;background:rgba(93,224,206,.7)"></div>
-        <div style="width:10px;height:10px;border-radius:2px;background:#5de0ce"></div>
+    <div class="card">
+      <div class="card-title">Mejores horarios</div>
+      <div class="card-sub">Engagement por hora y día</div>
+      <div class="hm-wrap" style="grid-template-columns:28px repeat(7,1fr)">
+        <div></div>
+        <div class="hm-hdr">L</div><div class="hm-hdr">M</div><div class="hm-hdr">X</div>
+        <div class="hm-hdr">J</div><div class="hm-hdr">V</div><div class="hm-hdr">S</div><div class="hm-hdr">D</div>
       </div>
-      <span>Alto</span>
+      <div id="heatmap-rows"></div>
+      <div style="display:flex;gap:6px;align-items:center;margin-top:6px;font-size:9px;color:var(--gray)">
+        Bajo
+        <div style="display:flex;gap:2px">
+          <div style="width:9px;height:9px;border-radius:2px;background:rgba(93,224,206,.1)"></div>
+          <div style="width:9px;height:9px;border-radius:2px;background:rgba(93,224,206,.3)"></div>
+          <div style="width:9px;height:9px;border-radius:2px;background:rgba(93,224,206,.55)"></div>
+          <div style="width:9px;height:9px;border-radius:2px;background:rgba(93,224,206,.8)"></div>
+          <div style="width:9px;height:9px;border-radius:2px;background:#5de0ce"></div>
+        </div>
+        Alto
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Funnel de conversión</div>
+      <div class="card-sub">De impresiones a cliente</div>
+      <div class="f-step f1"><div><div class="f-lbl">Impresiones</div><div class="f-sub">Alcance total</div></div><div><div class="f-val" id="f-imp" style="color:var(--teal)">—</div><div class="f-pct">100%</div></div></div>
+      <div class="f-step f2"><div><div class="f-lbl">Engagement</div><div class="f-sub">Interacciones</div></div><div><div class="f-val" id="f-eng" style="color:var(--gold)">—</div><div class="f-pct" id="f-eng-p">—</div></div></div>
+      <div class="f-step f3"><div><div class="f-lbl">Clicks bio</div><div class="f-sub">Tráfico web</div></div><div><div class="f-val" id="f-clk" style="color:var(--purp)">—</div><div class="f-pct" id="f-clk-p">—</div></div></div>
+      <div class="f-step f4"><div><div class="f-lbl">Leads</div><div class="f-sub">Contacto directo</div></div><div><div class="f-val" id="f-leds" style="color:var(--green)">—</div><div class="f-pct" id="f-leds-p">—</div></div></div>
+      <div class="f-step f5"><div><div class="f-lbl">Clientes</div><div class="f-sub">Contratos firmados</div></div><div><div class="f-val" id="f-cli" style="color:var(--pink)">0</div><div class="f-pct">0%</div></div></div>
     </div>
   </div>
-  <div class="chart-card">
-    <div class="card-title">Funnel de conversión social</div>
-    <div class="card-sub">De impresiones a cliente real</div>
-    <div class="funnel">
-      <div class="funnel-step f1"><div><div class="fs-label">Impresiones</div><div class="fs-sub">Alcance total</div></div><div style="text-align:right"><div class="fs-val" style="color:var(--teal)" id="f-impressions">—</div><div class="fs-pct">100%</div></div></div>
-      <div class="funnel-step f2"><div><div class="fs-label">Engagement</div><div class="fs-sub">Likes + comentarios + shares</div></div><div style="text-align:right"><div class="fs-val" style="color:var(--gold)" id="f-engagement">—</div><div class="fs-pct" id="f-eng-pct">—</div></div></div>
-      <div class="funnel-step f3"><div><div class="fs-label">Clicks a bio/link</div><div class="fs-sub">Tráfico generado</div></div><div style="text-align:right"><div class="fs-val" style="color:var(--purp)" id="f-clicks">—</div><div class="fs-pct" id="f-clicks-pct">—</div></div></div>
-      <div class="funnel-step f4"><div><div class="fs-label">Leads (contacto)</div><div class="fs-sub">WhatsApp + email + DM</div></div><div style="text-align:right"><div class="fs-val" style="color:var(--green)" id="f-leads">—</div><div class="fs-pct" id="f-leads-pct">—</div></div></div>
-      <div class="funnel-step f5"><div><div class="fs-label">Clientes</div><div class="fs-sub">Contratos firmados</div></div><div style="text-align:right"><div class="fs-val" style="color:var(--pink)" id="f-clients">—</div><div class="fs-pct" id="f-clients-pct">—</div></div></div>
+
+  <!-- Insights -->
+  <div class="ins-row">
+    <div class="ins-card">
+      <div class="ins-icon">🎯</div>
+      <div><div class="ins-badge ib-r">URGENTE</div><div class="ins-title">Reels con demo real: 3.2x más alcance</div>
+      <div class="ins-body">Los demos de NOVA respondiendo objeciones generan el mayor engagement. Objetivo: 3 Reels/semana con grabación real desde el móvil.</div>
+      <span class="ins-action">→ Grabar esta semana</span></div>
     </div>
+    <div class="ins-card">
+      <div class="ins-icon">⏰</div>
+      <div><div class="ins-badge ib-y">OPTIMIZAR</div><div class="ins-title">Ventana dorada: Mar-Jue 9-11h y 18-20h</div>
+      <div class="ins-body">El engagement hispanohablante pica en horario laboral y post-trabajo. Domingos tienen el peor rendimiento.</div>
+      <span class="ins-action">→ Reprogramar publicaciones</span></div>
+    </div>
+    <div class="ins-card">
+      <div class="ins-icon">💼</div>
+      <div><div class="ins-badge ib-g">OPORTUNIDAD</div><div class="ins-title">LinkedIn fundador: 6x engagement B2B</div>
+      <div class="ins-body">Los posts largos del fundador con historia personal generan el mayor ROI orgánico. 2 posts/semana = 10K impresiones/mes en 60 días.</div>
+      <span class="ins-action">→ Activar estrategia fundador</span></div>
+    </div>
+  </div>
+
+  <!-- Manual KPI entry -->
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div><div class="card-title">📊 Entrada manual de KPIs</div><div class="card-sub">Actualiza semanalmente para mantener el dashboard al día</div></div>
+      <div style="display:flex;gap:7px">
+        <button class="btn-sm ok" onclick="saveKPIs()">💾 Guardar</button>
+        <button class="btn-sm" onclick="loadKPIs()">📂 Cargar</button>
+      </div>
+    </div>
+    <div class="kpi-form-grid">
+      <div><div class="kpi-net-label" style="color:#E1306C">Instagram</div>
+        <input id="ig-followers" type="number" placeholder="Seguidores">
+        <input id="ig-eng" type="number" step="0.1" placeholder="Eng. rate %" style="margin-top:5px">
+        <input id="ig-reach" type="number" placeholder="Alcance" style="margin-top:5px">
+        <input id="ig-leads" type="number" placeholder="Leads" style="margin-top:5px">
+      </div>
+      <div><div class="kpi-net-label" style="color:#5da3e0">LinkedIn</div>
+        <input id="li-followers" type="number" placeholder="Seguidores">
+        <input id="li-eng" type="number" step="0.1" placeholder="Eng. rate %" style="margin-top:5px">
+        <input id="li-reach" type="number" placeholder="Alcance" style="margin-top:5px">
+        <input id="li-leads" type="number" placeholder="Leads" style="margin-top:5px">
+      </div>
+      <div><div class="kpi-net-label" style="color:#ccc">TikTok</div>
+        <input id="tk-followers" type="number" placeholder="Seguidores">
+        <input id="tk-eng" type="number" step="0.1" placeholder="Eng. rate %" style="margin-top:5px">
+        <input id="tk-reach" type="number" placeholder="Alcance" style="margin-top:5px">
+        <input id="tk-leads" type="number" placeholder="Leads" style="margin-top:5px">
+      </div>
+      <div><div class="kpi-net-label" style="color:#1877F2">Facebook</div>
+        <input id="fb-followers" type="number" placeholder="Seguidores">
+        <input id="fb-eng" type="number" step="0.1" placeholder="Eng. rate %" style="margin-top:5px">
+        <input id="fb-reach" type="number" placeholder="Alcance" style="margin-top:5px">
+        <input id="fb-leads" type="number" placeholder="Leads" style="margin-top:5px">
+      </div>
+    </div>
+    <div id="save-status" style="font-size:11px;color:var(--green);margin-top:8px;font-family:Space Mono,monospace;height:16px"></div>
   </div>
 </div>
 
-<!-- INSIGHTS AUTOMÁTICOS -->
-<div class="insights-row">
-  <div class="insight-card">
-    <div class="ins-icon">🎯</div>
-    <div>
-      <div class="ins-badge ib-high">ACCIÓN URGENTE</div>
-      <div class="ins-title">Mejor formato: Reels con demo real</div>
-      <div class="ins-body">Los Reels con demo de NOVA generan 3.2x más engagement que posts estáticos. El algoritmo de Instagram favorece video nativo. Publicar 3 Reels/semana podría duplicar el alcance orgánico.</div>
-      <span class="ins-action">→ Crear contenido de video esta semana</span>
-    </div>
-  </div>
-  <div class="insight-card">
-    <div class="ins-icon">⏰</div>
-    <div>
-      <div class="ins-badge ib-med">OPTIMIZACIÓN</div>
-      <div class="ins-title">Ventana dorada: Mar-Jue 9-11h y 18-20h</div>
-      <div class="ins-body">El cruce de horario × engagement muestra que el público hispanohablante interactúa principalmente martes-jueves en horario laboral y post-trabajo. Los domingos tienen el menor engagement.</div>
-      <span class="ins-action">→ Reprogramar posts a horario óptimo</span>
-    </div>
-  </div>
-  <div class="insight-card">
-    <div class="ins-icon">💡</div>
-    <div>
-      <div class="ins-badge ib-ok">OPORTUNIDAD</div>
-      <div class="ins-title">LinkedIn subutilizado — alto ROI B2B</div>
-      <div class="ins-body">Los posts largos del fundador en LinkedIn generan 6x más engagement que el promedio de la red. Con 2 posts/semana de calidad se puede alcanzar 10K impresiones orgánicas mensuales en 60 días.</div>
-      <span class="ins-action">→ Activar estrategia LinkedIn fundador</span>
-    </div>
-  </div>
-</div>
-
-<!-- CM AI SECTION -->
-<div class="cm-section">
-  <div class="cm-header">
-    <div>
-      <div class="card-title">CM Agent IA — Generador de contenido</div>
-      <div class="card-sub">Crea posts optimizados con IA para cada red social</div>
-    </div>
-    <div class="cm-tabs">
-      <button class="cm-tab active" onclick="setCMTab('post',this)">Post</button>
-      <button class="cm-tab" onclick="setCMTab('campaign',this)">Campaña</button>
-      <button class="cm-tab" onclick="setCMTab('hashtags',this)">Hashtags</button>
-    </div>
-  </div>
-  <div class="cm-grid">
-    <div class="cm-input-group">
-      <div class="cm-label">Red social</div>
-      <select class="cm-select" id="cm-network">
-        <option value="Instagram (feed)">Instagram (feed)</option>
-        <option value="Instagram (Reel)">Instagram (Reel)</option>
-        <option value="LinkedIn">LinkedIn</option>
-        <option value="TikTok">TikTok</option>
-        <option value="Facebook">Facebook</option>
+<!-- ══════════ TAB 2: DISEÑADOR ══════════ -->
+<div id="pane-designer" class="tab-pane">
+<div class="layout3">
+  <div class="panel">
+    <div class="sec-lbl">1. Plataforma</div>
+    <div class="field"><label>Red y formato</label>
+      <select id="d-network" onchange="updateDSize()">
+        <option value="instagram_feed">Instagram feed (1080×1080)</option>
+        <option value="instagram_story">Instagram Story (1080×1920)</option>
+        <option value="linkedin">LinkedIn (1200×628)</option>
+        <option value="tiktok">TikTok (1080×1920)</option>
+        <option value="facebook">Facebook (1200×628)</option>
+        <option value="whatsapp">WhatsApp (1080×1080)</option>
       </select>
-      <div class="cm-label" style="margin-top:8px">Tipo de contenido</div>
-      <select class="cm-select" id="cm-type">
-        <option value="lanzamiento / novedad">Lanzamiento / Novedad</option>
-        <option value="educativo - enseñanza de valor">Educativo — Enseñanza de valor</option>
-        <option value="caso de éxito / testimonio">Caso de éxito / Testimonio</option>
-        <option value="detrás de cámaras">Detrás de cámaras</option>
-        <option value="oferta / promoción">Oferta / Promoción</option>
-        <option value="pregunta / interacción">Pregunta / Interacción</option>
+    </div>
+    <div class="field"><label>Tipo</label>
+      <select id="d-type">
+        <option value="lanzamiento">🚀 Lanzamiento</option>
+        <option value="educativo">📚 Educativo</option>
+        <option value="oferta">💰 Oferta/Promo</option>
+        <option value="dato">📊 Dato impactante</option>
+        <option value="testimonio">⭐ Testimonio</option>
+        <option value="inspiracional">💡 Inspiracional</option>
       </select>
-      <div class="cm-label" style="margin-top:8px">Sector objetivo</div>
-      <select class="cm-select" id="cm-sector">
-        <option value="general (Alfester Agency + KOVA App)">General</option>
+    </div>
+    <div class="divider"></div>
+    <div class="sec-lbl">2. Contenido</div>
+    <div class="field"><label>Marca</label>
+      <select id="d-brand"><option value="alfester">Alfester Agency</option><option value="kova">KOVA App</option><option value="ambas">Alfester + KOVA</option></select>
+    </div>
+    <div class="field"><label>Headline principal</label>
+      <input id="d-headline" placeholder="Ej: Tu negocio en piloto automático" maxlength="55">
+    </div>
+    <div class="field"><label>CTA / Subtexto</label>
+      <input id="d-cta" placeholder="Ej: agencia.kova-app.net · Consulta gratis" maxlength="65">
+    </div>
+    <div class="field"><label>Contexto para la IA</label>
+      <textarea id="d-context" placeholder="Describe el diseño: estilo, elementos, composición..."></textarea>
+    </div>
+    <div class="divider"></div>
+    <div class="sec-lbl">3. Estilo</div>
+    <div class="field"><label>Paleta</label>
+      <select id="d-palette" onchange="updateSwatches()">
+        <option value="dark_teal">Dark Teal — KOVA/Alfester</option>
+        <option value="dark_gold">Dark Gold — Premium</option>
+        <option value="dark_purp">Dark Purple — Pro/MAIA</option>
+        <option value="white_teal">Blanco + Teal</option>
+        <option value="gradient">Gradiente oscuro</option>
+      </select>
+    </div>
+    <div class="field"><label>Colores activos</label><div class="swatches" id="d-swatches"></div></div>
+    <div class="field"><label>Estilo visual</label>
+      <select id="d-style">
+        <option value="tech grid angular HUD corners data visualization">Tech / IA — grid + HUD</option>
+        <option value="bold large typography dominant text left accent bar">Bold — tipografía dominante</option>
+        <option value="minimal clean breathing space dot grid subtle">Minimalista — clean</option>
+        <option value="gradient radial glow dynamic color transitions">Gradiente dinámico</option>
+        <option value="editorial typography as protagonist magazine style">Editorial — tipografía</option>
+      </select>
+    </div>
+    <div class="divider"></div>
+    <button class="btn-main" id="d-gen-btn" onclick="generateDesign()">✨ Generar diseño IA</button>
+    <button class="btn-sec" onclick="generateVariants()">🔄 3 variantes de paleta</button>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:14px">
+    <div class="result-panel">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div><div class="card-title">Vista previa del diseño</div><div class="card-sub" id="d-size-lbl">Configura y genera</div></div>
+        <div style="display:flex;gap:6px">
+          <button class="btn-sm" onclick="regenDesign()">↺ Regen</button>
+          <button class="btn-sm" onclick="downloadSVG()">⬇ SVG</button>
+          <button class="btn-sm ok" onclick="downloadPNG()">⬇ PNG</button>
+        </div>
+      </div>
+      <div class="design-area" id="d-area">
+        <div class="d-placeholder" id="d-placeholder">
+          <div style="font-size:36px;margin-bottom:8px">🎨</div>
+          <div style="font-size:12px">Configura el diseño y pulsa generar</div>
+          <div style="font-size:10px;margin-top:4px;color:rgba(160,155,145,.4)">SVG listo para descargar como PNG</div>
+        </div>
+      </div>
+    </div>
+    <div class="result-panel" id="d-variants-wrap" style="display:none">
+      <div class="card-title" style="margin-bottom:4px">3 variantes de paleta</div>
+      <div class="card-sub">Haz clic para cargar en el canvas principal</div>
+      <div class="variants-grid" id="d-variants-grid"></div>
+    </div>
+    <div class="result-panel">
+      <div class="card-title" style="margin-bottom:4px">Copy para este diseño</div>
+      <div class="card-sub" style="margin-bottom:10px">Generado automáticamente con el diseño</div>
+      <div class="out-tabs">
+        <button class="o-tab active" onclick="setDTab('post',this)">Post</button>
+        <button class="o-tab" onclick="setDTab('short',this)">Corto</button>
+        <button class="o-tab" onclick="setDTab('hashtags',this)">Hashtags</button>
+      </div>
+      <div class="out-box" id="d-copy-out" style="min-height:90px">El copy se genera junto con el diseño...</div>
+      <div class="out-actions">
+        <button class="btn-sm ok" onclick="copyEl('d-copy-out')">📋 Copiar</button>
+        <button class="btn-sm" onclick="regenDCopy()">↺ Regenerar</button>
+        <button class="btn-sm" onclick="translateDCopy()">🇬🇧 EN</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════ TAB 3: CM AGENT ══════════ -->
+<div id="pane-cm" class="tab-pane">
+<div class="layout2">
+  <div class="panel">
+    <div class="sec-lbl">Post individual</div>
+    <div class="field"><label>Red social</label>
+      <select id="p-network">
+        <option>Instagram (feed)</option><option>Instagram (Reel)</option>
+        <option>Instagram (Story)</option><option>LinkedIn</option>
+        <option>TikTok</option><option>Facebook</option><option>WhatsApp</option>
+      </select>
+    </div>
+    <div class="field"><label>Tipo de contenido</label>
+      <select id="p-type">
+        <option value="lanzamiento de Alfester Agency y KOVA App en App Store">🚀 Lanzamiento KOVA/Alfester</option>
+        <option value="educativo sobre ventas con IA y cómo KOVA ayuda">📚 Educativo — IA y ventas</option>
+        <option value="caso de éxito con resultados concretos de clientes">⭐ Caso de éxito</option>
+        <option value="oferta lanzamiento 33% descuento primer mes">💰 Oferta lanzamiento</option>
+        <option value="storytelling personal del fundador Daniel sobre la venta de 8000 euros que perdió">👤 Storytelling fundador</option>
+        <option value="detrás de cámaras del proceso de construcción">🎬 Detrás de cámaras</option>
+        <option value="pregunta de interacción para generar comentarios y engagement">💬 Pregunta / Interacción</option>
+        <option value="comparativa antes y después de usar KOVA o Alfester">📊 Antes/después</option>
+        <option value="manejo de una objeción de ventas específica con NOVA">🎯 Demo de objeción</option>
+      </select>
+    </div>
+    <div class="field"><label>Sector objetivo</label>
+      <select id="p-sector">
+        <option value="emprendedores freelancers y dueños de pymes hispanohablantes">General — Pymes</option>
+        <option value="centros de estética con agenda irregular y poco marketing">Centros de Estética</option>
+        <option value="clínicas dentales que pierden pacientes por visibilidad online">Clínicas Dentales</option>
+        <option value="academias de idiomas con alta competencia y baja retención">Academias de Idiomas</option>
+        <option value="equipos de ventas B2B que cierran pocos tratos">Equipos B2B</option>
+        <option value="startups y founders en fase de crecimiento y captación">Startups/Founders</option>
+      </select>
+    </div>
+    <div class="field"><label>Tono</label>
+      <select id="p-tone">
+        <option value="profesional y cercano de experto a emprendedor">Profesional y cercano</option>
+        <option value="directo urgente orientado a resultados y ROI">Directo y urgente</option>
+        <option value="inspirador storytelling emocional y motivacional">Inspirador</option>
+        <option value="voz auténtica del fundador Daniel sin filtros corporativos">Voz del fundador</option>
+        <option value="educativo didáctico que enseña algo concreto y útil">Educativo</option>
+        <option value="humorístico inteligente con twist sorpresivo">Humor/Twist</option>
+      </select>
+    </div>
+    <div class="field"><label>Contexto adicional</label>
+      <textarea id="p-context" placeholder="Ej: mencionar oferta €9.99 primer mes, garantía 30 días, que KOVA ya está en App Store..."></textarea>
+    </div>
+    <div class="divider"></div>
+    <button class="btn-main" id="p-gen-btn" onclick="generatePost()">✨ Generar post experto</button>
+    <button class="btn-sec" onclick="genVariantPost()">🔄 Variante diferente</button>
+  </div>
+  <div class="result-panel">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <div><div class="card-title">Copy generado</div><div class="card-sub">Listo para publicar — calidad profesional</div></div>
+      <div style="display:flex;gap:6px">
+        <button class="btn-sm" onclick="translatePost()">🇬🇧 EN</button>
+        <button class="btn-sm ok" onclick="copyEl('p-out-main')">📋 Copiar</button>
+      </div>
+    </div>
+    <div class="out-tabs">
+      <button class="o-tab active" onclick="setPTab('main',this)">Post completo</button>
+      <button class="o-tab" onclick="setPTab('short',this)">Versión corta</button>
+      <button class="o-tab" onclick="setPTab('hashtags',this)">Hashtags</button>
+      <button class="o-tab" onclick="setPTab('alt',this)">Ángulo alternativo</button>
+    </div>
+    <div class="out-box" id="p-out-main">El post aparecerá aquí...</div>
+    <div class="out-box" id="p-out-short" style="display:none"></div>
+    <div class="out-box" id="p-out-hashtags" style="display:none"></div>
+    <div class="out-box" id="p-out-alt" style="display:none"></div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════ TAB 4: CAMPAÑA ══════════ -->
+<div id="pane-campaign" class="tab-pane">
+<div class="layout2">
+  <div class="panel">
+    <div class="sec-lbl">Campaña multicanal</div>
+    <div class="field"><label>Nombre de la campaña</label>
+      <input id="c-name" placeholder="Ej: Lanzamiento KOVA App Store Junio 2026">
+    </div>
+    <div class="field"><label>Sector objetivo</label>
+      <select id="c-sector">
+        <option value="emprendedores y pymes hispanohablantes en general">General — Emprendedores</option>
         <option value="centros de estética y belleza">Estética y Belleza</option>
         <option value="clínicas dentales">Clínicas Dentales</option>
-        <option value="academias de idiomas">Academias de Idiomas</option>
-        <option value="inmobiliarias">Inmobiliarias</option>
-        <option value="despachos jurídicos">Despachos Jurídicos</option>
-        <option value="empresas B2B en general">B2B General</option>
+        <option value="equipos de ventas B2B">Ventas B2B</option>
+        <option value="startups y founders">Startups/Founders</option>
       </select>
-      <div class="cm-label" style="margin-top:8px">Tono</div>
-      <select class="cm-select" id="cm-tone">
-        <option value="profesional y cercano">Profesional y cercano</option>
-        <option value="directo y urgente">Directo y urgente</option>
-        <option value="inspirador y motivacional">Inspirador</option>
-        <option value="educativo y didáctico">Educativo</option>
-        <option value="storytelling personal del fundador">Storytelling fundador</option>
-      </select>
-      <div class="cm-label" style="margin-top:8px">Contexto adicional (opcional)</div>
-      <input class="cm-input" id="cm-context" placeholder="Ej: lanzamiento KOVA en App Store, oferta primer mes 50%...">
-      <button class="cm-btn" onclick="generateContent()">
-        <span>✨</span> Generar contenido con IA
-      </button>
     </div>
-    <div class="cm-input-group">
-      <div class="cm-label">Contenido generado</div>
-      <div class="cm-output" id="cm-output">El contenido generado aparecerá aquí...</div>
-      <div style="display:flex;gap:8px;margin-top:8px">
-        <button class="cm-btn" style="background:var(--bg3);color:var(--teal);border:1px solid var(--teal);flex:1" onclick="copyContent()">📋 Copiar</button>
-        <button class="cm-btn" style="background:var(--bg3);color:var(--gold);border:1px solid rgba(255,195,80,.3);flex:1" onclick="generateVariant()">🔄 Variante</button>
+    <div class="field"><label>Objetivo</label>
+      <select id="c-objective">
+        <option value="descargas de KOVA en App Store y Google Play">Descargas KOVA</option>
+        <option value="leads para Alfester Agency primera consulta gratis">Leads Alfester</option>
+        <option value="conversión a plan Starter o Pro de KOVA">Conversión KOVA</option>
+        <option value="primer cliente de pago Alfester Agency">Primer cliente Alfester</option>
+        <option value="brand awareness Alfester Technologies OÜ">Brand awareness</option>
+      </select>
+    </div>
+    <div class="field"><label>Oferta / Propuesta de valor</label>
+      <textarea id="c-offer" placeholder="Ej: KOVA gratis sin tarjeta, oferta lanzamiento €9.99 primer mes, Alfester garantía 30 días..."></textarea>
+    </div>
+    <div class="field"><label>Plataformas</label>
+      <div class="plat-grid">
+        <div class="plat-card sel" onclick="togglePlat(this,'instagram')"><div class="pc-icon">📸</div><div class="pc-name">Instagram</div><div class="pc-sub">Feed + Hashtags</div></div>
+        <div class="plat-card sel" onclick="togglePlat(this,'linkedin')"><div class="pc-icon">💼</div><div class="pc-name">LinkedIn</div><div class="pc-sub">Post fundador</div></div>
+        <div class="plat-card sel" onclick="togglePlat(this,'whatsapp')"><div class="pc-icon">💬</div><div class="pc-name">WhatsApp</div><div class="pc-sub">Mensaje directo</div></div>
+        <div class="plat-card sel" onclick="togglePlat(this,'tiktok')"><div class="pc-icon">🎵</div><div class="pc-name">TikTok</div><div class="pc-sub">Guión video</div></div>
+        <div class="plat-card sel" onclick="togglePlat(this,'facebook')"><div class="pc-icon">📘</div><div class="pc-name">Facebook</div><div class="pc-sub">Post completo</div></div>
+        <div class="plat-card sel" onclick="togglePlat(this,'story')"><div class="pc-icon">📱</div><div class="pc-name">Stories</div><div class="pc-sub">3 slides</div></div>
       </div>
-      <div class="cm-label" style="margin-top:12px">Hashtags sugeridos</div>
-      <div class="cm-output" id="cm-hashtags" style="min-height:60px;font-size:11px;color:var(--teal)">Los hashtags aparecerán aquí...</div>
     </div>
+    <div class="divider"></div>
+    <button class="btn-main" id="c-gen-btn" onclick="generateCampaign()">🚀 Generar campaña completa</button>
+  </div>
+  <div class="result-panel">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <div><div class="card-title">Campaña generada</div><div class="card-sub">Copy profesional para todas las plataformas</div></div>
+      <div style="display:flex;gap:6px">
+        <button class="btn-sm" onclick="translateCamp()">🇬🇧 EN</button>
+        <button class="btn-sm ok" onclick="copyEl('c-out')">📋 Copiar</button>
+      </div>
+    </div>
+    <div class="out-tabs" id="c-plat-tabs"></div>
+    <div class="out-box" id="c-out" style="min-height:300px">Configura y genera la campaña...</div>
   </div>
 </div>
-
-<!-- MANUAL DATA ENTRY -->
-<div class="chart-card">
-  <div class="card-title">📊 Entrada manual de KPIs</div>
-  <div class="card-sub">Actualiza los datos de cada red social semanalmente</div>
-  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px" id="manual-form">
-    <div>
-      <div class="cm-label" style="color:#E1306C;margin-bottom:8px">Instagram</div>
-      <input class="cm-input" id="ig-followers" placeholder="Seguidores" type="number">
-      <input class="cm-input" id="ig-eng" placeholder="Eng. rate %" type="number" step="0.1" style="margin-top:6px">
-      <input class="cm-input" id="ig-reach" placeholder="Alcance" type="number" style="margin-top:6px">
-      <input class="cm-input" id="ig-leads" placeholder="Leads" type="number" style="margin-top:6px">
-    </div>
-    <div>
-      <div class="cm-label" style="color:#5da3e0;margin-bottom:8px">LinkedIn</div>
-      <input class="cm-input" id="li-followers" placeholder="Seguidores" type="number">
-      <input class="cm-input" id="li-eng" placeholder="Eng. rate %" type="number" step="0.1" style="margin-top:6px">
-      <input class="cm-input" id="li-reach" placeholder="Alcance" type="number" style="margin-top:6px">
-      <input class="cm-input" id="li-leads" placeholder="Leads" type="number" style="margin-top:6px">
-    </div>
-    <div>
-      <div class="cm-label" style="color:#ccc;margin-bottom:8px">TikTok</div>
-      <input class="cm-input" id="tk-followers" placeholder="Seguidores" type="number">
-      <input class="cm-input" id="tk-eng" placeholder="Eng. rate %" type="number" step="0.1" style="margin-top:6px">
-      <input class="cm-input" id="tk-reach" placeholder="Alcance" type="number" style="margin-top:6px">
-      <input class="cm-input" id="tk-leads" placeholder="Leads" type="number" style="margin-top:6px">
-    </div>
-    <div>
-      <div class="cm-label" style="color:#1877F2;margin-bottom:8px">Facebook</div>
-      <input class="cm-input" id="fb-followers" placeholder="Seguidores" type="number">
-      <input class="cm-input" id="fb-eng" placeholder="Eng. rate %" type="number" step="0.1" style="margin-top:6px">
-      <input class="cm-input" id="fb-reach" placeholder="Alcance" type="number" style="margin-top:6px">
-      <input class="cm-input" id="fb-leads" placeholder="Leads" type="number" style="margin-top:6px">
-    </div>
-  </div>
-  <div style="display:flex;gap:10px;margin-top:14px">
-    <button class="cm-btn" onclick="saveKPIs()">💾 Guardar KPIs</button>
-    <button class="cm-btn" style="background:transparent;border:1px solid var(--border);color:var(--gray)" onclick="loadKPIs()">📂 Cargar guardados</button>
-  </div>
-  <div id="save-status" style="font-size:11px;color:var(--green);margin-top:8px;font-family:'Space Mono',monospace"></div>
 </div>
 
-</div><!-- end main -->
+<!-- ══════════ TAB 5: CALENDARIO ══════════ -->
+<div id="pane-calendar" class="tab-pane">
+<div class="result-panel">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+    <div><div class="card-title">Calendario de contenido — 14 días</div><div class="card-sub">Plan completo para Alfester Agency + KOVA</div></div>
+    <div style="display:flex;gap:8px">
+      <select class="f-sel" id="cal-brand" style="width:auto">
+        <option value="ambas">Alfester + KOVA</option>
+        <option value="alfester">Solo Alfester</option>
+        <option value="kova">Solo KOVA</option>
+      </select>
+      <button class="btn-sm ok" onclick="generateCalendar()">✨ Generar con IA</button>
+    </div>
+  </div>
+  <div class="out-box" id="cal-out" style="min-height:400px;font-size:11px">Pulsa "Generar con IA" para crear el plan de 14 días con temas, formatos, horarios y hooks para cada publicación.</div>
+  <div class="out-actions"><button class="btn-sm ok" onclick="copyEl('cal-out')">📋 Copiar calendario</button></div>
+</div>
+</div>
 
 <script>
-const PROXY = 'https://api.kova-app.net/api/proxy';
-const KEY = 'alfester-jarvis-2026-kova';
-const STORAGE_KEY = 'social_intel_v2';
+const PROXY='https://api.kova-app.net/api/proxy';
+const KEY='alfester-jarvis-2026-kova';
+const STOR='social_unified_v1';
 
-// ── HEATMAP DATA ──────────────────────────────────────────
-const heatData = [
-  // [L,M,X,J,V,S,D] per hour slot
-  {label:'8h', data:[1,2,1,2,1,1,0]},
-  {label:'9h', data:[3,5,4,5,4,2,1]},
-  {label:'10h',data:[4,8,7,8,6,3,1]},
-  {label:'11h',data:[3,6,6,6,5,4,2]},
-  {label:'12h',data:[2,4,4,4,4,5,3]},
-  {label:'13h',data:[3,4,3,4,5,6,4]},
-  {label:'18h',data:[5,7,8,7,6,5,3]},
-  {label:'19h',data:[6,9,9,9,8,6,4]},
-  {label:'20h',data:[5,8,7,8,7,5,4]},
-  {label:'21h',data:[4,6,5,6,6,7,5]},
+const PAL={
+  dark_teal:{bg:'#0d0b08',bg2:'#111410',accent:'#5de0ce',accent2:'#34d296',text:'#f0ede6',dim:'#a09b91'},
+  dark_gold:{bg:'#0d0b08',bg2:'#161210',accent:'#ffc350',accent2:'#f59e0b',text:'#f0ede6',dim:'#a09b91'},
+  dark_purp:{bg:'#0d0b0f',bg2:'#12101a',accent:'#a78bfa',accent2:'#7c3aed',text:'#f0ede6',dim:'#a09b91'},
+  white_teal:{bg:'#ffffff',bg2:'#f0f4f4',accent:'#00a896',accent2:'#5de0ce',text:'#0d0b08',dim:'#555'},
+  gradient:{bg:'#0d0b08',bg2:'#1a0f2e',accent:'#5de0ce',accent2:'#a78bfa',text:'#f0ede6',dim:'#a09b91'},
+};
+const SZ={
+  instagram_feed:{w:1080,h:1080},instagram_story:{w:1080,h:1920},
+  linkedin:{w:1200,h:628},tiktok:{w:1080,h:1920},
+  facebook:{w:1200,h:628},whatsapp:{w:1080,h:1080},
+};
+const BRAND={
+  alfester:'Alfester Agency: agencia de marketing digital y automatización con IA para pymes. Planes €497-€1.497/mes. Garantía 30 días.',
+  kova:'KOVA App: primera app de ventas con IA en español. NOVA (objeciones), ALEX (simula prospectos), MAIA (estrategia semanal). Free €0, Starter €9.99/mes, Pro €24.99/mes. App Store y Google Play.',
+  ambas:'Alfester Technologies OÜ (Reg.16250313527): Alfester Agency (marketing IA, €497-€1.497/mes, garantía 30 días) + KOVA App (ventas IA español, NOVA/ALEX/MAIA, gratis App Store/Google Play).',
+};
+
+let currentSVG='', postData={main:'',short:'',hashtags:'',alt:''}, dCopyData={post:'',short:'',hashtags:''};
+let selPlats=new Set(['instagram','linkedin','whatsapp','tiktok','facebook','story']);
+
+// ── TABS ──────────────────────────────────────────────────
+function showTab(id,btn){
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.m-tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('pane-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ── ANALYTICS INIT ────────────────────────────────────────
+const heatData=[
+  {l:'8h',d:[1,2,1,2,1,1,0]},{l:'9h',d:[3,5,4,5,4,2,1]},{l:'10h',d:[4,8,7,8,6,3,1]},
+  {l:'11h',d:[3,6,6,6,5,4,2]},{l:'12h',d:[2,4,4,4,4,5,3]},{l:'13h',d:[3,4,3,4,5,6,4]},
+  {l:'18h',d:[5,7,8,7,6,5,3]},{l:'19h',d:[6,9,9,9,8,6,4]},{l:'20h',d:[5,8,7,8,7,5,4]},
+  {l:'21h',d:[4,6,5,6,6,7,5]},
 ];
-
 function renderHeatmap(){
-  const c = document.getElementById('heatmap-container');
-  let html = '';
-  heatData.forEach(row => {
-    html += `<div style="display:grid;grid-template-columns:32px repeat(7,1fr);gap:3px;margin-bottom:3px">`;
-    html += `<div style="font-size:9px;color:var(--gray);font-family:Space Mono,monospace;display:flex;align-items:center">${row.label}</div>`;
-    row.data.forEach((v,i) => {
-      const alpha = v === 0 ? 0.04 : v <= 2 ? 0.12 : v <= 4 ? 0.28 : v <= 6 ? 0.5 : v <= 8 ? 0.75 : 1;
-      const days = ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
-      html += `<div style="height:22px;border-radius:3px;background:rgba(93,224,206,${alpha});cursor:pointer;transition:.15s" title="${days[i]} ${row.label}: ${v}/10 engagement"></div>`;
+  const c=document.getElementById('heatmap-rows'); let h='';
+  heatData.forEach(r=>{
+    h+=`<div class="hm-wrap" style="grid-template-columns:28px repeat(7,1fr);margin-bottom:2px">`;
+    h+=`<div class="hm-lbl">${r.l}</div>`;
+    r.d.forEach((v,i)=>{
+      const a=v===0?.03:v<=2?.1:v<=4?.25:v<=6?.5:v<=8?.75:1;
+      const days=['L','M','X','J','V','S','D'];
+      h+=`<div class="hm-cell" style="height:19px;border-radius:3px;background:rgba(93,224,206,${a})" title="${days[i]} ${r.l}: ${v}/10"></div>`;
     });
-    html += '</div>';
+    h+='</div>';
   });
-  c.innerHTML = html;
+  c.innerHTML=h;
 }
-
-// ── GROWTH CHART ──────────────────────────────────────────
-function renderGrowthChart(){
-  const weeks = ['S1','S2','S3','S4'];
-  const data = {
-    ig: [12,18,24,35], li: [8,12,16,22],
-    tk: [5,9,15,28], fb: [6,8,10,14]
-  };
-  const maxVal = 35;
-  let html = '';
-  weeks.forEach((w,i) => {
-    html += `<div class="chart-bar-group">`;
-    html += `<div class="bars">`;
-    const nets = [{k:'ig',c:'bar-ig'},{k:'li',c:'bar-li'},{k:'tk',c:'bar-tk'},{k:'fb',c:'bar-fb'}];
-    nets.forEach(n => {
-      const h = Math.round((data[n.k][i]/maxVal)*120);
-      html += `<div class="bar ${n.c}" style="height:${h}px" title="${n.k.toUpperCase()}: +${data[n.k][i]} seguidores"></div>`;
+function renderGrowth(){
+  const weeks=['S1','S2','S3','S4'];
+  const data={ig:[12,18,24,35],li:[8,12,16,22],tk:[5,9,15,28],fb:[6,8,10,14]};
+  const maxV=35; let h='';
+  weeks.forEach((w,i)=>{
+    h+=`<div class="bar-group"><div class="bars">`;
+    [{k:'ig',c:'bar-ig'},{k:'li',c:'bar-li'},{k:'tk',c:'bar-tk'},{k:'fb',c:'bar-fb'}].forEach(n=>{
+      const bh=Math.round((data[n.k][i]/maxV)*110);
+      h+=`<div class="bar ${n.c}" style="height:${bh}px" title="${n.k.toUpperCase()}: +${data[n.k][i]}"></div>`;
     });
-    html += `</div><div class="chart-label">${w}</div></div>`;
+    h+=`</div><div class="bar-lbl">${w}</div></div>`;
   });
-  document.getElementById('growth-chart').innerHTML = html;
+  document.getElementById('growth-chart').innerHTML=h;
 }
-
-// ── KPI MANAGEMENT ────────────────────────────────────────
-function fmt(n){
-  if(n===null||n===undefined||isNaN(n)) return '—';
-  if(n>=1000000) return (n/1000000).toFixed(1)+'M';
-  if(n>=1000) return (n/1000).toFixed(1)+'K';
-  return n.toString();
-}
-
-function updateKPIDisplay(data){
-  const nets = ['ig','li','tk','fb'];
-  const labels = {ig:'Instagram',li:'LinkedIn',tk:'TikTok',fb:'Facebook'};
-  const colors = {ig:'#E1306C',li:'#5da3e0',tk:'#ccc',fb:'#1877F2'};
-
-  let totalFollowers=0, totalReach=0, totalLeads=0;
-  let engRates=[], convRates=[];
-
-  nets.forEach(n => {
-    const f = parseInt(data[n+'_followers'])||0;
-    const e = parseFloat(data[n+'_eng'])||0;
-    const r = parseInt(data[n+'_reach'])||0;
-    const l = parseInt(data[n+'_leads'])||0;
-    totalFollowers += f;
-    totalReach += r;
-    totalLeads += l;
-    if(e>0) engRates.push(e);
-    document.getElementById(n+'-followers-tab').textContent = f ? fmt(f) : '—';
-  });
-
-  document.getElementById('total-followers-tab').textContent = totalFollowers ? fmt(totalFollowers) : '—';
-  document.getElementById('kpi-followers').textContent = totalFollowers ? fmt(totalFollowers) : '0';
-  document.getElementById('kpi-reach').textContent = totalReach ? fmt(totalReach) : '0';
-  document.getElementById('kpi-leads').textContent = totalLeads ? fmt(totalLeads) : '0';
-
-  const avgEng = engRates.length ? (engRates.reduce((a,b)=>a+b,0)/engRates.length).toFixed(1)+'%' : '—';
-  document.getElementById('kpi-eng').textContent = avgEng;
-  document.getElementById('total-eng-pct').textContent = avgEng;
-
-  const conv = totalLeads && totalReach ? ((totalLeads/totalReach)*100).toFixed(2)+'%' : '—';
-  document.getElementById('kpi-conv').textContent = conv;
-
-  // Funnel
-  document.getElementById('f-impressions').textContent = fmt(totalReach)||'—';
-  const engTotal = Math.round(totalReach * 0.042);
-  document.getElementById('f-engagement').textContent = fmt(engTotal)||'—';
-  document.getElementById('f-eng-pct').textContent = totalReach ? ((engTotal/totalReach)*100).toFixed(1)+'%' : '—';
-  const clicks = Math.round(totalReach * 0.008);
-  document.getElementById('f-clicks').textContent = fmt(clicks)||'—';
-  document.getElementById('f-clicks-pct').textContent = totalReach ? ((clicks/totalReach)*100).toFixed(2)+'%' : '—';
-  document.getElementById('f-leads').textContent = fmt(totalLeads)||'—';
-  document.getElementById('f-leads-pct').textContent = totalReach ? ((totalLeads/totalReach)*100).toFixed(2)+'%' : '—';
-  document.getElementById('f-clients').textContent = '0';
-  document.getElementById('f-clients-pct').textContent = '0%';
-}
-
+function fmt(n){if(!n||isNaN(n))return'—';if(n>=1e6)return(n/1e6).toFixed(1)+'M';if(n>=1000)return(n/1000).toFixed(1)+'K';return n.toString();}
 function saveKPIs(){
-  const nets = ['ig','li','tk','fb'];
-  const fields = ['followers','eng','reach','leads'];
-  const data = {};
-  nets.forEach(n => fields.forEach(f => {
-    data[n+'_'+f] = document.getElementById(n+'-'+f).value;
-  }));
-  data.saved_at = new Date().toISOString();
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  updateKPIDisplay(data);
-  document.getElementById('save-status').textContent = '✓ KPIs guardados — ' + new Date().toLocaleTimeString('es-ES');
-  setTimeout(() => document.getElementById('save-status').textContent = '', 3000);
+  const nets=['ig','li','tk','fb'],fields=['followers','eng','reach','leads'],data={};
+  nets.forEach(n=>fields.forEach(f=>{data[n+'_'+f]=document.getElementById(n+'-'+f)?.value||'0';}));
+  data.ts=new Date().toISOString();
+  localStorage.setItem(STOR,JSON.stringify(data));
+  updateKPIs(data);
+  const s=document.getElementById('save-status');
+  s.textContent='✓ Guardado '+new Date().toLocaleTimeString('es-ES');
+  setTimeout(()=>s.textContent='',3000);
 }
-
 function loadKPIs(){
-  const saved = localStorage.getItem(STORAGE_KEY);
-  if(!saved){ document.getElementById('save-status').textContent = 'No hay datos guardados'; return; }
-  const data = JSON.parse(saved);
-  const nets = ['ig','li','tk','fb'];
-  const fields = ['followers','eng','reach','leads'];
-  nets.forEach(n => fields.forEach(f => {
-    const el = document.getElementById(n+'-'+f);
-    if(el && data[n+'_'+f]) el.value = data[n+'_'+f];
-  }));
-  updateKPIDisplay(data);
-  document.getElementById('save-status').textContent = '✓ Datos cargados';
-  setTimeout(() => document.getElementById('save-status').textContent = '', 2000);
+  const saved=localStorage.getItem(STOR);
+  if(!saved){document.getElementById('save-status').textContent='Sin datos guardados';return;}
+  const data=JSON.parse(saved);
+  const nets=['ig','li','tk','fb'],fields=['followers','eng','reach','leads'];
+  nets.forEach(n=>fields.forEach(f=>{const el=document.getElementById(n+'-'+f);if(el&&data[n+'_'+f])el.value=data[n+'_'+f];}));
+  updateKPIs(data);
+}
+function updateKPIs(data){
+  const nets=['ig','li','tk','fb'];
+  let totFol=0,totReach=0,totLeads=0,engs=[];
+  nets.forEach(n=>{
+    totFol+=parseInt(data[n+'_followers'])||0;
+    totReach+=parseInt(data[n+'_reach'])||0;
+    totLeads+=parseInt(data[n+'_leads'])||0;
+    const e=parseFloat(data[n+'_eng']);
+    if(e>0)engs.push(e);
+  });
+  document.getElementById('k-followers').textContent=fmt(totFol)||'0';
+  document.getElementById('k-reach').textContent=fmt(totReach)||'0';
+  document.getElementById('k-leads').textContent=fmt(totLeads)||'0';
+  const avgE=engs.length?(engs.reduce((a,b)=>a+b,0)/engs.length).toFixed(1)+'%':'—';
+  document.getElementById('k-eng').textContent=avgE;
+  document.getElementById('eng-pct').textContent=avgE;
+  const conv=totLeads&&totReach?((totLeads/totReach)*100).toFixed(2)+'%':'—';
+  document.getElementById('k-conv').textContent=conv;
+  const engT=Math.round(totReach*0.042);
+  document.getElementById('f-imp').textContent=fmt(totReach)||'—';
+  document.getElementById('f-eng').textContent=fmt(engT)||'—';
+  document.getElementById('f-eng-p').textContent=totReach?((engT/totReach)*100).toFixed(1)+'%':'—';
+  const clk=Math.round(totReach*0.008);
+  document.getElementById('f-clk').textContent=fmt(clk)||'—';
+  document.getElementById('f-clk-p').textContent=totReach?((clk/totReach)*100).toFixed(2)+'%':'—';
+  document.getElementById('f-leds').textContent=fmt(totLeads)||'—';
+  document.getElementById('f-leds-p').textContent=totReach?((totLeads/totReach)*100).toFixed(2)+'%':'—';
+}
+function setNet(n,btn){document.querySelectorAll('.filters .f-btn').forEach((b,i)=>{if(i<5)b.classList.remove('act')});btn.classList.add('act');}
+function setFmt(f,btn){const btns=document.querySelectorAll('.filters .f-btn');[...btns].slice(5,9).forEach(b=>b.classList.remove('act'));btn.classList.add('act');}
+function setBrand(b,btn){const btns=document.querySelectorAll('.filters .f-btn');[...btns].slice(9).forEach(b=>b.classList.remove('act'));btn.classList.add('act');}
+function updatePeriod(d){}
+
+// ── DESIGNER ─────────────────────────────────────────────
+function updateSwatches(){
+  const p=PAL[document.getElementById('d-palette').value];
+  document.getElementById('d-swatches').innerHTML=Object.values(p).map(v=>`<div class="swatch" style="background:${v}" title="${v}"></div>`).join('');
+}
+function updateDSize(){const s=SZ[document.getElementById('d-network').value];document.getElementById('d-size-lbl').textContent=s?`${s.w}×${s.h}px`:''}
+updateSwatches();updateDSize();
+
+function esc(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function buildSVG(hl,cta,pal,W,H,style){
+  const isV=H>W,ratio=Math.min(W,H);
+  const HS=Math.round(ratio*(isV?.07:.08));
+  const SS=Math.round(ratio*.031);
+  const XS=Math.round(ratio*.023);
+  const LOGOSZ=Math.round(ratio*.092);
+  const maxC=isV?Math.round(W/(HS*.60)):Math.round(W/(HS*.58));
+  function wrap(t,m){
+    const ws=t.split(' ');const ls=[];let c='';
+    ws.forEach(w=>{if((c+' '+w).trim().length>m&&c){ls.push(c.trim());c=w;}else c=(c+' '+w).trim();});
+    if(c)ls.push(c);return ls.slice(0,4);
+  }
+  const hls=wrap(hl,maxC);const LH=HS*1.22;
+  const logoY=isV?H*.09:H*.10;
+  const headY=isV?H*.40:H*.36;
+  const ctaY=headY+hls.length*LH+HS*.85;
+  const ekgY=ctaY+SS*1.6;
+  const bS=LOGOSZ,bX=W/2-bS/2,bY=logoY;
+  const mW=bS*.72,mX=bX+(bS-mW)/2,mY=bY+bS*.52;
+  const pts=[0,.12,.25,.38,.50,.63,.80,1],ys=[0,0,-.72,.72,-.72,0,0,0];
+  const mPts=pts.map((r,i)=>`${(mX+r*mW).toFixed(1)},${(mY+ys[i]*(bS*.22)).toFixed(1)}`).join(' ');
+  const eW=W*.54,eX=(W-eW)/2,eH=H*.032;
+  const ePts=pts.map((r,i)=>`${(eX+r*eW).toFixed(1)},${(ekgY+ys[i]*eH).toFixed(1)}`).join(' ');
+  const hSVG=hls.map((l,i)=>{
+    const last=i===hls.length-1;
+    return`<text x="${W/2}" y="${(headY+i*LH).toFixed(1)}" text-anchor="middle" font-family="Space Mono,monospace" font-size="${HS}" font-weight="700" fill="${last?pal.accent:pal.text}" letter-spacing="-0.5">${esc(l)}</text>`;
+  }).join('');
+  const brand=(document.getElementById('d-brand')?.value||'alfester')==='kova'?'KOVA':'ALFESTER';
+  let bg='',deco='';
+  if(style.includes('tech')||style.includes('grid')){
+    let gl='';
+    for(let x=0;x<=W;x+=W/16)gl+=`<line x1="${x}" y1="0" x2="${x}" y2="${H}" stroke="${pal.accent}" stroke-width="0.4" opacity="0.05"/>`;
+    for(let y=0;y<=H;y+=H/16)gl+=`<line x1="0" y1="${y}" x2="${W}" y2="${y}" stroke="${pal.accent}" stroke-width="0.4" opacity="0.05"/>`;
+    bg=gl;
+    const ca=ratio*.038;
+    deco=`<line x1="0" y1="${ca}" x2="0" y2="0" stroke="${pal.accent}" stroke-width="${(ratio*.004).toFixed(1)}" opacity="0.7"/>
+    <line x1="0" y1="0" x2="${ca}" y2="0" stroke="${pal.accent}" stroke-width="${(ratio*.004).toFixed(1)}" opacity="0.7"/>
+    <line x1="${W}" y1="${ca}" x2="${W}" y2="0" stroke="${pal.accent}" stroke-width="${(ratio*.004).toFixed(1)}" opacity="0.7"/>
+    <line x1="${W-ca}" y1="0" x2="${W}" y2="0" stroke="${pal.accent}" stroke-width="${(ratio*.004).toFixed(1)}" opacity="0.7"/>
+    <line x1="0" y1="${H-ca}" x2="0" y2="${H}" stroke="${pal.accent}" stroke-width="${(ratio*.004).toFixed(1)}" opacity="0.7"/>
+    <line x1="${W}" y1="${H-ca}" x2="${W}" y2="${H}" stroke="${pal.accent}" stroke-width="${(ratio*.004).toFixed(1)}" opacity="0.7"/>`;
+  }else if(style.includes('gradient')||style.includes('radial')){
+    bg=`<radialGradient id="rg1" cx="50%" cy="42%" r="55%"><stop offset="0%" stop-color="${pal.accent2||pal.accent}" stop-opacity="0.14"/><stop offset="100%" stop-color="${pal.bg}" stop-opacity="0"/></radialGradient><rect width="${W}" height="${H}" fill="url(#rg1)"/>`;
+  }else if(style.includes('bold')){
+    bg=`<rect x="0" y="${(isV?H*.38:H*.30).toFixed(0)}" width="${(ratio*.005).toFixed(0)}" height="${(hls.length*LH+HS*.5).toFixed(0)}" fill="${pal.accent}"/>`;
+  }else{
+    let dots='';
+    const step=ratio/11;
+    for(let x=step;x<W;x+=step)for(let y=step;y<H;y+=step)
+      dots+=`<circle cx="${x.toFixed(0)}" cy="${y.toFixed(0)}" r="${(ratio*.0022).toFixed(1)}" fill="${pal.accent}" opacity="0.05"/>`;
+    bg=dots;
+  }
+  const glR=bS*1.1;
+  return`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <linearGradient id="bg1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="${pal.bg}"/><stop offset="100%" stop-color="${pal.bg2}"/></linearGradient>
+  <radialGradient id="lglow" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="${pal.accent}" stop-opacity="0.18"/><stop offset="100%" stop-color="${pal.accent}" stop-opacity="0"/></radialGradient>
+  <filter id="gf"><feGaussianBlur stdDeviation="${(ratio*.007).toFixed(1)}" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<rect width="${W}" height="${H}" fill="url(#bg1)"/>
+${bg}
+<rect x="0" y="0" width="${W}" height="${(ratio*.0035).toFixed(1)}" fill="${pal.accent}"/>
+<ellipse cx="${W/2}" cy="${(bY+bS/2).toFixed(0)}" rx="${glR.toFixed(0)}" ry="${(glR*.65).toFixed(0)}" fill="url(#lglow)"/>
+<rect x="${bX.toFixed(1)}" y="${bY.toFixed(1)}" width="${bS}" height="${bS}" rx="${(bS*.18).toFixed(1)}" fill="${pal.bg2}" stroke="${pal.accent}" stroke-width="${(ratio*.003).toFixed(1)}"/>
+<polyline points="${mPts}" fill="none" stroke="${pal.accent}" stroke-width="${(ratio*.005).toFixed(1)}" stroke-linecap="round" stroke-linejoin="round" filter="url(#gf)"/>
+<text x="${W/2}" y="${(bY+bS+XS*1.5).toFixed(1)}" text-anchor="middle" font-family="Space Mono,monospace" font-size="${XS}" font-weight="700" fill="${pal.accent}" letter-spacing="${(XS*.4).toFixed(1)}" opacity="0.9">${brand}</text>
+${hSVG}
+<polyline points="${ePts}" fill="none" stroke="${pal.accent}" stroke-width="${(ratio*.0036).toFixed(1)}" stroke-linecap="round" stroke-linejoin="round" opacity="0.45" filter="url(#gf)"/>
+<text x="${W/2}" y="${ctaY.toFixed(1)}" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="${SS}" fill="${pal.dim}" opacity="0.88">${esc(cta.substring(0,55))}</text>
+${deco}
+<rect x="0" y="${(H-H*.058).toFixed(1)}" width="${W}" height="${(H*.058).toFixed(1)}" fill="${pal.bg2}" opacity="0.9"/>
+<text x="${W/2}" y="${(H-H*.018).toFixed(1)}" text-anchor="middle" font-family="Space Mono,monospace" font-size="${(XS*.7).toFixed(0)}" fill="${pal.accent}" letter-spacing="1.5" opacity="0.55">agencia.kova-app.net · kova-app.net</text>
+</svg>`;
 }
 
-// ── CM AI ─────────────────────────────────────────────────
-async function generateContent(){
-  const network = document.getElementById('cm-network').value;
-  const type = document.getElementById('cm-type').value;
-  const sector = document.getElementById('cm-sector').value;
-  const tone = document.getElementById('cm-tone').value;
-  const context = document.getElementById('cm-context').value;
+async function generateDesign(){
+  const net=document.getElementById('d-network').value;
+  const hl=document.getElementById('d-headline').value||'Tu negocio en piloto automático';
+  const cta=document.getElementById('d-cta').value||'agencia.kova-app.net · Consulta gratis';
+  const ctx=document.getElementById('d-context').value;
+  const pal=PAL[document.getElementById('d-palette').value];
+  const style=document.getElementById('d-style').value;
+  const sz=SZ[net];
+  const brand=document.getElementById('d-brand').value;
+  const btn=document.getElementById('d-gen-btn');
+  btn.disabled=true;btn.textContent='⟳ Diseñando...';
+  const area=document.getElementById('d-area');
+  area.innerHTML=`<div style="text-align:center"><div class="spinner"></div><div style="margin-top:10px;font-size:11px;color:var(--teal);font-family:Space Mono,monospace">Diseñando con IA...</div></div>`;
+  const prompt=`Diseñador gráfico experto en marcas de tecnología e IA. Genera SVG para ${net.replace('_',' ')} ${sz.w}x${sz.h}px.
+Marca: ${BRAND[brand].split('.')[0]}.
+Headline: "${hl}" | CTA: "${cta}" | Estilo: ${style}
+Paleta: bg=${pal.bg}, acento=${pal.accent}, texto=${pal.text}
+Contexto: ${ctx||'post de lanzamiento impactante'}
+Reglas: regla de tercios, logo EKG KOVA arriba centrado, headline dominante con última línea en ${pal.accent}, dot-grid o grid sutil, letra-spacing -0.5 en headline, no overflow de texto, bottom bar con URLs.
+Responde SOLO con SVG. Empieza con <svg viewBox="0 0 ${sz.w} ${sz.h}".`;
+  try{
+    const r=await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json','x-api-key':KEY},
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:3500,messages:[{role:'user',content:prompt}]})});
+    const d=await r.json();
+    let txt=d.content?.[0]?.text||'';
+    const m=txt.match(/<svg[\s\S]*<\/svg>/i);
+    if(m)txt=m[0];
+    if(txt.startsWith('<svg')){displaySVG(txt,sz);currentSVG=txt;}
+    else throw new Error('no SVG');
+  }catch(e){
+    const fb=buildSVG(hl,cta,pal,sz.w,sz.h,style);
+    displaySVG(fb,sz);currentSVG=fb;
+  }finally{
+    btn.disabled=false;btn.textContent='✨ Generar diseño IA';
+    genDCopy(net,brand,hl,cta,ctx);
+  }
+}
+function regenDesign(){generateDesign();}
 
-  const out = document.getElementById('cm-output');
-  const ht = document.getElementById('cm-hashtags');
-  out.className = 'cm-output loading';
-  out.textContent = '⟳ Generando contenido con IA...';
-  ht.textContent = '⟳ Generando hashtags...';
-
-  const prompt = `Eres el CM Agent de Alfester Technologies OÜ — agencia de marketing digital con IA y creadores de KOVA, la app de ventas con IA en español.
-
-Genera un post optimizado para ${network} con estas características:
-- Tipo: ${type}
-- Sector objetivo: ${sector}
-- Tono: ${tone}
-- Contexto adicional: ${context || 'ninguno'}
-
-La marca es Alfester Agency (agencia de marketing digital + automatización IA) cuyo producto estrella es KOVA (app de ventas con IA disponible en App Store y Google Play, con 3 agentes: NOVA para objeciones, ALEX simulador de prospectos, MAIA estratega de negocios).
-
-Entrega EXACTAMENTE en este formato:
+function displaySVG(svgText,sz){
+  const area=document.getElementById('d-area');
+  const maxW=area.clientWidth-28;
+  const scale=Math.min(maxW/sz.w,540/sz.h);
+  const dW=Math.round(sz.w*scale),dH=Math.round(sz.h*scale);
+  area.innerHTML=svgText.replace('<svg',`<svg id="d-svg-el" style="width:${dW}px;height:${dH}px;border-radius:8px;box-shadow:0 8px 28px rgba(0,0,0,.55);max-width:100%"`);
+  document.getElementById('d-size-lbl').textContent=`${sz.w}×${sz.h}px`;
+}
+async function genDCopy(net,brand,hl,cta,ctx){
+  document.getElementById('d-copy-out').textContent='⟳ Generando copy...';
+  const p=`Copywriter experto Alfester/KOVA. Red: ${net}. Marca: ${BRAND[brand].split('.')[0]}. Headline diseño: "${hl}". CTA: "${cta}". Contexto: ${ctx||'lanzamiento'}.
 POST:
-[el post completo listo para copiar y pegar, con emojis, saltos de línea naturales, CTA al final]
+[post completo emojis CTA]
+
+VERSION_CORTA:
+[max 2 líneas]
 
 HASHTAGS:
-[15-20 hashtags relevantes separados por espacios]
-
-VARIANTE CORTA:
-[versión de 3 líneas para Story o Tweet]`;
-
-  try {
-    const res = await fetch(PROXY, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': KEY },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 1200,
-        messages: [{ role: 'user', content: prompt }]
-      })
-    });
-    const data = await res.json();
-    if(!res.ok) throw new Error(data.error || 'Error del servidor');
-    const text = data.content?.[0]?.text || '';
-
-    const postMatch = text.match(/POST:\n([\s\S]*?)(?=\nHASHTAGS:|$)/);
-    const hashMatch = text.match(/HASHTAGS:\n([\s\S]*?)(?=\nVARIANTE|$)/);
-
-    out.className = 'cm-output';
-    out.textContent = postMatch ? postMatch[1].trim() : text;
-    ht.textContent = hashMatch ? hashMatch[1].trim() : '';
-  } catch(e) {
-    out.className = 'cm-output';
-    out.textContent = 'Error al generar: ' + e.message;
-    ht.textContent = '';
-  }
+[20 hashtags]`;
+  try{
+    const r=await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json','x-api-key':KEY},
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:700,messages:[{role:'user',content:p}]})});
+    const d=await r.json();const txt=d.content?.[0]?.text||'';
+    const g=(k,n)=>{const rx=new RegExp(k+':\n([\s\S]*?)(?=\n'+n+':|$)');return txt.match(rx)?.[1]?.trim()||'';};
+    dCopyData={post:g('POST','VERSION_CORTA')||txt,short:g('VERSION_CORTA','HASHTAGS'),hashtags:txt.match(/HASHTAGS:
+([\s\S]*?)$/)?.[1]?.trim()||''};
+    document.getElementById('d-copy-out').textContent=dCopyData.post;
+  }catch(e){document.getElementById('d-copy-out').textContent='Error: '+e.message;}
 }
-
-async function generateVariant(){
-  const current = document.getElementById('cm-output').textContent;
-  if(!current || current.includes('Error') || current.length < 20) return;
-  const out = document.getElementById('cm-output');
-  out.className = 'cm-output loading';
-  out.textContent = '⟳ Generando variante...';
-  try {
-    const res = await fetch(PROXY, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': KEY },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 800,
-        messages: [{ role: 'user', content: `Genera una variante diferente de este post, mismo tema pero distinto ángulo, estructura y apertura:\n\n${current}` }]
-      })
-    });
-    const data = await res.json();
-    out.className = 'cm-output';
-    out.textContent = data.content?.[0]?.text || 'Error al generar variante';
-  } catch(e) {
-    out.className = 'cm-output';
-    out.textContent = 'Error: ' + e.message;
-  }
-}
-
-function copyContent(){
-  const text = document.getElementById('cm-output').textContent;
-  navigator.clipboard.writeText(text).then(() => {
-    const btn = event.target;
-    const original = btn.textContent;
-    btn.textContent = '✓ Copiado';
-    setTimeout(() => btn.textContent = original, 2000);
-  });
-}
-
-// ── FILTERS (UI only) ─────────────────────────────────────
-function setNetwork(net, btn){
-  document.querySelectorAll('.filter-btn').forEach(b => {
-    if(['all','ig','li','tk','fb'].some(n => b.textContent.toLowerCase().includes(n) || b.textContent === 'Todas')) {
-      // reset only network buttons
-    }
-  });
-  // visual feedback handled by active class
-}
-function setFormat(fmt, btn){
-  btn.closest('.filters').querySelectorAll('.filter-btn').forEach(b => {
-    if(['todos','reels','carrusel','post estático','story'].some(f => b.textContent.toLowerCase().includes(f))) b.classList.remove('active');
-  });
+function setDTab(t,btn){
+  document.querySelectorAll('#pane-designer .o-tab').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
+  document.getElementById('d-copy-out').textContent=dCopyData[t]||'Genera el diseño primero.';
 }
-function setBrand(brand, btn){ btn.classList.toggle('active'); }
-function setCMTab(tab, btn){
-  document.querySelectorAll('.cm-tab').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
+async function regenDCopy(){await genDCopy(document.getElementById('d-network').value,document.getElementById('d-brand').value,document.getElementById('d-headline').value,document.getElementById('d-cta').value,document.getElementById('d-context').value);}
+async function translateDCopy(){
+  const c=dCopyData.post;if(!c)return;
+  document.getElementById('d-copy-out').textContent='⟳ Traduciendo...';
+  try{const r=await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json','x-api-key':KEY},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:500,messages:[{role:'user',content:`Translate naturally to English:
+
+${c}`}]})});
+  const d=await r.json();document.getElementById('d-copy-out').textContent=d.content?.[0]?.text||'Error';}
+  catch(e){document.getElementById('d-copy-out').textContent='Error: '+e.message;}
 }
-function updatePeriod(days){ /* refresh data */ }
+function generateVariants(){
+  document.getElementById('d-variants-wrap').style.display='block';
+  const grid=document.getElementById('d-variants-grid');
+  const hl=document.getElementById('d-headline').value||'Tu negocio en piloto automático';
+  const cta=document.getElementById('d-cta').value||'agencia.kova-app.net';
+  const style=document.getElementById('d-style').value;
+  const sz=SZ[document.getElementById('d-network').value];
+  const W=300,H=sz.h>sz.w?530:300;
+  const pals=['dark_teal','dark_gold','dark_purp'];
+  const variants=pals.map((pk,i)=>({svg:buildSVG(hl,cta,PAL[pk],W,H,style),pal:pk,lbl:['Teal','Gold','Purp'][i]}));
+  window._vars=variants;
+  grid.innerHTML=variants.map((v,i)=>`<div class="v-card" onclick="loadVariant(${i})"><div class="v-canvas">${v.svg}</div><div class="v-lbl">${v.lbl}</div></div>`).join('');
+}
+function loadVariant(i){const v=window._vars?.[i];if(!v)return;document.getElementById('d-palette').value=v.pal;updateSwatches();generateDesign();}
+function downloadSVG(){if(!currentSVG){alert('Genera un diseño primero');return;}const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([currentSVG],{type:'image/svg+xml'}));a.download=`alfester_${Date.now()}.svg`;a.click();}
+function downloadPNG(){
+  if(!currentSVG){alert('Genera un diseño primero');return;}
+  const sz=SZ[document.getElementById('d-network').value];
+  const canvas=document.createElement('canvas');canvas.width=sz.w;canvas.height=sz.h;
+  const ctx=canvas.getContext('2d'),img=new Image();
+  const url=URL.createObjectURL(new Blob([currentSVG],{type:'image/svg+xml;charset=utf-8'}));
+  img.onload=()=>{ctx.drawImage(img,0,0,sz.w,sz.h);URL.revokeObjectURL(url);
+    const a=document.createElement('a');a.href=canvas.toDataURL('image/png');a.download=`alfester_${document.getElementById('d-network').value}_${Date.now()}.png`;a.click();};
+  img.src=url;
+}
+
+// ── CM AGENT ─────────────────────────────────────────────
+async function generatePost(){
+  const net=document.getElementById('p-network').value;
+  const type=document.getElementById('p-type').value;
+  const sec=document.getElementById('p-sector').value;
+  const tone=document.getElementById('p-tone').value;
+  const ctx=document.getElementById('p-context').value;
+  const btn=document.getElementById('p-gen-btn');
+  btn.disabled=true;btn.textContent='⟳ Generando...';
+  document.getElementById('p-out-main').textContent='⟳ Creando copy de nivel experto...';
+  const p=`Copywriter estratégico experto en marcas de tecnología IA para el mercado hispanohablante. CM experto de Alfester Technologies OÜ.
+
+MARCA: ${BRAND.ambas}
+Links: kova-app.net · agencia.kova-app.net · hola@kova-app.net
+
+BRIEF: Plataforma: ${net} | Tipo: ${type} | Sector: ${sec} | Tono: ${tone} | Contexto: ${ctx||'lanzamiento App Store'}
+
+REGLAS EXPERTO:
+1. Hook primera línea: max 10 palabras, para el scroll — dato real, pregunta provocadora o statement audaz
+2. Desarrollo: 2-3 puntos con BENEFICIO concreto (no características)
+3. Datos reales: "2 segundos", "€9.99/mes", "30 días garantía", "NOVA responde cualquier objeción"
+4. Max 4 emojis con propósito
+5. CTA único y claro
+6. NUNCA: "potencia tu", "lleva al siguiente nivel", "revoluciona"
+7. Longitud: LinkedIn 200-250 palabras, Instagram 80-120, TikTok 50-80, WhatsApp 60-80
+
+POST_COMPLETO:
+[post listo para publicar]
+
+VERSION_CORTA:
+[max 3 líneas]
+
+HASHTAGS:
+[20-25 hashtags: nicho + sector + marca + alcance]
+
+ANGULO_ALTERNATIVO:
+[misma idea, apertura completamente diferente]`;
+  try{
+    const r=await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json','x-api-key':KEY},
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1800,messages:[{role:'user',content:p}]})});
+    const d=await r.json();if(!r.ok)throw new Error(d.error||'Error');
+    const txt=d.content?.[0]?.text||'';
+    const g=(k,n)=>{const rx=new RegExp(k+':\n([\s\S]*?)(?=\n'+n+':|$)');return txt.match(rx)?.[1]?.trim()||'';};
+    postData={main:g('POST_COMPLETO','VERSION_CORTA')||txt,short:g('VERSION_CORTA','HASHTAGS'),hashtags:g('HASHTAGS','ANGULO_ALTERNATIVO'),alt:txt.match(/ANGULO_ALTERNATIVO:
+([\s\S]*?)$/)?.[1]?.trim()||''};
+    document.getElementById('p-out-main').textContent=postData.main;
+    document.getElementById('p-out-short').textContent=postData.short;
+    document.getElementById('p-out-hashtags').textContent=postData.hashtags;
+    document.getElementById('p-out-alt').textContent=postData.alt;
+  }catch(e){document.getElementById('p-out-main').textContent='Error: '+e.message;}
+  finally{btn.disabled=false;btn.textContent='✨ Generar post experto';}
+}
+async function genVariantPost(){
+  const c=postData.main;if(!c||c.length<20){await generatePost();return;}
+  document.getElementById('p-out-main').textContent='⟳ Generando variante...';
+  try{const r=await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json','x-api-key':KEY},
+    body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:600,messages:[{role:'user',content:`Genera una variante completamente diferente. Mismo tema, distinto ángulo y apertura:
+
+${c}`}]})});
+  const d=await r.json();const t=d.content?.[0]?.text||'';postData.alt=t;document.getElementById('p-out-main').textContent=t;}
+  catch(e){document.getElementById('p-out-main').textContent='Error: '+e.message;}
+}
+async function translatePost(){
+  const c=postData.main;if(!c)return;document.getElementById('p-out-main').textContent='⟳ Traduciendo...';
+  try{const r=await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json','x-api-key':KEY},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:600,messages:[{role:'user',content:`Translate to English naturally for B2B audience:
+
+${c}`}]})});
+  const d=await r.json();document.getElementById('p-out-main').textContent=d.content?.[0]?.text||'Error';}
+  catch(e){document.getElementById('p-out-main').textContent='Error: '+e.message;}
+}
+function setPTab(t,btn){
+  document.querySelectorAll('#pane-cm .o-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+  ['main','short','hashtags','alt'].forEach(k=>{const el=document.getElementById('p-out-'+k);if(el)el.style.display=k===t?'block':'none';});
+}
+
+// ── CAMPAIGN ─────────────────────────────────────────────
+function togglePlat(card,p){card.classList.toggle('sel');selPlats.has(p)?selPlats.delete(p):selPlats.add(p);}
+async function generateCampaign(){
+  const name=document.getElementById('c-name').value||'Campaña Alfester + KOVA';
+  const sec=document.getElementById('c-sector').value;
+  const obj=document.getElementById('c-objective').value;
+  const offer=document.getElementById('c-offer').value||'KOVA gratis, Alfester garantía 30 días';
+  const plats=[...selPlats].join(', ');
+  const btn=document.getElementById('c-gen-btn');btn.disabled=true;btn.textContent='⟳ Generando...';
+  document.getElementById('c-out').textContent='⟳ Creando campaña para '+plats+'...';
+  const p=`Director creativo y copywriter experto para marcas de tecnología IA hispanas. CM de Alfester Technologies OÜ.
+MARCA: ${BRAND.ambas}
+CAMPAÑA: "${name}" | Sector: ${sec} | Objetivo: ${obj} | Oferta: ${offer} | Plataformas: ${plats}
+PRINCIPIOS: apertura con dolor del cliente (no con el producto), beneficio concreto y medible, urgencia genuina, voz auténtica del fundador, formato nativo por red.
+REGLAS: primera línea para el scroll, datos reales, max 4 emojis, sin clichés.
+Genera para CADA plataforma seleccionada:
+${selPlats.has('instagram')?'===INSTAGRAM===
+[post feed: hook max 10 palabras, 3 beneficios, CTA link bio, hashtags separados]
+===HASHTAGS_IG===
+[25 hashtags optimizados]
+':''}
+${selPlats.has('linkedin')?'===LINKEDIN===
+[200-250 palabras estilo fundador: dato/pregunta apertura, insight único, cierre reflexivo + CTA, 5 hashtags B2B]
+':''}
+${selPlats.has('whatsapp')?'===WHATSAPP===
+[mensaje personal: saludo, propuesta 2 líneas, CTA suave, sin hashtags, max 80 palabras]
+':''}
+${selPlats.has('tiktok')?'===TIKTOK===
+[guión 30-45s: [0-5s] hook, [5-20s] demo, [20-35s] resultado, [35-45s] CTA]
+Caption: [1 frase + hashtags]
+':''}
+${selPlats.has('facebook')?'===FACEBOOK===
+[narrativo 150-200 palabras: historia + contexto + beneficios + CTA link]
+':''}
+${selPlats.has('story')?'===STORIES===
+Slide 1 (Hook 4-6 palabras): [texto]
+Slide 2 (Beneficio): [texto]
+Slide 3 (CTA urgente): [texto]
+':''}`;
+  try{
+    const r=await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json','x-api-key':KEY},
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:3000,messages:[{role:'user',content:p}]})});
+    const d=await r.json();if(!r.ok)throw new Error(d.error||'Error');
+    displayCampaign(d.content?.[0]?.text||'');
+  }catch(e){document.getElementById('c-out').textContent='Error: '+e.message;}
+  finally{btn.disabled=false;btn.textContent='🚀 Generar campaña completa';}
+}
+function displayCampaign(text){
+  const secs=text.split(/===([A-Z_]+)===/);
+  const tabs=document.getElementById('c-plat-tabs');let t='',contents={},first='';
+  for(let i=1;i<secs.length;i+=2){
+    const k=secs[i],v=secs[i+1]?.trim()||'';
+    if(!first)first=k;contents[k]=v;
+    const lbl={INSTAGRAM:'📸 IG',HASHTAGS_IG:'# IG',LINKEDIN:'💼 LI',WHATSAPP:'💬 WA',TIKTOK:'🎵 TK',FACEBOOK:'📘 FB',STORIES:'📱 Story'}[k]||k;
+    t+=`<button class="o-tab${k===first?' active':''}" onclick="showCS('${k}',this)">${lbl}</button>`;
+  }
+  tabs.innerHTML=t;window._camp=contents;
+  document.getElementById('c-out').textContent=contents[first]||text;
+}
+function showCS(k,btn){document.querySelectorAll('#c-plat-tabs .o-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('c-out').textContent=window._camp?.[k]||'';}
+async function translateCamp(){
+  const c=document.getElementById('c-out').textContent;if(!c)return;
+  document.getElementById('c-out').textContent='⟳ Traduciendo...';
+  try{const r=await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json','x-api-key':KEY},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:800,messages:[{role:'user',content:`Translate to English naturally:
+
+${c}`}]})});
+  const d=await r.json();document.getElementById('c-out').textContent=d.content?.[0]?.text||'Error';}
+  catch(e){document.getElementById('c-out').textContent='Error: '+e.message;}
+}
+
+// ── CALENDAR ─────────────────────────────────────────────
+async function generateCalendar(){
+  const brand=document.getElementById('cal-brand').value;
+  document.getElementById('cal-out').textContent='⟳ Generando plan 14 días...';
+  const p=`Estratega de contenido experto. Crea calendario de publicación 14 días para ${brand==='ambas'?'Alfester Agency y KOVA App':brand==='alfester'?'Alfester Agency':'KOVA App'}.
+MARCA: ${BRAND[brand]}
+Por cada día:
+📅 DÍA X — [fecha sugerida]
+🎯 Tema: [concreto y específico]
+📱 Red: [plataforma principal]
+🎨 Formato: [Reel/Carrusel/Post estático/Story/LinkedIn largo]
+✍️ Hook: [primera frase exacta del post]
+⏰ Hora: [hora óptima publicación]
+🎯 Objetivo: [awareness/engagement/leads/conversión]
+---
+Incluye: min 2 posts fundador LinkedIn, 3 Reels demo KOVA, 2 educativos IA ventas, 2 prospección clientes Alfester, 1 caso éxito, 1 pregunta interacción. Alterna marcas. Usa horarios peak hispanos.`;
+  try{const r=await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json','x-api-key':KEY},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:3000,messages:[{role:'user',content:p}]})});
+  const d=await r.json();document.getElementById('cal-out').textContent=d.content?.[0]?.text||'Error';}
+  catch(e){document.getElementById('cal-out').textContent='Error: '+e.message;}
+}
+
+// ── UTILS ─────────────────────────────────────────────────
+function copyEl(id){
+  const t=document.getElementById(id)?.textContent||'';
+  navigator.clipboard.writeText(t).then(()=>{
+    const b=event.target;const o=b.textContent;b.textContent='✓ Copiado';setTimeout(()=>b.textContent=o,2000);
+  });
+}
 
 // ── INIT ─────────────────────────────────────────────────
-document.getElementById('last-update-time').textContent = new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
-renderHeatmap();
-renderGrowthChart();
-loadKPIs();
+document.getElementById('upd-time').textContent=new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'});
+renderHeatmap();renderGrowth();loadKPIs();
 </script>
 </body>
 </html>
