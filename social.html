@@ -1038,9 +1038,8 @@ ANGULO_ALTERNATIVO:
       body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1800,messages:[{role:'user',content:p}]})});
     const d=await r.json();if(!r.ok)throw new Error(d.error||'Error');
     const txt=d.content?.[0]?.text||'';
-    const g=(k,n)=>{const rx=new RegExp(k+':\n([\s\S]*?)(?=\n'+n+':|$)');return txt.match(rx)?.[1]?.trim()||'';};
-    postData={main:g('POST_COMPLETO','VERSION_CORTA')||txt,short:g('VERSION_CORTA','HASHTAGS'),hashtags:g('HASHTAGS','ANGULO_ALTERNATIVO'),alt:txt.match(/ANGULO_ALTERNATIVO:
-([\s\S]*?)$/)?.[1]?.trim()||''};
+    const g=(k,n)=>{const rx=new RegExp(k+':([\\s\\S]*?)(?='+n+':|$)');return txt.match(rx)?.[1]?.trim()||'';};
+    postData={main:g('POST_COMPLETO','VERSION_CORTA')||txt,short:g('VERSION_CORTA','HASHTAGS'),hashtags:g('HASHTAGS','ANGULO_ALTERNATIVO'),alt:(txt.split('ANGULO_ALTERNATIVO:')[1]||'').trim()};
     document.getElementById('p-out-main').textContent=postData.main;
     document.getElementById('p-out-short').textContent=postData.short;
     document.getElementById('p-out-hashtags').textContent=postData.hashtags;
