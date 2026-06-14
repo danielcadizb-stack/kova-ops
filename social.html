@@ -950,9 +950,8 @@ HASHTAGS:
     const r=await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json','x-api-key':KEY},
       body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:700,messages:[{role:'user',content:p}]})});
     const d=await r.json();const txt=d.content?.[0]?.text||'';
-    const g=(k,n)=>{const rx=new RegExp(k+':\n([\s\S]*?)(?=\n'+n+':|$)');return txt.match(rx)?.[1]?.trim()||'';};
-    dCopyData={post:g('POST','VERSION_CORTA')||txt,short:g('VERSION_CORTA','HASHTAGS'),hashtags:txt.match(/HASHTAGS:
-([\s\S]*?)$/)?.[1]?.trim()||''};
+    const g=(k,n)=>{const rx=new RegExp(k+':'+String.fromCharCode(10)+'([\\s\\S]*?)(?='+String.fromCharCode(10)+n+':|$)');return txt.match(rx)?.[1]?.trim()||'';};
+    dCopyData={post:g('POST','VERSION_CORTA')||txt,short:g('VERSION_CORTA','HASHTAGS'),hashtags:(txt.split('HASHTAGS:')[1]||'').trim()};
     document.getElementById('d-copy-out').textContent=dCopyData.post;
   }catch(e){document.getElementById('d-copy-out').textContent='Error: '+e.message;}
 }
