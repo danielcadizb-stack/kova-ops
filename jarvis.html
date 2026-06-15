@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -671,8 +671,8 @@ document.getElementById('chatInput').addEventListener('keydown', function(e) {
 // ═══════════════════════════════════════════════════════════════
 
 const ALERT_THRESHOLDS = {
-  apiLatencyWarn: 800,      // ms — advertencia
-  apiLatencyCrit: 2000,     // ms — crítico
+  apiLatencyWarn: 3000,     // ms — advertencia (Vercel hobby cold start ~2-4s)
+  apiLatencyCrit: 6000,     // ms — crítico real (no cold start)
   anthropicSpendWarn: 60,   // % del cap — advertencia
   anthropicSpendCrit: 85,   // % del cap — crítico (=$85 de $100)
   freeUsageWarn: 12,        // msgs free — alertar al acercarse al límite 15
@@ -681,6 +681,7 @@ const ALERT_THRESHOLDS = {
 
 let alertHistory = JSON.parse(localStorage.getItem('jarvis_alerts') || '[]');
 let consecutiveErrors = 0;
+let isFirstHealthCheck = true;
 let lastAlertTime = {};
 
 function shouldAlert(key, cooldownMs = 300000) { // 5 min cooldown por defecto
@@ -749,6 +750,7 @@ async function checkAPIHealthWithAlerts() {
     document.getElementById('m-latency').textContent = latency + 'ms';
     document.getElementById('dot-api').style.background = latency < 500 ? 'var(--green)' : latency < 1000 ? 'var(--gold)' : 'var(--red)';
     consecutiveErrors = 0;
+    if (isFirstHealthCheck) { isFirstHealthCheck = false; return; }
 
     if (latency > ALERT_THRESHOLDS.apiLatencyCrit && shouldAlert('api_latency_crit')) {
       triggerAlert('CRÍTICO', 'API Latencia Crítica', `${latency}ms — umbral ${ALERT_THRESHOLDS.apiLatencyCrit}ms`, true);
