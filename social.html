@@ -109,6 +109,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:"DM San
 
 <div class="tabs">
   <button class="tab active" onclick="switchTab('ov')">Overview</button>
+  <button class="tab" onclick="switchTab('camp')">🚀 Campaña</button>
   <button class="tab" onclick="switchTab('cal')">Calendario</button>
   <button class="tab" onclick="switchTab('con')">Contenido</button>
   <button class="tab" onclick="switchTab('kpi')">KPIs</button>
@@ -120,6 +121,75 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:"DM San
 </div>
 
 <!-- OVERVIEW -->
+<!-- CAMPAÑA UNIFICADA -->
+<div class="panel" id="panel-camp">
+  <div class="card" style="margin-bottom:16px;">
+    <div class="sl">Generador de campaña unificada</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:14px;">
+      <div class="cm-fl"><div class="cm-lb">Marca</div>
+        <select class="cm-sl" id="cp-brand" onchange="cpBrandChange(this.value)">
+          <option value="kova">KOVA — App de ventas IA</option>
+          <option value="alfester">ALFESTER — Agencia Digital</option>
+          <option value="ambas">Ambas marcas (plan semanal)</option>
+        </select>
+      </div>
+      <div class="cm-fl"><div class="cm-lb">Objetivo</div>
+        <select class="cm-sl" id="cp-goal">
+          <option value="suscriptores">Conseguir suscriptores/descargas</option>
+          <option value="clientes">Conseguir primer cliente</option>
+          <option value="awareness">Awareness de marca</option>
+          <option value="conversion">Conversión directa</option>
+          <option value="engagement">Engagement y comunidad</option>
+        </select>
+      </div>
+      <div class="cm-fl"><div class="cm-lb">Semana</div>
+        <select class="cm-sl" id="cp-week">
+          <option value="1">Semana 1 — Lanzamiento</option>
+          <option value="2">Semana 2 — Tracción</option>
+          <option value="3">Semana 3 — Conversión</option>
+          <option value="4">Semana 4 — Referidos</option>
+        </select>
+      </div>
+    </div>
+    <div class="cm-fl" style="margin-bottom:14px;"><div class="cm-lb">Contexto (opcional)</div>
+      <textarea class="cm-in" id="cp-ctx2" rows="2" placeholder="Ej: acabamos de lanzar en App Store, tenemos oferta de 9,99€ primer mes..."></textarea>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;">
+      <button class="btn-g btn" onclick="genCampaign('plan')">📅 Plan semanal completo</button>
+      <button class="cbtn" onclick="genCampaign('linkedin')">💼 Post LinkedIn hoy</button>
+      <button class="cbtn" onclick="genCampaign('instagram')">📸 Reel Instagram hoy</button>
+      <button class="cbtn" onclick="genCampaign('tiktok')">🎵 TikTok hoy</button>
+      <button class="cbtn" onclick="genCampaign('dm')">✉️ DM prospecto</button>
+    </div>
+    <div class="out" id="camp-out" style="min-height:200px;">Selecciona marca y objetivo, luego genera tu campaña...</div>
+    <div style="display:flex;gap:8px;margin-top:10px;">
+      <button class="cbtn" id="cp-camp-btn" onclick="cpCamp()" style="display:none;">Copiar</button>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+    <div class="card">
+      <div class="sl">KOVA — Estado tracción</div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.8;">
+        <div>📱 App Store: <span style="color:var(--teal)">v1.0.4 publicada</span></div>
+        <div>🎯 Oferta: <span style="color:var(--yellow)">Starter 9,99€ primer mes</span></div>
+        <div>📣 LinkedIn: <span style="color:var(--teal)">Post lanzamiento publicado</span></div>
+        <div>🎬 Reel: <span style="color:var(--text3)">Pendiente publicar</span></div>
+        <div>👥 Suscriptores: <span style="color:var(--text3)">Tracking en tiempo real ↑</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="sl">ALFESTER — Estado tracción</div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.8;">
+        <div>🌐 Web: <span style="color:var(--teal)">agencia.kova-app.net activa</span></div>
+        <div>🎯 Target: <span style="color:var(--yellow)">Centros estética España</span></div>
+        <div>📣 LinkedIn: <span style="color:var(--teal)">Post founder publicado</span></div>
+        <div>✉️ DMs: <span style="color:var(--text3)">0/3 prospectos contactados</span></div>
+        <div>💰 Revenue: <span style="color:var(--text3)">Primer cliente pendiente</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="panel active" id="panel-ov">
   <div class="grid4" id="ov-metrics" style="margin-bottom:20px;"></div>
   <div class="grid2">
@@ -508,6 +578,72 @@ function getBrandContext() {
 }
 
 // ─── SWITCH TAB ─────────────────────────────────────────────────────────────
+function cpBrandChange(val) {
+  // Sincronizar con selector global de marca
+  var sel = document.getElementById('brand-sel');
+  if (sel && val !== 'ambas') sel.value = val;
+  if (val !== 'ambas') switchBrand(val);
+}
+
+function cpCamp() {
+  var txt = document.getElementById('camp-out').innerText;
+  navigator.clipboard.writeText(txt).catch(function(){});
+  var btn = document.getElementById('cp-camp-btn');
+  btn.textContent = '¡Copiado!';
+  setTimeout(function(){ btn.textContent = 'Copiar'; }, 2000);
+}
+
+function genCampaign(tipo) {
+  var brand = document.getElementById('cp-brand').value;
+  var goal = document.getElementById('cp-goal').value;
+  var week = document.getElementById('cp-week').value;
+  var ctx = document.getElementById('cp-ctx2').value;
+  var out = document.getElementById('camp-out');
+  var btn = document.getElementById('cp-camp-btn');
+  
+  out.innerHTML = '<span class="spin"></span> Generando campaña...';
+  btn.style.display = 'none';
+
+  var brandInfo = {
+    kova: 'KOVA es una app móvil de ventas con IA para pymes hispanohablantes. 3 agentes: NOVA (objeciones), ALEX (simulador), MAIA (estrategia). Planes: Free 0€, Starter 9,99€/mes primer mes (luego 14,99€), Pro 24,99€/mes (luego 29,99€). App Store disponible. Web: kova-app.net. Red social: @kova.app',
+    alfester: 'ALFESTER AGENCY es una agencia de marketing digital e IA para pymes. Especializada en automatización con n8n, WhatsApp Business, CRM, SEO y gestión de redes sociales. Target: centros de estética y belleza en España. Plan Esencial 497€/mes. Web: agencia.kova-app.net. LinkedIn: Daniel Cadiz (CEO)',
+    ambas: 'KOVA (app ventas IA, kova-app.net) y ALFESTER AGENCY (agencia marketing digital, agencia.kova-app.net). Ambas de Alfester Technologies OÜ.'
+  };
+
+  var goalMap = {
+    suscriptores: 'conseguir descargas y suscriptores de la app',
+    clientes: 'conseguir el primer cliente pagante',
+    awareness: 'dar a conocer la marca',
+    conversion: 'conversión directa a ventas',
+    engagement: 'generar comunidad y engagement'
+  };
+
+  var tipoMap = {
+    plan: 'un plan de contenido COMPLETO para 5 días (lunes a viernes) con: tipo de post, red social, copy completo con emojis y hashtags, mejor hora de publicación y CTA específico. Formato estructurado por días.',
+    linkedin: 'UN post de LinkedIn listo para publicar HOY. Incluye: gancho (primera línea), desarrollo (máximo 5 párrafos cortos), CTA y hashtags. Tono founder auténtico.',
+    instagram: 'UN guión de Reel de Instagram de 15-30 segundos listo para grabar HOY. Incluye: gancho verbal (primeros 3 segundos), escenas con texto en pantalla, caption con emojis y hashtags.',
+    tiktok: 'UN guión de TikTok de 15-30 segundos listo para grabar HOY. Estilo nativo TikTok: rápido, directo, con gancho en los primeros 2 segundos.',
+    dm: 'UN mensaje directo (DM) personalizado para enviar a un prospecto en LinkedIn o Instagram. Para ' + (brand === 'kova' ? 'un freelancer o dueño de pyme' : 'dueño de centro de estética o belleza en España') + '. Máximo 5 líneas, sin vender directo, generando curiosidad.'
+  };
+
+  var semana = ['lanzamiento y primeras descargas', 'tracción y prueba social', 'conversión y urgencia', 'referidos y comunidad'][parseInt(week)-1];
+
+  var prompt = 'Eres experto en marketing digital y growth para startups hispanohablantes. ' +
+    'Genera ' + tipoMap[tipo] + '. ' +
+    'MARCA: ' + brandInfo[brand] + '. ' +
+    'OBJETIVO: ' + goalMap[goal] + '. ' +
+    'SEMANA: ' + semana + (week === '1' ? ' (primera semana de lanzamiento, urgencia alta)' : '') + '. ' +
+    (ctx ? 'CONTEXTO ADICIONAL: ' + ctx + '. ' : '') +
+    'El contenido debe ser auténtico, en español, adaptado al mercado hispanohablante. NO genérico. Específico y accionable.';
+
+  callAI(prompt, function(txt) {
+    out.innerHTML = txt.replace(/\n/g, '<br>');
+    btn.style.display = 'inline-block';
+  }, function(e) {
+    out.innerHTML = '<span style="color:var(--pink)">Error: ' + (e.message||'verifica tu API key') + '</span>';
+  });
+}
+
 function switchTab(n) {
   var names = ['ov','cal','con','kpi','plat','cm','inf','studio','design'];
   document.querySelectorAll('.tab').forEach(function(t, i) {
