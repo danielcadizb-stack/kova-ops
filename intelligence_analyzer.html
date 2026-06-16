@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KOVA Intelligence Analyzer</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d0b08;--panel:#111410;--panel2:#161914;--border:rgba(93,224,206,.1);--border2:rgba(93,224,206,.2);
+  --teal:#5de0ce;--gold:#ffc350;--purple:#a78bfa;--red:#ef4444;--green:#22c55e;--orange:#f97316;
+  --text:#f0ede6;--text2:#a09b91;--text3:#6b6660;
+  --font-mono:'Space Mono',monospace;--font:'DM Sans',sans-serif;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;overflow-x:hidden}
+
+/* HEADER */
+.header{display:flex;align-items:center;justify-content:space-between;padding:18px 28px;border-bottom:1px solid var(--border);background:var(--panel)}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-icon{width:36px;height:36px;background:#0f2820;border-radius:8px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border2)}
+.logo-text{font-family:var(--font-mono);font-size:13px;color:var(--teal);font-weight:700}
+.logo-sub{font-size:10px;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;margin-top:1px}
+.header-right{display:flex;align-items:center;gap:12px}
+.status-dot{width:8px;height:8px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.status-lbl{font-size:11px;font-family:var(--font-mono);color:var(--text2)}
+.back-btn{font-size:11px;font-family:var(--font-mono);color:var(--teal);text-decoration:none;border:1px solid var(--border2);padding:5px 12px;border-radius:5px;letter-spacing:.06em}
+.back-btn:hover{background:rgba(93,224,206,.06)}
+
+/* TABS */
+.tabs{display:flex;gap:2px;padding:0 28px;background:var(--panel);border-bottom:1px solid var(--border)}
+.tab{padding:12px 20px;font-size:12px;font-family:var(--font-mono);color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;letter-spacing:.06em;transition:.2s}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--teal);border-bottom-color:var(--teal)}
+
+/* MAIN */
+.main{padding:24px 28px;max-width:1400px;margin:0 auto}
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+/* CARDS */
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+.metric-card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:16px}
+.metric-val{font-size:28px;font-weight:700;font-family:var(--font-mono);color:var(--teal);margin-bottom:4px}
+.metric-lbl{font-size:11px;color:var(--text2);text-transform:uppercase;letter-spacing:.1em}
+.metric-sub{font-size:10px;color:var(--text3);margin-top:6px}
+
+.card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px}
+.card-title{font-family:var(--font-mono);font-size:12px;color:var(--teal);letter-spacing:.1em;text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.card-title span{color:var(--text2)}
+
+/* CONVERSATION LIST */
+.conv-list{display:flex;flex-direction:column;gap:8px}
+.conv-item{background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;cursor:pointer;transition:.15s}
+.conv-item:hover{border-color:var(--border2);background:#1a1e17}
+.conv-item.selected{border-color:var(--teal)}
+.conv-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.conv-agent{font-size:10px;font-family:var(--font-mono);padding:2px 8px;border-radius:3px;letter-spacing:.06em}
+.agent-nova{background:rgba(93,224,206,.1);color:var(--teal);border:1px solid rgba(93,224,206,.2)}
+.agent-alex{background:rgba(255,195,80,.1);color:var(--gold);border:1px solid rgba(255,195,80,.2)}
+.agent-maia{background:rgba(167,139,250,.1);color:var(--purple);border:1px solid rgba(167,139,250,.2)}
+.conv-plan{font-size:10px;color:var(--text3);font-family:var(--font-mono)}
+.conv-preview{font-size:12px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.conv-msgs{font-size:10px;color:var(--text3);margin-top:4px}
+
+/* CHAT VIEWER */
+.chat-viewer{background:var(--panel2);border:1px solid var(--border);border-radius:10px;padding:16px;max-height:500px;overflow-y:auto}
+.chat-bubble{margin-bottom:10px;max-width:85%}
+.bubble-user{margin-left:auto;background:rgba(93,224,206,.08);border:1px solid rgba(93,224,206,.15);border-radius:10px 10px 2px 10px;padding:10px 14px}
+.bubble-ai{background:var(--panel);border:1px solid var(--border);border-radius:10px 10px 10px 2px;padding:10px 14px}
+.bubble-role{font-size:9px;font-family:var(--font-mono);color:var(--text3);margin-bottom:4px;letter-spacing:.08em}
+.bubble-text{font-size:12px;color:var(--text);line-height:1.5}
+
+/* ANALYSIS PANEL */
+.analysis-box{background:#0a1a15;border:1px solid rgba(93,224,206,.15);border-radius:10px;padding:16px;margin-top:16px}
+.analysis-title{font-size:11px;font-family:var(--font-mono);color:var(--teal);letter-spacing:.1em;margin-bottom:12px}
+.analysis-content{font-size:12px;color:var(--text2);line-height:1.7;white-space:pre-wrap}
+.analysis-loading{display:flex;align-items:center;gap:8px;color:var(--text3);font-size:12px;font-family:var(--font-mono)}
+.spinner{width:14px;height:14px;border:2px solid var(--border2);border-top-color:var(--teal);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* INSIGHTS */
+.insight-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.insight-card{background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:14px}
+.insight-tag{font-size:9px;font-family:var(--font-mono);padding:2px 7px;border-radius:3px;letter-spacing:.08em;margin-bottom:8px;display:inline-block}
+.tag-convert{background:rgba(34,197,94,.1);color:var(--green);border:1px solid rgba(34,197,94,.2)}
+.tag-friction{background:rgba(239,68,68,.1);color:var(--red);border:1px solid rgba(239,68,68,.2)}
+.tag-objection{background:rgba(255,195,80,.1);color:var(--gold);border:1px solid rgba(255,195,80,.2)}
+.tag-feature{background:rgba(167,139,250,.1);color:var(--purple);border:1px solid rgba(167,139,250,.2)}
+.insight-text{font-size:12px;color:var(--text);line-height:1.5}
+.insight-count{font-size:10px;color:var(--text3);margin-top:6px;font-family:var(--font-mono)}
+
+/* PROMPT EDITOR */
+.prompt-selector{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.agent-btn{padding:8px 18px;border-radius:6px;border:1px solid var(--border2);background:transparent;color:var(--text2);font-family:var(--font-mono);font-size:11px;cursor:pointer;letter-spacing:.06em;transition:.15s}
+.agent-btn:hover{color:var(--text)}
+.agent-btn.active-nova{background:rgba(93,224,206,.1);color:var(--teal);border-color:var(--teal)}
+.agent-btn.active-alex{background:rgba(255,195,80,.1);color:var(--gold);border-color:var(--gold)}
+.agent-btn.active-maia{background:rgba(167,139,250,.1);color:var(--purple);border-color:var(--purple)}
+
+.prompt-meta{display:flex;gap:16px;margin-bottom:12px;flex-wrap:wrap}
+.meta-item{font-size:11px;font-family:var(--font-mono);color:var(--text2)}
+.meta-item span{color:var(--teal)}
+
+.prompt-textarea{width:100%;min-height:280px;background:var(--panel2);border:1px solid var(--border2);border-radius:8px;padding:14px;color:var(--text);font-family:var(--font-mono);font-size:11px;line-height:1.7;resize:vertical;outline:none}
+.prompt-textarea:focus{border-color:var(--teal)}
+
+.version-history{margin-top:16px}
+.version-item{display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--panel2);border:1px solid var(--border);border-radius:6px;margin-bottom:6px}
+.version-badge{font-size:9px;font-family:var(--font-mono);padding:2px 8px;border-radius:3px;background:rgba(93,224,206,.08);color:var(--teal);border:1px solid var(--border2)}
+.version-date{font-size:10px;color:var(--text3);flex:1}
+.version-note{font-size:11px;color:var(--text2)}
+.version-active{background:rgba(34,197,94,.1);color:var(--green);border:1px solid rgba(34,197,94,.2)}
+
+/* FUNNEL */
+.funnel-bar{display:flex;flex-direction:column;gap:6px}
+.funnel-row{display:flex;align-items:center;gap:12px}
+.funnel-label{font-size:11px;font-family:var(--font-mono);color:var(--text2);width:160px;flex-shrink:0}
+.funnel-track{flex:1;height:28px;background:var(--panel2);border-radius:4px;overflow:hidden;border:1px solid var(--border)}
+.funnel-fill{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:10px;font-size:11px;font-family:var(--font-mono);color:var(--bg);font-weight:700;transition:width 1s ease}
+.funnel-pct{font-size:11px;font-family:var(--font-mono);color:var(--text3);width:50px;text-align:right;flex-shrink:0}
+
+/* BUTTONS */
+.btn{padding:9px 18px;border-radius:7px;border:1px solid var(--border2);background:transparent;color:var(--text2);font-family:var(--font-mono);font-size:11px;cursor:pointer;letter-spacing:.06em;transition:.15s}
+.btn:hover{color:var(--text);border-color:var(--teal)}
+.btn-primary{background:rgba(93,224,206,.1);color:var(--teal);border-color:var(--teal)}
+.btn-primary:hover{background:rgba(93,224,206,.2)}
+.btn-gold{background:rgba(255,195,80,.1);color:var(--gold);border-color:var(--gold)}
+
+/* SECTION HEADER */
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.section-title{font-family:var(--font-mono);font-size:12px;color:var(--teal);letter-spacing:.12em;text-transform:uppercase}
+
+/* OBJECIONES TABLE */
+.obj-table{width:100%;border-collapse:collapse}
+.obj-table th{font-size:10px;font-family:var(--font-mono);color:var(--text3);text-transform:uppercase;letter-spacing:.1em;padding:8px 10px;border-bottom:1px solid var(--border);text-align:left}
+.obj-table td{font-size:12px;color:var(--text2);padding:10px 10px;border-bottom:1px solid rgba(93,224,206,.04)}
+.obj-table tr:hover td{background:rgba(93,224,206,.03);color:var(--text)}
+.freq-bar{display:inline-block;height:4px;background:var(--teal);border-radius:2px;vertical-align:middle;margin-left:8px}
+
+/* EMPTY STATE */
+.empty{text-align:center;padding:48px;color:var(--text3);font-size:13px}
+.empty-icon{font-size:32px;margin-bottom:12px}
+
+/* LOADING */
+.loading-overlay{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;gap:12px}
+.loading-text{font-size:11px;font-family:var(--font-mono);color:var(--text3);letter-spacing:.1em}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(93,224,206,.2);border-radius:3px}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--panel);border:1px solid var(--border2);border-radius:8px;padding:12px 18px;font-size:12px;font-family:var(--font-mono);color:var(--text);z-index:999;opacity:0;transform:translateY(10px);transition:.3s;pointer-events:none}
+.toast.show{opacity:1;transform:translateY(0)}
+
+/* API KEY INPUT */
+.key-banner{background:#0a1510;border:1px solid rgba(93,224,206,.2);border-radius:8px;padding:14px 18px;margin-bottom:20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.key-banner input{flex:1;min-width:220px;background:var(--panel2);border:1px solid var(--border2);border-radius:5px;padding:7px 12px;color:var(--text);font-family:var(--font-mono);font-size:11px;outline:none}
+.key-banner input:focus{border-color:var(--teal)}
+.key-banner label{font-size:11px;font-family:var(--font-mono);color:var(--text2)}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 28 17" fill="none" width="22" height="13"><polyline points="0,8.5 3.5,8.5 6.5,2 9.5,15 12.5,2 15.5,8.5 19,8.5 23,8.5 28,8.5" stroke="#5de0ce" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div>
+      <div class="logo-text">KOVA INTELLIGENCE ANALYZER</div>
+      <div class="logo-sub">Conversaciones · Prompts · Conversión</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="status-dot"></div>
+    <span class="status-lbl" id="statusLbl">CARGANDO...</span>
+    <a href="https://ops.kova-app.net" class="back-btn">← OPS</a>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('analysis')">📊 Análisis Conversaciones</div>
+  <div class="tab" onclick="switchTab('funnel')">🎯 Funnel Conversión</div>
+  <div class="tab" onclick="switchTab('prompts')">⚙️ Prompt Versioning</div>
+</div>
+
+<div class="main">
+
+  <!-- API KEY BANNER -->
+  <div class="key-banner" id="keyBanner" style="display:none">
+    <label>🔑 Anthropic API Key para análisis IA:</label>
+    <input type="password" id="apiKeyInput" placeholder="sk-ant-..." />
+    <button class="btn btn-primary" onclick="saveApiKey()">Guardar</button>
+    <button class="btn" onclick="document.getElementById('keyBanner').style.display='none'">×</button>
+  </div>
+
+  <!-- TAB 1: ANÁLISIS CONVERSACIONES -->
+  <div class="tab-content active" id="tab-analysis">
+    <div class="grid-4" id="metricsGrid">
+      <div class="metric-card"><div class="metric-val" id="m-total-users">--</div><div class="metric-lbl">Usuarios Totales</div><div class="metric-sub">Free plan activo</div></div>
+      <div class="metric-card"><div class="metric-val" id="m-total-convs">--</div><div class="metric-lbl">Conversaciones</div><div class="metric-sub">Este mes</div></div>
+      <div class="metric-card"><div class="metric-val" id="m-avg-msgs">--</div><div class="metric-lbl">Msgs Promedio</div><div class="metric-sub">Por usuario activo</div></div>
+      <div class="metric-card"><div class="metric-val" id="m-near-limit">--</div><div class="metric-lbl">Cerca del límite</div><div class="metric-sub">≥12 msgs free → candidatos</div></div>
+    </div>
+
+    <div class="grid-2">
+      <!-- LISTA DE CONVERSACIONES -->
+      <div>
+        <div class="section-header">
+          <div class="section-title">// Conversaciones recientes</div>
+          <div style="display:flex;gap:8px">
+            <button class="btn" onclick="filterConvs('all')" id="filter-all" style="color:var(--teal)">Todas</button>
+            <button class="btn" onclick="filterConvs('nova')" id="filter-nova">NOVA</button>
+            <button class="btn" onclick="filterConvs('alex')" id="filter-alex">ALEX</button>
+            <button class="btn" onclick="filterConvs('maia')" id="filter-maia">MAIA</button>
+          </div>
+        </div>
+        <div class="conv-list" id="convList">
+          <div class="loading-overlay"><div class="spinner"></div><div class="loading-text">CARGANDO CONVERSACIONES...</div></div>
+        </div>
+      </div>
+
+      <!-- CHAT VIEWER + ANÁLISIS -->
+      <div>
+        <div class="section-header">
+          <div class="section-title">// Chat seleccionado</div>
+          <button class="btn btn-primary" id="analyzeBtn" onclick="analyzeSelectedChat()" style="display:none">🤖 Analizar con IA</button>
+        </div>
+        <div class="chat-viewer" id="chatViewer">
+          <div class="empty"><div class="empty-icon">💬</div>Selecciona una conversación para ver el detalle</div>
+        </div>
+        <div class="analysis-box" id="analysisBox" style="display:none">
+          <div class="analysis-title">// JARVIS ANÁLISIS — INSIGHTS DE CONVERSIÓN</div>
+          <div class="analysis-content" id="analysisContent"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OBJECIONES FRECUENTES -->
+    <div class="card">
+      <div class="card-title">// Top Objeciones detectadas <span id="objPeriod">— Este mes</span></div>
+      <div id="objTable">
+        <div class="loading-overlay"><div class="spinner"></div><div class="loading-text">ANALIZANDO PATRONES...</div></div>
+      </div>
+    </div>
+
+    <!-- INSIGHTS AUTOMÁTICOS -->
+    <div class="card">
+      <div class="card-title">// Insights automáticos de conversión <button class="btn btn-gold" onclick="generateInsights()" style="margin-left:12px;padding:4px 12px;font-size:10px">⚡ Generar</button></div>
+      <div class="insight-grid" id="insightGrid">
+        <div class="empty"><div class="empty-icon">💡</div>Haz clic en "Generar" para analizar todos los chats con IA</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 2: FUNNEL CONVERSIÓN -->
+  <div class="tab-content" id="tab-funnel">
+    <div class="grid-4" style="margin-bottom:24px">
+      <div class="metric-card"><div class="metric-val" id="f-installs" style="color:var(--text)">--</div><div class="metric-lbl">Registros totales</div></div>
+      <div class="metric-card"><div class="metric-val" id="f-active" style="color:var(--gold)">--</div><div class="metric-lbl">Enviaron ≥1 msg</div></div>
+      <div class="metric-card"><div class="metric-val" id="f-near" style="color:var(--orange)">--</div><div class="metric-lbl">≥12 msgs (hot)</div></div>
+      <div class="metric-card"><div class="metric-val" id="f-paid" style="color:var(--green)">--</div><div class="metric-lbl">Suscriptores</div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">// Funnel de activación → suscripción</div>
+      <div class="funnel-bar" id="funnelBars" style="gap:10px">
+        <div class="loading-overlay"><div class="spinner"></div><div class="loading-text">CALCULANDO FUNNEL...</div></div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">// Distribución por agente</div>
+        <div id="agentDist">
+          <div class="loading-overlay"><div class="spinner"></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">// Usuarios cerca del límite free — acción inmediata</div>
+        <div id="hotLeadsList">
+          <div class="loading-overlay"><div class="spinner"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">// Recomendaciones de conversión <button class="btn btn-primary" onclick="generateConversionTips()" style="margin-left:12px;padding:4px 12px;font-size:10px">⚡ Generar con IA</button></div>
+      <div id="conversionTips">
+        <div class="empty"><div class="empty-icon">🎯</div>Analiza el funnel y genera recomendaciones personalizadas con IA</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 3: PROMPT VERSIONING -->
+  <div class="tab-content" id="tab-prompts">
+    <div style="background:rgba(255,195,80,.06);border:1px solid rgba(255,195,80,.2);border-radius:8px;padding:12px 16px;margin-bottom:20px;font-size:12px;color:var(--gold)">
+      ⚠️ Los prompts aquí son para análisis y propuestas. Para aplicar cambios al backend, genera el script de deploy correspondiente.
+    </div>
+
+    <div class="prompt-selector">
+      <button class="agent-btn active-nova" onclick="selectAgent('nova',this)">NOVA — Objeciones</button>
+      <button class="agent-btn" onclick="selectAgent('alex',this)">ALEX — Simulación</button>
+      <button class="agent-btn" onclick="selectAgent('maia',this)">MAIA — Estrategia</button>
+    </div>
+
+    <div class="grid-2">
+      <div>
+        <div class="prompt-meta">
+          <div class="meta-item">Agente: <span id="pm-agent">NOVA</span></div>
+          <div class="meta-item">Versión activa: <span id="pm-version">v1.0</span></div>
+          <div class="meta-item">Actualizado: <span id="pm-date">Jun 2026</span></div>
+        </div>
+        <div class="card-title" style="margin-bottom:8px">// Prompt activo (referencia)</div>
+        <textarea class="prompt-textarea" id="promptEditor" readonly></textarea>
+        <div style="display:flex;gap:8px;margin-top:12px">
+          <button class="btn btn-primary" onclick="proposeImprovement()">🤖 Proponer mejora con IA</button>
+          <button class="btn" onclick="addFewShot()">➕ Agregar Few-Shot</button>
+          <button class="btn" onclick="generateDeployScript()">📦 Script de deploy</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="card-title" style="margin-bottom:8px">// Propuesta de mejora</div>
+        <textarea class="prompt-textarea" id="promptProposal" placeholder="La propuesta de mejora aparecerá aquí...&#10;&#10;Puedes también editar directamente y usar 'Script de deploy'"></textarea>
+        <div style="display:flex;gap:8px;margin-top:12px">
+          <button class="btn btn-gold" onclick="comparePerfomance()">📊 Comparar vs. actual</button>
+          <button class="btn" onclick="document.getElementById('promptProposal').value=''">🗑 Limpiar</button>
+        </div>
+
+        <div class="version-history" style="margin-top:20px">
+          <div class="card-title" style="margin-bottom:10px">// Historial de versiones</div>
+          <div id="versionHistory"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FEW SHOTS -->
+    <div class="card" style="margin-top:0">
+      <div class="card-title">// Few-Shot Examples — <span id="fs-agent-label">NOVA</span> <button class="btn btn-primary" onclick="generateFewShots()" style="margin-left:12px;padding:4px 12px;font-size:10px">⚡ Generar desde chats reales</button></div>
+      <div id="fewShotsPanel">
+        <div class="empty"><div class="empty-icon">🎓</div>Los few-shots se generan automáticamente analizando las conversaciones más exitosas de cada agente</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── CONFIG ──────────────────────────────────────────────────────────────────
+const SUPABASE_URL = 'https://thiqgazecrgxoavtpnqx.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRoaXFnYXplY3JneG9hdnRwbnF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1MDk1MTUsImV4cCI6MjA5MTA4NTUxNX0.HSL0CzMCIKEN8XnssTCMwWEr2wjqKy_w1a8rRUR6tDk';
+const SB = { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` };
+
+let anthropicKey = localStorage.getItem('kova_anthropic_key') || '';
+let allConvs = [];
+let selectedUserId = null;
+let selectedAgent = null;
+let selectedChatMsgs = [];
+let currentPromptAgent = 'nova';
+const month = new Date().toISOString().substring(0, 7);
+
+// ── PROMPT TEMPLATES (referencia — los reales están en el backend) ───────────
+const PROMPT_TEMPLATES = {
+  nova: {
+    version: 'v1.2',
+    date: 'Jun 2026',
+    content: `Eres NOVA, agente de inteligencia artificial especializado en ventas B2B para el mercado hispanohablante.
+
+Tu función principal es ayudar a vendedores a responder objeciones de clientes de forma efectiva, natural y persuasiva.
+
+PERSONALIDAD:
+- Directo y práctico: das respuestas concretas, no teoría
+- Empático pero orientado a resultados
+- Usas el lenguaje del mercado hispano (tuteo o usted según contexto)
+- Conoces frameworks: SPIN Selling, Challenger Sale, MEDDIC
+
+CUANDO EL USUARIO COMPARTE UNA OBJECIÓN:
+1. Valida la objeción (no la ignores ni la atacas)
+2. Reformula para entender la causa raíz
+3. Da 2-3 respuestas exactas que puede decir el vendedor
+4. Ofrece el siguiente paso en el proceso de venta
+
+OBJECIONES COMUNES QUE MANEJAS:
+- "Es muy caro" / "No tenemos presupuesto"
+- "Ya tenemos proveedor"
+- "Necesito consultarlo con mi equipo"
+- "No es el momento"
+- "No veo el ROI"
+
+LÍMITES:
+- No inventas datos ni estadísticas
+- Si no sabes algo, lo dices
+- Máximo 300 palabras por respuesta
+
+Idioma: responde siempre en el idioma del usuario.`,
+    fewShots: []
+  },
+  alex: {
+    version: 'v1.1',
+    date: 'Jun 2026',
+    content: `Eres ALEX, agente de simulación de prospectos para práctica de ventas B2B.
+
+Tu función es actuar como un prospecto real — difícil, escéptico, con objeciones genuinas — para que el vendedor practique antes de su reunión real.
+
+PERSONALIDAD DEL PROSPECTO (adapta según contexto):
+- Ocupado y directo: no tienes tiempo para perderlo
+- Escéptico ante promesas de ventas
+- Tienes experiencias previas negativas con vendedores
+- Tomas decisiones basadas en ROI y datos, no en entusiasmo
+
+CÓMO ACTUAR:
+- Mantén el rol del prospecto durante toda la conversación
+- Haz objeciones naturales y realistas
+- Si el vendedor responde bien, ablanda gradualmente tu postura
+- Si responde mal, aumenta el escepticismo
+- Al final de cada intercambio, en [corchetes] da feedback breve
+
+SECTORES QUE SIMULAS:
+- Pymes españolas (estética, retail, servicios profesionales)
+- Directores de ventas medianas empresas
+- Dueños de negocio latinoamericanos
+
+LÍMITES:
+- Nunca rompas el personaje durante la simulación
+- Sé realista, no imposiblemente difícil
+- El feedback en [corchetes] es constructivo
+
+Idioma: responde en el idioma del usuario.`,
+    fewShots: []
+  },
+  maia: {
+    version: 'v1.1',
+    date: 'Jun 2026',
+    content: `Eres MAIA, agente estratega de negocio con IA especializada en ventas para pymes hispanohablantes.
+
+Tu función es analizar la situación comercial del usuario y crear planes de acción concretos y ejecutables.
+
+CAPACIDADES:
+- Análisis de pipeline de ventas
+- Identificación de oportunidades y cuellos de botella
+- Creación de planes semanales de acción comercial
+- Estrategia de precios y posicionamiento
+- Análisis de competencia
+- Identificación del cliente ideal (ICP)
+
+METODOLOGÍA:
+1. Primero haz preguntas para entender el negocio (sector, tamaño, proceso de venta actual)
+2. Identifica los 2-3 problemas más críticos
+3. Propone plan de acción con tareas específicas para esta semana
+4. Define métricas de éxito
+
+FORMATO DE RESPUESTA:
+- Usa listas numeradas para planes de acción
+- Sé específico: "llama a X tipo de cliente el martes" no "mejora la prospección"
+- Incluye siempre un "Quick win" (acción rápida con alto impacto)
+
+LÍMITES:
+- No prometes resultados garantizados
+- Pides datos antes de recomendar
+- Máximo 400 palabras por respuesta
+
+Idioma: responde en el idioma del usuario.`,
+    fewShots: []
+  }
+};
+
+// ── HELPERS ──────────────────────────────────────────────────────────────────
+function toast(msg, dur=3000) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), dur);
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', ['analysis','funnel','prompts'][i]===tab));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.getElementById(`tab-${tab}`).classList.add('active');
+  if (tab === 'funnel') buildFunnel();
+  if (tab === 'prompts') loadPromptEditor();
+}
+
+function saveApiKey() {
+  const k = document.getElementById('apiKeyInput').value.trim();
+  if (!k.startsWith('sk-ant-')) { toast('❌ Formato inválido — debe empezar con sk-ant-'); return; }
+  anthropicKey = k;
+  localStorage.setItem('kova_anthropic_key', k);
+  document.getElementById('keyBanner').style.display = 'none';
+  toast('✅ API Key guardada');
+}
+
+function requireApiKey() {
+  if (!anthropicKey) {
+    document.getElementById('keyBanner').style.display = 'flex';
+    document.getElementById('apiKeyInput').focus();
+    return false;
+  }
+  return true;
+}
+
+async function callAI(systemPrompt, userMsg, maxTokens=1200) {
+  if (!requireApiKey()) return null;
+  const r = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'x-api-key': anthropicKey, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+    body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: maxTokens,
+      system: systemPrompt,
+      messages: [{ role: 'user', content: userMsg }]
+    })
+  });
+  if (!r.ok) throw new Error(`AI API ${r.status}`);
+  const d = await r.json();
+  return d.content?.[0]?.text || '';
+}
+
+// ── SUPABASE FETCH ────────────────────────────────────────────────────────────
+async function fetchAll() {
+  try {
+    // Users
+    const r1 = await fetch(`${SUPABASE_URL}/rest/v1/user_profiles?select=id,plan,created_at,business_name,sector`, { headers: SB });
+    const profiles = r1.ok ? await r1.json() : [];
+
+    // Usage this month
+    const r2 = await fetch(`${SUPABASE_URL}/rest/v1/user_usage?month_key=eq.${month}&select=user_id,msg_count,agent`, { headers: SB });
+    const usage = r2.ok ? await r2.json() : [];
+
+    // Chats (last 200, newest first)
+    const r3 = await fetch(`${SUPABASE_URL}/rest/v1/chats?select=id,user_id,agent,role,content,created_at&order=created_at.desc&limit=200`, { headers: SB });
+    const chats = r3.ok ? await r3.json() : [];
+
+    return { profiles, usage, chats };
+  } catch(e) {
+    console.error('Supabase error:', e);
+    return { profiles: [], usage: [], chats: [] };
+  }
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+async function init() {
+  document.getElementById('statusLbl').textContent = 'CONECTANDO...';
+  const { profiles, usage, chats } = await fetchAll();
+
+  // Metrics
+  const paidPlans = profiles.filter(p => p.plan !== 'free' && p.plan !== 'starter_trial');
+  const usageMap = {};
+  usage.forEach(u => { usageMap[u.user_id] = (usageMap[u.user_id] || 0) + u.msg_count; });
+  const activeUsers = Object.values(usageMap).filter(v => v > 0).length;
+  const nearLimit = Object.values(usageMap).filter(v => v >= 12).length;
+  const avgMsgs = activeUsers > 0 ? Math.round(Object.values(usageMap).reduce((a,b)=>a+b,0) / activeUsers) : 0;
+
+  document.getElementById('m-total-users').textContent = profiles.length;
+  document.getElementById('m-total-convs').textContent = new Set(chats.map(c=>c.user_id+'_'+c.agent)).size;
+  document.getElementById('m-avg-msgs').textContent = avgMsgs;
+  document.getElementById('m-near-limit').textContent = nearLimit;
+  document.getElementById('f-installs').textContent = profiles.length;
+  document.getElementById('f-active').textContent = activeUsers;
+  document.getElementById('f-near').textContent = nearLimit;
+  document.getElementById('f-paid').textContent = paidPlans.length;
+
+  // Build conversation list
+  buildConvList(chats, profiles, usageMap);
+
+  // Objections table
+  buildObjectionsTable(chats);
+
+  document.getElementById('statusLbl').textContent = `LIVE · ${profiles.length} usuarios`;
+
+  // Store globally
+  window._profiles = profiles;
+  window._usage = usage;
+  window._usageMap = usageMap;
+  window._chats = chats;
+}
+
+// ── CONVERSATION LIST ─────────────────────────────────────────────────────────
+function buildConvList(chats, profiles, usageMap, agentFilter='all') {
+  const profileMap = {};
+  profiles.forEach(p => profileMap[p.id] = p);
+
+  // Group by user+agent
+  const groups = {};
+  chats.forEach(c => {
+    const key = c.user_id + '_' + c.agent;
+    if (!groups[key]) groups[key] = { userId: c.user_id, agent: c.agent, msgs: [], lastDate: c.created_at };
+    groups[key].msgs.push(c);
+  });
+
+  const sorted = Object.values(groups)
+    .filter(g => agentFilter === 'all' || g.agent === agentFilter)
+    .sort((a,b) => new Date(b.lastDate) - new Date(a.lastDate))
+    .slice(0, 30);
+
+  allConvs = sorted;
+  const el = document.getElementById('convList');
+
+  if (!sorted.length) {
+    el.innerHTML = '<div class="empty"><div class="empty-icon">💬</div>Sin conversaciones este mes</div>';
+    return;
+  }
+
+  el.innerHTML = sorted.map((g, i) => {
+    const profile = profileMap[g.userId] || {};
+    const msgCount = usageMap[g.userId] || g.msgs.length;
+    const lastUserMsg = g.msgs.find(m => m.role === 'user')?.content || '(sin mensajes)';
+    const preview = lastUserMsg.substring(0, 80) + (lastUserMsg.length > 80 ? '...' : '');
+    return `<div class="conv-item" onclick="selectConv(${i})" id="conv-${i}">
+      <div class="conv-meta">
+        <span class="conv-agent agent-${g.agent}">${g.agent.toUpperCase()}</span>
+        <span class="conv-plan">${profile.plan || 'free'} · ${profile.sector || 'sin sector'}</span>
+      </div>
+      <div class="conv-preview">${preview}</div>
+      <div class="conv-msgs">${msgCount} msgs este mes · ${new Date(g.lastDate).toLocaleDateString('es')}</div>
+    </div>`;
+  }).join('');
+}
+
+function filterConvs(agent) {
+  ['all','nova','alex','maia'].forEach(a => {
+    document.getElementById(`filter-${a}`).style.color = a === agent ? 'var(--teal)' : '';
+  });
+  buildConvList(window._chats || [], window._profiles || [], window._usageMap || {}, agent);
+}
+
+function selectConv(idx) {
+  document.querySelectorAll('.conv-item').forEach(el => el.classList.remove('selected'));
+  document.getElementById(`conv-${idx}`)?.classList.add('selected');
+
+  const conv = allConvs[idx];
+  if (!conv) return;
+  selectedUserId = conv.userId;
+  selectedAgent = conv.agent;
+  selectedChatMsgs = conv.msgs.sort((a,b) => new Date(a.created_at) - new Date(b.created_at));
+
+  const viewer = document.getElementById('chatViewer');
+  viewer.innerHTML = selectedChatMsgs.map(m => `
+    <div class="chat-bubble">
+      <div class="${m.role === 'user' ? 'bubble-user' : 'bubble-ai'}">
+        <div class="bubble-role">${m.role === 'user' ? '👤 USUARIO' : `🤖 ${conv.agent.toUpperCase()}`}</div>
+        <div class="bubble-text">${m.content.replace(/</g,'&lt;').replace(/\n/g,'<br>')}</div>
+      </div>
+    </div>
+  `).join('');
+
+  document.getElementById('analyzeBtn').style.display = 'inline-block';
+  document.getElementById('analysisBox').style.display = 'none';
+}
+
+// ── ANALYZE CHAT WITH AI ──────────────────────────────────────────────────────
+async function analyzeSelectedChat() {
+  if (!selectedChatMsgs.length) return;
+  if (!requireApiKey()) return;
+
+  const box = document.getElementById('analysisBox');
+  const content = document.getElementById('analysisContent');
+  box.style.display = 'block';
+  content.innerHTML = '<div class="analysis-loading"><div class="spinner"></div>JARVIS analizando conversación...</div>';
+
+  const chatText = selectedChatMsgs
+    .map(m => `[${m.role.toUpperCase()}]: ${m.content}`)
+    .join('\n\n');
+
+  const system = `Eres un analista experto en conversiones SaaS para apps móviles de ventas B2B en español.
+Analiza conversaciones de usuarios con los agentes IA de KOVA y proporciona insights accionables.
+Sé conciso, directo y específico. Usa formato de texto plano sin markdown.`;
+
+  const prompt = `Analiza esta conversación del agente ${selectedAgent.toUpperCase()} y responde en este formato exacto:
+
+CONVERSACIÓN:
+${chatText}
+
+ANÁLISIS REQUERIDO:
+1. INTENCIÓN DEL USUARIO: ¿Qué problema intentaba resolver?
+2. CALIDAD DE RESPUESTA: ¿Respondió bien el agente? ¿Qué falló?
+3. SEÑAL DE CONVERSIÓN: ¿Hay señales de que este usuario considera pagar? (sí/no/quizás + razón)
+4. PUNTO DE FRICCIÓN: ¿En qué momento se atascó la conversación?
+5. ACCIÓN RECOMENDADA: ¿Qué cambio en el prompt o en el producto ayudaría a convertir a este usuario?
+6. OBJECIÓN DETECTADA: ¿Qué objeción de precio/valor aparece (si aplica)?`;
+
+  try {
+    const result = await callAI(system, prompt, 800);
+    content.textContent = result;
+  } catch(e) {
+    content.textContent = 'Error: ' + e.message;
+  }
+}
+
+// ── OBJECTIONS TABLE ──────────────────────────────────────────────────────────
+function buildObjectionsTable(chats) {
+  const objKeywords = {
+    'Precio / muy caro': ['caro','precio','cuesta','presupuesto','dinero','expensive','cost'],
+    'No lo necesito': ['necesito','sirve','para qué','what for','need'],
+    'Ya tengo proveedor': ['proveedor','tengo','ya uso','already','competitor'],
+    'No tengo tiempo': ['tiempo','ocupado','busy','tiempo','tarde'],
+    'Necesito pensarlo': ['pensar','consultar','equipo','think','decide'],
+    'No veo el ROI': ['resultado','funciona','garantía','comprobado','prueba'],
+  };
+
+  const counts = {};
+  Object.keys(objKeywords).forEach(k => counts[k] = 0);
+
+  const userMsgs = chats.filter(c => c.role === 'user').map(c => c.content.toLowerCase());
+  userMsgs.forEach(msg => {
+    Object.entries(objKeywords).forEach(([obj, words]) => {
+      if (words.some(w => msg.includes(w))) counts[obj]++;
+    });
+  });
+
+  const sorted = Object.entries(counts).sort((a,b) => b[1]-a[1]);
+  const max = sorted[0]?.[1] || 1;
+
+  const el = document.getElementById('objTable');
+  if (!sorted.some(([,v]) => v > 0)) {
+    el.innerHTML = '<div class="empty"><div class="empty-icon">🔍</div>Sin datos suficientes — necesitas más conversaciones para detectar patrones</div>';
+    return;
+  }
+
+  el.innerHTML = `<table class="obj-table"><thead><tr>
+    <th>Objeción</th><th>Frecuencia</th><th>% del total</th><th>Tendencia</th>
+  </tr></thead><tbody>
+  ${sorted.map(([obj, count]) => `<tr>
+    <td>${obj}</td>
+    <td>${count} <span class="freq-bar" style="width:${Math.round(count/max*60)}px"></span></td>
+    <td>${userMsgs.length > 0 ? Math.round(count/userMsgs.length*100) : 0}%</td>
+    <td><span style="color:${count>2?'var(--red)':count>0?'var(--gold)':'var(--text3)'}">${count>2?'↑ Alta':count>0?'→ Media':'— Baja'}</span></td>
+  </tr>`).join('')}
+  </tbody></table>`;
+}
+
+// ── INSIGHTS ──────────────────────────────────────────────────────────────────
+async function generateInsights() {
+  if (!requireApiKey()) return;
+  const grid = document.getElementById('insightGrid');
+  grid.innerHTML = '<div class="loading-overlay"><div class="spinner"></div><div class="loading-text">JARVIS analizando todos los chats...</div></div>';
+
+  const chats = window._chats || [];
+  const profiles = window._profiles || [];
+  const usageMap = window._usageMap || {};
+
+  const userMsgs = chats.filter(c => c.role === 'user').map(c => c.content).slice(0, 80);
+  const paidCount = profiles.filter(p => p.plan !== 'free').length;
+  const nearLimit = Object.values(usageMap).filter(v => v >= 12).length;
+
+  const system = `Eres un experto en product analytics y conversión para apps SaaS B2B en español. Analiza datos y genera insights accionables y concretos. Responde SOLO con JSON válido, sin markdown, sin comentarios.`;
+
+  const prompt = `Analiza estos datos de KOVA (app de ventas con IA para pymes hispanohablantes):
+
+Usuarios totales: ${profiles.length}
+Usuarios de pago: ${paidCount}
+Usuarios cerca del límite free (≥12 msgs): ${nearLimit}
+Tasa conversión actual: ${profiles.length > 0 ? Math.round(paidCount/profiles.length*100) : 0}%
+Planes: Free(15 msgs/mes), Starter(€9.99, 200 msgs), Pro(€24.99, 500 msgs)
+
+Primeros 80 mensajes de usuarios:
+${userMsgs.slice(0, 40).join(' | ')}
+
+Responde con este JSON exacto (sin markdown):
+{
+  "insights": [
+    {"type": "friction", "title": "...", "description": "...", "action": "..."},
+    {"type": "convert", "title": "...", "description": "...", "action": "..."},
+    {"type": "objection", "title": "...", "description": "...", "action": "..."},
+    {"type": "feature", "title": "...", "description": "...", "action": "..."}
+  ]
+}`;
+
+  try {
+    const result = await callAI(system, prompt, 1000);
+    const clean = result.replace(/```json|```/g,'').trim();
+    const data = JSON.parse(clean);
+    const tagMap = { friction:'tag-friction', convert:'tag-convert', objection:'tag-objection', feature:'tag-feature' };
+    const labelMap = { friction:'FRICCIÓN', convert:'CONVERSIÓN', objection:'OBJECIÓN', feature:'FEATURE' };
+    grid.innerHTML = data.insights.map(ins => `
+      <div class="insight-card">
+        <span class="insight-tag ${tagMap[ins.type]||'tag-feature'}">${labelMap[ins.type]||ins.type.toUpperCase()}</span>
+        <div class="insight-text"><strong>${ins.title}</strong><br><br>${ins.description}</div>
+        <div class="insight-count" style="margin-top:10px;color:var(--teal)">→ ${ins.action}</div>
+      </div>`).join('');
+  } catch(e) {
+    grid.innerHTML = `<div class="empty"><div class="empty-icon">⚠️</div>Error: ${e.message}</div>`;
+  }
+}
+
+// ── FUNNEL ────────────────────────────────────────────────────────────────────
+function buildFunnel() {
+  const profiles = window._profiles || [];
+  const usageMap = window._usageMap || {};
+  const usage = window._usage || [];
+
+  const total = profiles.length;
+  const active = Object.values(usageMap).filter(v => v > 0).length;
+  const engaged = Object.values(usageMap).filter(v => v >= 5).length;
+  const hot = Object.values(usageMap).filter(v => v >= 12).length;
+  const paid = profiles.filter(p => p.plan !== 'free').length;
+
+  const steps = [
+    { label: 'Registrados', val: total, color: '#a09b91' },
+    { label: 'Enviaron ≥1 msg', val: active, color: '#5de0ce' },
+    { label: 'Engaged (≥5 msgs)', val: engaged, color: '#ffc350' },
+    { label: 'Hot (≥12 msgs)', val: hot, color: '#f97316' },
+    { label: 'Suscriptores', val: paid, color: '#22c55e' },
+  ];
+
+  document.getElementById('funnelBars').innerHTML = steps.map(s => `
+    <div class="funnel-row">
+      <div class="funnel-label">${s.label}</div>
+      <div class="funnel-track">
+        <div class="funnel-fill" style="width:${total>0?Math.round(s.val/total*100):0}%;background:${s.color}">
+          ${s.val > 0 ? s.val : ''}
+        </div>
+      </div>
+      <div class="funnel-pct">${total>0?Math.round(s.val/total*100):0}%</div>
+    </div>`).join('');
+
+  // Agent distribution
+  const agentCounts = { nova: 0, alex: 0, maia: 0 };
+  (window._chats||[]).filter(c=>c.role==='user').forEach(c => {
+    if (agentCounts[c.agent] !== undefined) agentCounts[c.agent]++;
+  });
+  const totalMsgs = Object.values(agentCounts).reduce((a,b)=>a+b,0) || 1;
+  document.getElementById('agentDist').innerHTML = Object.entries(agentCounts).map(([a,c]) => `
+    <div style="margin-bottom:12px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+        <span class="conv-agent agent-${a}" style="display:inline-block">${a.toUpperCase()}</span>
+        <span style="font-size:11px;font-family:var(--font-mono);color:var(--text2)">${c} msgs · ${Math.round(c/totalMsgs*100)}%</span>
+      </div>
+      <div style="height:6px;background:var(--panel2);border-radius:3px;overflow:hidden">
+        <div style="height:100%;background:${a==='nova'?'var(--teal)':a==='alex'?'var(--gold)':'var(--purple)'};width:${Math.round(c/totalMsgs*100)}%;border-radius:3px"></div>
+      </div>
+    </div>`).join('');
+
+  // Hot leads
+  const profileMap = {};
+  (window._profiles||[]).forEach(p => profileMap[p.id] = p);
+  const hotLeads = Object.entries(usageMap)
+    .filter(([,v]) => v >= 12)
+    .sort((a,b) => b[1]-a[1])
+    .slice(0, 8);
+
+  document.getElementById('hotLeadsList').innerHTML = hotLeads.length
+    ? hotLeads.map(([uid, count]) => {
+        const p = profileMap[uid] || {};
+        return `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">
+          <div>
+            <div style="font-size:12px;color:var(--text)">${p.business_name || 'Usuario'}</div>
+            <div style="font-size:10px;color:var(--text3);font-family:var(--font-mono)">${p.sector||'sin sector'} · ${p.plan||'free'}</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:14px;font-weight:700;font-family:var(--font-mono);color:var(--orange)">${count}/15</div>
+            <div style="font-size:9px;color:var(--text3)">msgs usados</div>
+          </div>
+        </div>`;
+      }).join('')
+    : '<div class="empty" style="padding:20px"><div class="empty-icon">😴</div>Sin usuarios hot aún</div>';
+}
+
+async function generateConversionTips() {
+  if (!requireApiKey()) return;
+  const el = document.getElementById('conversionTips');
+  el.innerHTML = '<div class="loading-overlay"><div class="spinner"></div><div class="loading-text">Generando recomendaciones...</div></div>';
+
+  const profiles = window._profiles || [];
+  const usageMap = window._usageMap || {};
+  const paid = profiles.filter(p => p.plan !== 'free').length;
+  const hot = Object.values(usageMap).filter(v => v >= 12).length;
+
+  const system = `Eres un experto en growth hacking y conversión para apps SaaS B2B. Eres directo, concreto y orientado a resultados. Hablas en español.`;
+  const prompt = `KOVA es una app de IA para ventas. Datos actuales:
+- ${profiles.length} usuarios registrados, ${paid} de pago, ${hot} usuarios hot (≥12 msgs)
+- Plan Free: 15 msgs/mes. Starter: €9.99. Pro: €24.99
+- La app lleva 1 semana en el market
+
+Dame 5 recomendaciones MUY CONCRETAS y ejecutables esta semana para convertir usuarios free en suscriptores. Para cada una indica: qué hacer exactamente, cuánto tiempo toma, y qué resultado esperar. Sé específico, no genérico.`;
+
+  try {
+    const result = await callAI(system, prompt, 800);
+    el.innerHTML = `<div style="font-size:12px;color:var(--text2);line-height:1.8;white-space:pre-wrap;padding:4px">${result}</div>`;
+  } catch(e) {
+    el.innerHTML = `<div class="empty">Error: ${e.message}</div>`;
+  }
+}
+
+// ── PROMPT VERSIONING ─────────────────────────────────────────────────────────
+function loadPromptEditor() {
+  selectAgent(currentPromptAgent, null);
+}
+
+function selectAgent(agent, btnEl) {
+  currentPromptAgent = agent;
+  document.querySelectorAll('.agent-btn').forEach(b => b.className = 'agent-btn');
+  if (btnEl) btnEl.classList.add(`active-${agent}`);
+  else document.querySelectorAll('.agent-btn')[['nova','alex','maia'].indexOf(agent)]?.classList.add(`active-${agent}`);
+
+  const tmpl = PROMPT_TEMPLATES[agent];
+  document.getElementById('pm-agent').textContent = agent.toUpperCase();
+  document.getElementById('pm-version').textContent = tmpl.version;
+  document.getElementById('pm-date').textContent = tmpl.date;
+  document.getElementById('promptEditor').value = tmpl.content;
+  document.getElementById('fs-agent-label').textContent = agent.toUpperCase();
+
+  // Version history (localStorage)
+  const history = JSON.parse(localStorage.getItem(`kova_prompt_history_${agent}`) || '[]');
+  const el = document.getElementById('versionHistory');
+  el.innerHTML = [
+    { version: tmpl.version, date: tmpl.date, note: 'Versión activa en backend', active: true },
+    ...history
+  ].map(v => `
+    <div class="version-item">
+      <span class="version-badge ${v.active?'version-active':''}">${v.version}</span>
+      <span class="version-date">${v.date}</span>
+      <span class="version-note">${v.note}</span>
+    </div>`).join('') || '<div style="color:var(--text3);font-size:11px;padding:8px">Sin historial</div>';
+}
+
+async function proposeImprovement() {
+  if (!requireApiKey()) return;
+  const proposal = document.getElementById('promptProposal');
+  proposal.value = 'Generando propuesta de mejora...';
+
+  const current = document.getElementById('promptEditor').value;
+  const chats = window._chats || [];
+  const agentChats = chats.filter(c => c.agent === currentPromptAgent && c.role === 'user').slice(0, 20);
+  const sampleMsgs = agentChats.map(c => c.content).join(' | ');
+
+  const system = `Eres un experto en prompt engineering para agentes de IA de ventas B2B en español. Tu objetivo es mejorar tasas de conversión y satisfacción del usuario.`;
+  const prompt = `Analiza este prompt actual del agente ${currentPromptAgent.toUpperCase()} de KOVA y propón una versión mejorada.
+
+PROMPT ACTUAL:
+${current}
+
+MENSAJES REALES DE USUARIOS (muestra):
+${sampleMsgs || '(sin datos aún)'}
+
+Genera una versión mejorada del prompt que:
+1. Mejore la retención (usuarios usan más mensajes)
+2. Genere más intención de upgrade
+3. Maneje mejor las frustraciones detectadas
+
+Devuelve SOLO el prompt mejorado, sin explicaciones adicionales.`;
+
+  try {
+    const result = await callAI(system, prompt, 1200);
+    proposal.value = result;
+    toast('✅ Propuesta generada');
+  } catch(e) {
+    proposal.value = 'Error: ' + e.message;
+  }
+}
+
+function addFewShot() {
+  const proposal = document.getElementById('promptProposal');
+  const existing = proposal.value;
+  const fewShotTemplate = `
+
+--- FEW-SHOT EXAMPLE ---
+USER: [pega aquí el mensaje del usuario]
+ASSISTANT: [pega aquí la respuesta ideal del agente]
+--- END FEW-SHOT ---`;
+  proposal.value = existing + fewShotTemplate;
+  toast('📝 Plantilla few-shot agregada — edita con ejemplos reales');
+}
+
+async function generateFewShots() {
+  if (!requireApiKey()) return;
+  const panel = document.getElementById('fewShotsPanel');
+  panel.innerHTML = '<div class="loading-overlay"><div class="spinner"></div><div class="loading-text">Analizando conversaciones exitosas...</div></div>';
+
+  const chats = window._chats || [];
+  const agentChats = chats.filter(c => c.agent === currentPromptAgent);
+
+  if (agentChats.length < 4) {
+    panel.innerHTML = '<div class="empty"><div class="empty-icon">📊</div>Se necesitan más conversaciones para generar few-shots. Con al menos 5 chats de este agente puedo analizar patrones.</div>';
+    return;
+  }
+
+  const pairs = [];
+  for (let i = 0; i < agentChats.length - 1; i++) {
+    if (agentChats[i].role === 'user' && agentChats[i+1]?.role === 'assistant') {
+      pairs.push({ q: agentChats[i].content.substring(0,200), a: agentChats[i+1].content.substring(0,400) });
+    }
+  }
+
+  const system = `Eres un experto en prompt engineering. Identifica los mejores ejemplos de conversación para usar como few-shots. Responde solo JSON válido sin markdown.`;
+  const prompt = `De estos pares pregunta-respuesta del agente ${currentPromptAgent.toUpperCase()}, selecciona los 3 más valiosos como few-shot examples y explica por qué son buenos:
+
+${pairs.slice(0,10).map((p,i) => `[${i+1}] USER: ${p.q}\nASSISTANT: ${p.a}`).join('\n\n')}
+
+JSON requerido:
+{"examples": [{"user": "...", "assistant": "...", "why": "..."}]}`;
+
+  try {
+    const result = await callAI(system, prompt, 1000);
+    const clean = result.replace(/```json|```/g,'').trim();
+    const data = JSON.parse(clean);
+    panel.innerHTML = data.examples.map((ex, i) => `
+      <div class="card" style="margin-bottom:12px">
+        <div class="card-title">// FEW-SHOT ${i+1} <span style="color:var(--green);margin-left:8px">★ ${ex.why}</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px">
+          <div>
+            <div style="font-size:9px;font-family:var(--font-mono);color:var(--text3);margin-bottom:4px">USER</div>
+            <div style="font-size:11px;color:var(--text2);background:var(--panel2);padding:10px;border-radius:6px;border:1px solid var(--border)">${ex.user}</div>
+          </div>
+          <div>
+            <div style="font-size:9px;font-family:var(--font-mono);color:var(--text3);margin-bottom:4px">ASSISTANT</div>
+            <div style="font-size:11px;color:var(--text);background:var(--panel2);padding:10px;border-radius:6px;border:1px solid var(--border)">${ex.assistant}</div>
+          </div>
+        </div>
+      </div>`).join('');
+  } catch(e) {
+    panel.innerHTML = `<div class="empty">Error generando few-shots: ${e.message}</div>`;
+  }
+}
+
+async function generateDeployScript() {
+  const proposal = document.getElementById('promptProposal').value.trim();
+  if (!proposal || proposal.includes('Generando')) { toast('⚠️ Primero genera o escribe la propuesta'); return; }
+
+  const agent = currentPromptAgent;
+  const scriptContent = `import os, subprocess
+
+# PROMPT UPDATE SCRIPT — ${agent.toUpperCase()} — ${new Date().toISOString().substring(0,10)}
+# Ejecutar desde: C:\\Users\\danie\\Desktop\\KOVA\\kova-api
+
+NEW_PROMPT = """${proposal.replace(/"/g, '\\"').replace(/\n/g, '\\n')}"""
+
+PATH = os.path.join('api', '${agent}.js')
+with open(PATH, 'r', encoding='utf-8') as f:
+    content = f.read()
+
+# Encuentra el system prompt actual y reemplázalo
+# NOTA: Ajusta el marcador según el archivo real
+import re
+pattern = r'(const systemPrompt\\s*=\\s*["\`])(.+?)(["\`])'
+flags = re.DOTALL
+if re.search(pattern, content, flags):
+    content = re.sub(pattern, lambda m: m.group(1) + NEW_PROMPT + m.group(3), content, flags=flags)
+    with open(PATH, 'w', encoding='utf-8') as f:
+        f.write(content)
+    subprocess.run(['git', 'add', PATH], check=True)
+    subprocess.run(['git', 'commit', '-m', 'feat: update ${agent} system prompt v${PROMPT_TEMPLATES[agent].version}+1'], check=True)
+    subprocess.run(['git', 'push'], check=True)
+    print('OK: ${agent}.js actualizado y pusheado')
+else:
+    print('WARN: No se encontró systemPrompt en ${agent}.js — edita el archivo manualmente')
+`;
+
+  const blob = new Blob([scriptContent], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `update_${agent}_prompt.py`; a.click();
+  URL.revokeObjectURL(url);
+  toast(`✅ Script descargado: update_${agent}_prompt.py`);
+
+  // Save to version history
+  const history = JSON.parse(localStorage.getItem(`kova_prompt_history_${agent}`) || '[]');
+  const newVer = { version: `v1.${history.length+1}`, date: new Date().toLocaleDateString('es'), note: 'Propuesta generada — pendiente deploy', active: false };
+  history.unshift(newVer);
+  localStorage.setItem(`kova_prompt_history_${agent}`, JSON.stringify(history.slice(0,5)));
+  selectAgent(agent, null);
+}
+
+async function comparePerfomance() {
+  if (!requireApiKey()) return;
+  const current = document.getElementById('promptEditor').value;
+  const proposal = document.getElementById('promptProposal').value;
+  if (!proposal.trim()) { toast('⚠️ Primero genera una propuesta'); return; }
+
+  toast('🤖 Comparando prompts...');
+  const system = `Eres un experto en evaluación de prompts para agentes de IA comerciales. Sé directo y objetivo.`;
+  const prompt = `Compara estos dos prompts para el agente ${currentPromptAgent.toUpperCase()} de KOVA (app de ventas IA):
+
+PROMPT ACTUAL:
+${current.substring(0,600)}
+
+PROPUESTA MEJORADA:
+${proposal.substring(0,600)}
+
+Evalúa en estas 4 dimensiones (puntuación 1-10 para cada uno):
+1. Claridad de instrucciones
+2. Probabilidad de generar respuestas que aumenten retención
+3. Manejo de objeciones de precio/valor
+4. Probabilidad de incentivar upgrade a plan de pago
+
+Dame un veredicto final: ¿vale la pena el cambio? ¿Qué riesgo tiene?`;
+
+  try {
+    const result = await callAI(system, prompt, 600);
+    const box = document.getElementById('promptProposal');
+    box.value = `--- COMPARACIÓN ---\n\n${result}\n\n--- PROPUESTA ---\n\n${proposal}`;
+  } catch(e) { toast('Error: ' + e.message); }
+}
+
+// ── BOOT ──────────────────────────────────────────────────────────────────────
+if (!anthropicKey) {
+  setTimeout(() => {
+    document.getElementById('keyBanner').style.display = 'flex';
+  }, 1000);
+}
+
+init();
+</script>
+</body>
+</html>
