@@ -529,13 +529,17 @@ async function fetchAll() {
     const r1 = await fetch(`${SUPABASE_URL}/rest/v1/user_profiles?select=id,plan,created_at,business_name,sector`, { headers: SB });
     const profiles = r1.ok ? await r1.json() : [];
 
-    // Usage this month
-    const r2 = await fetch(`${SUPABASE_URL}/rest/v1/user_usage?month_key=eq.${month}&select=user_id,msg_count,agent`, { headers: SB });
-    const usage = r2.ok ? await r2.json() : [];
-
-    // Chats (last 200, newest first)
-    const r3 = await fetch(`${SUPABASE_URL}/rest/v1/chats?select=id,user_id,agent,role,content,created_at&order=created_at.desc&limit=200`, { headers: SB });
+    // Chats (last 500, newest first) — use as source of truth
+    const r3 = await fetch(`${SUPABASE_URL}/rest/v1/chats?select=id,user_id,agent,role,content,created_at&order=created_at.desc&limit=500`, { headers: SB });
     const chats = r3.ok ? await r3.json() : [];
+
+    // Build usage from chats directly (more reliable than user_usage table)
+    const usageFromChats = {};
+    chats.filter(c => c.role === 'user').forEach(c => {
+      if (!usageFromChats[c.user_id]) usageFromChats[c.user_id] = { user_id: c.user_id, msg_count: 0, agent: c.agent };
+      usageFromChats[c.user_id].msg_count++;
+    });
+    const usage = Object.values(usageFromChats);
 
     return { profiles, usage, chats };
   } catch(e) {
@@ -551,18 +555,24 @@ async function init() {
 
   // Metrics
   const paidPlans = profiles.filter(p => p.plan !== 'free' && p.plan !== 'starter_trial');
+  // Build usageMap from chats (count user messages per user_id)
   const usageMap = {};
-  usage.forEach(u => { usageMap[u.user_id] = (usageMap[u.user_id] || 0) + u.msg_count; });
+  chats.filter(c => c.role === 'user').forEach(c => {
+    usageMap[c.user_id] = (usageMap[c.user_id] || 0) + 1;
+  });
   const activeUsers = Object.values(usageMap).filter(v => v > 0).length;
   const nearLimit = Object.values(usageMap).filter(v => v >= 12).length;
-  const avgMsgs = activeUsers > 0 ? Math.round(Object.values(usageMap).reduce((a,b)=>a+b,0) / activeUsers) : 0;
+  const totalMsgCount = Object.values(usageMap).reduce((a,b)=>a+b,0);
+  const avgMsgs = activeUsers > 0 ? Math.round(totalMsgCount / activeUsers) : 0;
 
   document.getElementById('m-total-users').textContent = profiles.length;
   document.getElementById('m-total-convs').textContent = new Set(chats.map(c=>c.user_id+'_'+c.agent)).size;
   document.getElementById('m-avg-msgs').textContent = avgMsgs;
   document.getElementById('m-near-limit').textContent = nearLimit;
+  // Recalc final counts from chats
+  const allChatUsers = new Set((window._chats||[]).filter(c=>c.role==='user').map(c=>c.user_id));
   document.getElementById('f-installs').textContent = profiles.length;
-  document.getElementById('f-active').textContent = activeUsers;
+  document.getElementById('f-active').textContent = allChatUsers.size || activeUsers;
   document.getElementById('f-near').textContent = nearLimit;
   document.getElementById('f-paid').textContent = paidPlans.length;
 
@@ -796,9 +806,14 @@ function buildFunnel() {
   const usage = window._usage || [];
 
   const total = profiles.length;
-  const active = Object.values(usageMap).filter(v => v > 0).length;
-  const engaged = Object.values(usageMap).filter(v => v >= 5).length;
-  const hot = Object.values(usageMap).filter(v => v >= 12).length;
+  // Recalc from chats for funnel accuracy
+  const chatUsageMap = {};
+  (window._chats||[]).filter(c => c.role === 'user').forEach(c => {
+    chatUsageMap[c.user_id] = (chatUsageMap[c.user_id] || 0) + 1;
+  });
+  const active = Object.values(chatUsageMap).filter(v => v > 0).length;
+  const engaged = Object.values(chatUsageMap).filter(v => v >= 5).length;
+  const hot = Object.values(chatUsageMap).filter(v => v >= 12).length;
   const paid = profiles.filter(p => p.plan !== 'free').length;
 
   const steps = [
@@ -840,8 +855,12 @@ function buildFunnel() {
   // Hot leads
   const profileMap = {};
   (window._profiles||[]).forEach(p => profileMap[p.id] = p);
-  const hotLeads = Object.entries(usageMap)
-    .filter(([,v]) => v >= 12)
+  const hotLeadsMap = {};
+  (window._chats||[]).filter(c => c.role === 'user').forEach(c => {
+    hotLeadsMap[c.user_id] = (hotLeadsMap[c.user_id] || 0) + 1;
+  });
+  const hotLeads = Object.entries(hotLeadsMap)
+    .filter(([,v]) => v >= 5)
     .sort((a,b) => b[1]-a[1])
     .slice(0, 8);
 
