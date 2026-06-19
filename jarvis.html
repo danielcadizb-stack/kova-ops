@@ -748,8 +748,13 @@ async function checkAPIHealthWithAlerts() {
     const r = await fetch('https://api.kova-app.net/api/health', { method: 'GET' });
     const latency = Date.now() - start;
     document.getElementById('m-latency').textContent = latency + 'ms';
-    document.getElementById('dot-api').style.background = latency < 500 ? 'var(--green)' : latency < 1000 ? 'var(--gold)' : 'var(--red)';
-    consecutiveErrors = 0;
+    // 403 = servidor vivo, requiere auth — NO es una caida
+    if (r.status === 403 || r.status === 401 || r.status === 200) {
+      document.getElementById('dot-api').style.background = latency < 500 ? 'var(--green)' : latency < 1000 ? 'var(--gold)' : 'var(--red)';
+      consecutiveErrors = 0;
+    } else {
+      throw new Error('HTTP ' + r.status);
+    }
     if (isFirstHealthCheck) { isFirstHealthCheck = false; return; }
 
     if (latency > ALERT_THRESHOLDS.apiLatencyCrit && shouldAlert('api_latency_crit')) {
