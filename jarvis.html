@@ -755,9 +755,7 @@ async function checkAPIHealthWithAlerts() {
     // Con no-cors, cualquier respuesta (incluso opaque) significa servidor vivo
     document.getElementById('dot-api').style.background = latency < 500 ? 'var(--green)' : latency < 1000 ? 'var(--gold)' : 'var(--red)';
     consecutiveErrors = 0;
-    if (true) {
     if (isFirstHealthCheck) { isFirstHealthCheck = false; return; }
-
     if (latency > ALERT_THRESHOLDS.apiLatencyCrit && shouldAlert('api_latency_crit')) {
       triggerAlert('CRÍTICO', 'API Latencia Crítica', `${latency}ms — verificar Vercel status.vercel.com`, false);
     } else if (latency > ALERT_THRESHOLDS.apiLatencyWarn && shouldAlert('api_latency_warn')) {
