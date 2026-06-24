@@ -482,7 +482,7 @@ async function fetchSupabaseMetrics() {
     const r1 = await fetch(`${SUPABASE_URL}/rest/v1/user_profiles?select=plan`, { headers });
     if (r1.ok) {
       const profiles = await r1.json();
-      const counts = { free: 0, starter: 0, pro: 0, enterprise: 0, starter_trial: 0 };
+      const counts = { free: 0, trial: 0, starter: 0, pro: 0, enterprise: 0 };
       profiles.forEach(p => { if (counts[p.plan] !== undefined) counts[p.plan]++; });
       const total = profiles.length;
       document.getElementById('total-users').textContent = total;
@@ -490,7 +490,7 @@ async function fetchSupabaseMetrics() {
       document.getElementById('count-free').textContent = counts.free;
       document.getElementById('count-starter').textContent = counts.starter;
       document.getElementById('count-pro').textContent = counts.pro;
-      document.getElementById('count-trial').textContent = counts.starter_trial;
+      document.getElementById('count-trial').textContent = counts.trial;
     }
 
     // Usage metrics
@@ -778,7 +778,7 @@ async function fetchSupabaseMetricsWithAlerts() {
     const r1 = await fetch(`${SUPABASE_URL}/rest/v1/user_profiles?select=plan`, { headers });
     if (r1.ok) {
       const profiles = await r1.json();
-      const counts = { free: 0, starter: 0, pro: 0, enterprise: 0, starter_trial: 0 };
+      const counts = { free: 0, trial: 0, starter: 0, pro: 0, enterprise: 0 };
       profiles.forEach(p => { if (counts[p.plan] !== undefined) counts[p.plan]++; });
       const total = profiles.length;
       document.getElementById('total-users').textContent = total;
@@ -786,7 +786,7 @@ async function fetchSupabaseMetricsWithAlerts() {
       document.getElementById('count-free').textContent = counts.free;
       document.getElementById('count-starter').textContent = counts.starter;
       document.getElementById('count-pro').textContent = counts.pro;
-      document.getElementById('count-trial').textContent = counts.starter_trial;
+      document.getElementById('count-trial').textContent = counts.trial;
 
       // Alerta nuevo usuario (si aumentó)
       const prevTotal = parseInt(localStorage.getItem('jarvis_prev_users') || '0');
